@@ -32,7 +32,7 @@ router.post("/usuarios/nueva/", (req, res) => {
         nombre_usuario: req.body.nombre_usuario,
         contraseña_usuario: req.body.contraseña_usuario
       };
-      const query = `INSERT INTO reservacion (idusuario, nmbre_usuario, contraseña_usuario) VALUES ('${data.idusuario}', '${data.nombre_usuario}', '${data.contraseña_usuario}')`;
+      const query = `INSERT INTO reservacion (idusuario, nombre_usuario, contraseña_usuario) VALUES ('${data.idusuario}', '${data.nombre_usuario}', '${data.contraseña_usuario}')`;
       getConnection(function (err, conn) {
           if (err) {
               return res.status(500).send("¡Algo ha salido mal!");
