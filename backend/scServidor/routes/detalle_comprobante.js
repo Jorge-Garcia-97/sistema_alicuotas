@@ -23,3 +23,5 @@ router.get("/detalle_comprobante/", (req, res) => {
       res.send("¡Error!. intente más tarde");
     }
   });
+
+  module.exports = router;

@@ -19,7 +19,7 @@ app.use(require("./routes/area_comunal"));
 app.use(require("./routes/comprobante"));
 app.use(require("./routes/cuota_extra"));
 app.use(require("./routes/detalle_comprobante"));
-app.use(require("./routes/login"));
+//app.use(require("./routes/login"));
 app.use(require("./routes/multas"));
 app.use(require("./routes/pago_alicuota"));
 app.use(require("./routes/propiedades"));

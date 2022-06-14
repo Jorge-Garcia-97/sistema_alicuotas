@@ -23,3 +23,5 @@ router.get("/multas/", (req, res) => {
       res.send("¡Error!. intente más tarde");
     }
   });
+
+  module.exports = router;
