@@ -41,7 +41,7 @@ router.post("/area-comunal/save/", (req, res) => {
       if (err) {
         return res.status(500).send("Oh!, something went wrong");
       } else {
-        const query = `INSERT INTO area_comunal (id_area, nombre_area, valor_garantia, valor_alquiler, descripcion_area, imagen_area_idimagen_area) VALUES ('${data.id_area}', '${data.nombre_area}', '${data.valor_garantia_area}', '${data.valor_alquiler_area}', '${data.descripcion_area}', '${data.imagen_area}')`;
+        const query = `INSERT INTO area_comunal (id_area, nombre_area, valor_garantia, valor_alquiler, descripcion_area, imagen_area_id_imagen_area) VALUES ('${data.id_area}', '${data.nombre_area}', '${data.valor_garantia_area}', '${data.valor_alquiler_area}', '${data.descripcion_area}', '${data.imagen_area}')`;
         conn.query(query, function (err, row) {
           if (err) {
             return res
