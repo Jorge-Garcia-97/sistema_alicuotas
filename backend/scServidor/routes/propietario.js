@@ -28,7 +28,7 @@ router.get("/propietario/", (req, res) => {
   });
 
   //Registrar nuevo propietario
-router.post("/propietario/nueva/", (req, res) => {
+router.post("/propietario/save/", (req, res) => {
   try {
       const data = {
         id_propietario: req.body.id_propietario,

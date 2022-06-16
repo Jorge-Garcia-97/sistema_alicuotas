@@ -3,7 +3,7 @@ const router = express.Router();
 var getConnection = require("../conexion");
 
 //consultar usuarios
-router.get("/usuarios/", (req, res) => {
+router.get("/usuario/", (req, res) => {
     try {
       getConnection(function (err, conn) {
         if (err) {
@@ -25,7 +25,7 @@ router.get("/usuarios/", (req, res) => {
   });
 
   //Registrar nuevo usuario
-router.post("/usuarios/nueva/", (req, res) => {
+router.post("/usuario/save/", (req, res) => {
   try {
       const data = {
         id_usuario: req.body.id_usuario,
