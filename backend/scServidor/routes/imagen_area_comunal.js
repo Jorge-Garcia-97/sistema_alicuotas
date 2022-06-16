@@ -13,7 +13,7 @@ router.get("/area-comunal/imagen/:id/", (req, res) => {
         return res.status(500).send("Oh!, something went wrong");
       } else {
         conn.query(
-          "SELECT * FROM imagen_area WHERE area_comunal_idarea_comunal = ?",
+          "SELECT * FROM imagen_area WHERE area_comunal_id_area_comunal = ?",
           [id],
           function (err, row) {
             if (err) {
