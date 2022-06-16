@@ -25,7 +25,7 @@ router.get("/pagoalicuota/", (req, res) => {
   });
 
 //Registrar nuevo pago de alícuota
-router.post("/pagoalicuota/nuevo/", (req, res) => {
+router.post("/pagoalicuota/save/", (req, res) => {
     try {
       const data = {
           idpago_alicuota: req.body.idpago_alicuota,
@@ -57,7 +57,7 @@ router.post("/pagoalicuota/nuevo/", (req, res) => {
   });
 
   //Actulizar estado de la alícuota o de dar de baja
-router.post("/pagoalicuota/actualizar/estado/:id/", (req, res) => {
+router.post("/pagoalicuota/edit/estado/:id/", (req, res) => {
   try {
     const { id } = req.params;
     const data = {
