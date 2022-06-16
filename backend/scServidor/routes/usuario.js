@@ -81,7 +81,7 @@ router.post("/usuario/save/", (req, res) => {
   });
 
   //Consulta por nombre
-  router.get("/administrador/by-nombre/:nombre", (req, res) => {
+  router.get("/usuario/by-nombre/:nombre", (req, res) => {
     const { nombre } = req.params;
     try {
       getConnection(function (err, conn) {
