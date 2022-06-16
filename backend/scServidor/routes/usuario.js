@@ -3,7 +3,7 @@ const router = express.Router();
 var getConnection = require("../conexion");
 
 //consultar usuarios
-router.get("/usuarios/", (req, res) => {
+router.get("/usuario/", (req, res) => {
     try {
       getConnection(function (err, conn) {
         if (err) {
@@ -25,14 +25,14 @@ router.get("/usuarios/", (req, res) => {
   });
 
   //Registrar nuevo usuario
-router.post("/usuarios/nueva/", (req, res) => {
+router.post("/usuario/save/", (req, res) => {
   try {
       const data = {
-        idusuario: req.body.idusuario,
+        id_usuario: req.body.id_usuario,
         nombre_usuario: req.body.nombre_usuario,
         contraseña_usuario: req.body.contraseña_usuario
       };
-      const query = `INSERT INTO usuario (idusuario, nombre_usuario, contraseña_usuario) VALUES ('${data.idusuario}', '${data.nombre_usuario}', '${data.contraseña_usuario}')`;
+      const query = `INSERT INTO usuario (id_usuario, nombre_usuario, contraseña_usuario) VALUES ('${data.id_usuario}', '${data.nombre_usuario}', '${data.contraseña_usuario}')`;
       getConnection(function (err, conn) {
           if (err) {
               return res.status(500).send("¡Algo ha salido mal!");

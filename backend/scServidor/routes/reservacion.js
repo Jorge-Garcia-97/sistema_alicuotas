@@ -25,17 +25,23 @@ router.get("/reservacion/", (req, res) => {
 });
 
 //Registrar nueva reservación
-router.post("/reservacion/nueva/", (req, res) => {
+router.post("/reservacion/save/", (req, res) => {
     try {
         const data = {
-            idreservacion: req.body.idreservacion,
+            id_reservacion: req.body.id_reservacion,
             motivo_reseracion: req.body.motivo_reseracion,
             fecha_inicio: req.body.fecha_inicio,
             fecha_fin: req.body.fecha_fin,
             valor_garantia: req.body.valor_garantia,
-            valor_alquiler: req.body.valor_alquiler
+            valor_alquiler: req.body.valor_alquiler,
+            propiedad_id_propiedad: req.body.propiedad_id_propiedad,
+            propiedad_pago_alicuota_id_pago_alicuota: req.body.propiedad_pago_alicuota_id_pago_alicuota,
+            propiedad_propietario_id_propietario: req.body.propiedad_propietario_id_propietario,
+            propiedad_propietario_usuario_id_usuario: req.body.propiedad_propietario_usuario_id_usuario,
+            area_comunal_id_area_comunal: req.body.area_comunal_id_area_comunal,
+            area_comunal_imagen_area_id_imagen_area: req.body.area_comunal_imagen_area_id_imagen_area,
         };
-        const query = `INSERT INTO reservacion (idreservacion, motivo_reseracion, fecha_inicio, fecha_fin, valor_garantia, valor_alquiler) VALUES ('${data.idreservacion}', '${data.motivo_reseracion}', '${data.fecha_inicio}','${data.fecha_fin}','${data.valor_garantia}','${data.valor_alquiler}')`;
+        const query = `INSERT INTO reservacion (id_reservacion, motivo_reseracion, fecha_inicio, fecha_fin, valor_garantia, valor_alquiler, propiedad_id_propiedad, propiedad_pago_alicuota_id_pago_alicuota, propiedad_propietario_id_propietario, propiedad_propietario_usuario_id_usuario) VALUES ('${data.id_reservacion}', '${data.motivo_reseracion}', '${data.fecha_inicio}','${data.fecha_fin}','${data.valor_garantia}','${data.valor_alquiler}','${data.propiedad_id_propiedad}','${data.propiedad_pago_alicuota_id_pago_alicuota}','${data.propiedad_propietario_id_propietario}','${data.propiedad_propietario_usuario_id_usuario}')`;
         getConnection(function (err, conn) {
             if (err) {
                 return res.status(500).send("¡Algo ha salido mal!");
@@ -58,18 +64,23 @@ router.post("/reservacion/nueva/", (req, res) => {
 });
 
 //Actulizar información de la reservación
-router.post("/reservacion/actualizar/:id/", (req, res) => {
+router.post("/reservacion/edit/:id/", (req, res) => {
     try {
       const { id } = req.params;
       const data = {
-        idreservacion: req.body.idreservacion,
         motivo_reseracion: req.body.motivo_reseracion,
         fecha_inicio: req.body.fecha_inicio,
         fecha_fin: req.body.fecha_fin,
         valor_garantia: req.body.valor_garantia,
-        valor_alquiler: req.body.valor_alquiler
+        valor_alquiler: req.body.valor_alquiler,
+        propiedad_id_propiedad: req.body.propiedad_id_propiedad,
+        propiedad_pago_alicuota_id_pago_alicuota: req.body.propiedad_pago_alicuota_id_pago_alicuota,
+        propiedad_propietario_id_propietario: req.body.propiedad_propietario_id_propietario,
+        propiedad_propietario_usuario_id_usuario: req.body.propiedad_propietario_usuario_id_usuario,
+        area_comunal_id_area_comunal: req.body.area_comunal_id_area_comunal,
+        area_comunal_imagen_area_id_imagen_area: req.body.area_comunal_imagen_area_id_imagen_area,
       };
-      const query = `UPDATE reservacion SET idreservacion = '${data.idreservacion}', motivo_reservacion = '${data.motivo_reseracion}', fecha_inicio = '${data.fecha_inicio}', fecha_fin = '${data.fecha_fin}', valor_garantia = '${data.valor_garantia}', valor_alquiler = '${data.valor_alquiler}'' WHERE idreservacion = ?`;
+      const query = `UPDATE reservacion SET motivo_reservacion = '${data.motivo_reseracion}', fecha_inicio = '${data.fecha_inicio}', fecha_fin = '${data.fecha_fin}', valor_garantia = '${data.valor_garantia}', valor_alquiler = '${data.valor_alquiler}', valor_alquiler = '${data.propiedad_id_propiedad}', valor_alquiler = '${data.propiedad_pago_alicuota_id_pago_alicuota}', valor_alquiler = '${data.propiedad_propietario_id_propietario}', valor_alquiler = '${data.propiedad_propietario_usuario_id_usuario}'' WHERE id_reservacion = ?`;
       getConnection(function (err, conn) {
         if (err) {
           return res.status(500).send("¡Algo ha salido mal!");
