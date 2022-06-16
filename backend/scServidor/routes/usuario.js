@@ -55,3 +55,27 @@ router.post("/usuario/save/", (req, res) => {
 });
 
   module.exports = router;
+
+  //consultar por id
+  router.get("/usuario/:id", (req, res) => {
+    const { id } = req.params;
+    try {
+      getConnection(function (err, conn) {
+        if (err) {
+          return res.status(500).send("¡Algo ha salido mal!");
+        } else {
+          query = "SELECT * FROM usuario where id_usuario = ?";
+          conn.query(query, [id], function (err, row) {
+            if (err) {
+              return res.status(404).send("No se ha encontrado ningún dato");
+            } else {
+              return res.send(row);
+            }
+          });
+        }
+        conn.release();
+      });
+    } catch (error) {
+      res.send("¡Error!. Intente más tarde.");
+    }
+  });
