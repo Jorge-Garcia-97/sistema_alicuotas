@@ -3,7 +3,7 @@ const router = express.Router();
 var getConnection = require("../conexion");
 
 //consultar solicitudes
-router.get("/solicitud/", (req, res) => {
+router.get("/solicitudes/", (req, res) => {
     try {
         getConnection(function (err, conn) {
             if (err) {
