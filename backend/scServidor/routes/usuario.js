@@ -81,7 +81,7 @@ router.post("/usuario/save/", (req, res) => {
   });
 
   //Consulta por nombre
-  router.get("/administrador/by-nombre/:nombre", (req, res) => {
+  router.get("/usuario/by-nombre/:nombre", (req, res) => {
     const { nombre } = req.params;
     try {
       getConnection(function (err, conn) {
@@ -101,5 +101,67 @@ router.post("/usuario/save/", (req, res) => {
       });
     } catch (error) {
       res.send("¡Error!. Intente más tarde.");
+    }
+  });
+
+  //Agregar usuario
+  router.post("/usuario/save/", (req, res) => {
+    try {
+      const data = {
+        id_usuario: req.body.id_usuario,
+        nombre_usuario: req.body.nombre_usuario,
+        contraseña_usuario: req.body.contraseña_usuario,
+      };
+      getConnection(function (err, conn) {
+        if (err) {
+          return res.status(500).send("Oh!, something went wrong");
+        } else {
+          const query = `INSERT INTO usuario (id_usuario, nombre_usuario, contraseña_usuario) VALUES ('${data.id_usuario}', '${data.nombre_usuario}', '${data.contraseña_usuario}')`;
+          conn.query(query, function (err, row) {
+            if (err) {
+              return res
+                .status(404)
+                .send("Sorry for that. The request could not be made.");
+            } else {
+              return res.status(200).send("Ok");
+            }
+          });
+        }
+        conn.release();
+      });
+    } catch (error) {
+      console.log(error);
+      res.send("Error. Please try again later.");
+    }
+  });
+  
+  //editar usuario
+  router.post("/usuario/edit/:id", (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = {
+        nombre_usuario: req.body.nombre_usuario,
+        contraseña_usuario: req.body.contraseña_usuario,
+      };    
+      getConnection(function (err, conn) {
+        if (err) {
+          return res.status(500).send("Oh!, something went wrong");
+        } else {
+          const query = `UPDATE usuario SET nombre_usuario = '${data.nombre_usuario}', contraseña_usuario = '${data.contraseña_usuario}' WHERE id_usuario = ?`;
+          conn.query(query, [id], function (err, row) {
+            if (err) {
+              return res
+                .status(404)
+                .send("Sorry for that. The request could not be made.");
+            } else {
+              return res.status(200).send("Ok");
+            }
+          });
+        }
+        conn.release();
+      });
+    } catch (error) {
+      console.log(error);
+      res.send("Error. Please try again later.");
     }
   });
