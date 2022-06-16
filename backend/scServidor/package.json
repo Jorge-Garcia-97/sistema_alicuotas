@@ -1,0 +1,15 @@
+{
+  "name": "scservidor",
+  "version": "1.0.0",
+  "description": "servidor v1.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "erick & dilan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "mysql": "^2.18.1"
+  }
+}
