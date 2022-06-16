@@ -79,3 +79,27 @@ router.post("/usuario/save/", (req, res) => {
       res.send("¡Error!. Intente más tarde.");
     }
   });
+
+  //Consulta por nombre
+  router.get("/administrador/by-nombre/:nombre", (req, res) => {
+    const { nombre } = req.params;
+    try {
+      getConnection(function (err, conn) {
+        if (err) {
+          return res.status(500).send("¡Algo ha salido mal!");
+        } else {
+          query = "SELECT * FROM usuario WHERE nombre_usuario = ?";
+          conn.query(query, [nombre], function (err, row) {
+            if (err) {
+              return res.status(404).send("No se ha encontrado ningún dato");
+            } else {
+              return res.send(row);
+            }
+          });
+        }
+        conn.release();
+      });
+    } catch (error) {
+      res.send("¡Error!. Intente más tarde.");
+    }
+  });
