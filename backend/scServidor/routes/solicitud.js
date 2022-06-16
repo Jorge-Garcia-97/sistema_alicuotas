@@ -3,13 +3,13 @@ const router = express.Router();
 var getConnection = require("../conexion");
 
 //consultar solicitudes
-router.get("/solicitudes/", (req, res) => {
+router.get("/solicitud/", (req, res) => {
     try {
         getConnection(function (err, conn) {
             if (err) {
                 return res.status(500).send("¡Algo ha salido mal!");
             } else {
-                conn.query("SELECT * FROM solicitud", function (err, row) {
+                conn.query("SELECT * FROM solicitudes", function (err, row) {
                     if (err) {
                         return res.status(404).send("No se ha encontrado ninguna solicitud");
                     } else {
@@ -24,6 +24,77 @@ router.get("/solicitudes/", (req, res) => {
     }
 });
 
+//Consultar solicitud por ID
+router.get("/solicitud/:id", (req, res) => {
+  const { id } = req.params;
+  try {
+    getConnection(function (err, conn) {
+      if (err) {
+        return res.status(500).send("¡Algo ha salido mal!");
+      } else {
+        query = "SELECT * FROM solicitudes where id_solicitudes = ?";
+        conn.query(query, [id], function (err, row) {
+          if (err) {
+            return res.status(404).send("No se ha encontrado ningún dato");
+          } else {
+            return res.send(row);
+          }
+        });
+      }
+      conn.release();
+    });
+  } catch (error) {
+    res.send("¡Error!. Intente más tarde.");
+  }
+});
+
+//Consultar solicitud por fecha
+router.get("/solicitud/fecha/:id", (req, res) => {
+  const { id } = req.params;
+  try {
+    getConnection(function (err, conn) {
+      if (err) {
+        return res.status(500).send("¡Algo ha salido mal!");
+      } else {
+        query = "SELECT * FROM solicitudes where fecha_solicitud = ?";
+        conn.query(query, [id], function (err, row) {
+          if (err) {
+            return res.status(404).send("No se ha encontrado ningún dato");
+          } else {
+            return res.send(row);
+          }
+        });
+      }
+      conn.release();
+    });
+  } catch (error) {
+    res.send("¡Error!. Intente más tarde.");
+  }
+});
+
+//Consultar solicitud por propiedad
+router.get("/solicitud/propiedad/:id", (req, res) => {
+  const { id } = req.params;
+  try {
+    getConnection(function (err, conn) {
+      if (err) {
+        return res.status(500).send("¡Algo ha salido mal!");
+      } else {
+        query = "SELECT * FROM solicitudes where propiedad_id_propiedad = ?";
+        conn.query(query, [id], function (err, row) {
+          if (err) {
+            return res.status(404).send("No se ha encontrado ningún dato");
+          } else {
+            return res.send(row);
+          }
+        });
+      }
+      conn.release();
+    });
+  } catch (error) {
+    res.send("¡Error!. Intente más tarde.");
+  }
+});
 
 //Registrar nueva solicitud
 router.post("/solicitud/save/", (req, res) => {
@@ -33,11 +104,8 @@ router.post("/solicitud/save/", (req, res) => {
         detalle_solicitud: req.body.detalle_solicitud,
         fecha_solicitud: req.body.fecha_solicitud,
         propiedad_id_propiedad: req.body.propiedad_id_propiedad,
-        propiedad_pago_alicuota_id_pago_alicuota: req.body.propiedad_pago_alicuota_id_pago_alicuota,
-        propiedad_propietario_id_propietario: req.body.propiedad_propietario_id_propietario,
-        propiedad_propietario_usuario_id_usuario: req.body.propiedad_propietario_usuario_id_usuario,
       };
-      const query = `INSERT INTO usuario (id_solicitudes, detalle_solicitud, fecha_solicitud, propiedad_id_propiedad, propiedad_pago_alicuota_id_pago_alicuota, propiedad_propietario_id_propietario, propiedad_propietario_usuario_id_usuario) VALUES ('${data.id_solicitudes}', '${data.detalle_solicitud}', '${data.fecha_solicitud}', '${data.propiedad_id_propiedad}', '${data.propiedad_pago_alicuota_id_pago_alicuota}', '${data.propiedad_propietario_id_propietario}', '${data.propiedad_propietario_usuario_id_usuario}')`;
+      const query = `INSERT INTO solicitudes (id_solicitudes, detalle_solicitud, fecha_solicitud, propiedad_id_propiedad) VALUES ('${data.id_solicitudes}', '${data.detalle_solicitud}', '${data.fecha_solicitud}', '${data.propiedad_id_propiedad}')`;
       getConnection(function (err, conn) {
         if (err) {
           return res.status(500).send("¡Algo ha salido mal!");
@@ -66,16 +134,13 @@ router.post("/solicitud/edit/:id", (req, res) => {
       const data = {
         detalle_solicitud: req.body.detalle_solicitud,
         fecha_solicitud: req.body.fecha_solicitud,
-        propiedad_id_propiedad: req.body.propiedad_id_propiedad,
-        propiedad_pago_alicuota_id_pago_alicuota: req.body.propiedad_pago_alicuota_id_pago_alicuota,
-        propiedad_propietario_id_propietario: req.body.propiedad_propietario_id_propietario,
-        propiedad_propietario_usuario_id_usuario: req.body.propiedad_propietario_usuario_id_usuario,
+        propiedad_id_propiedad: req.body.propiedad_id_propiedad
       };    
       getConnection(function (err, conn) {
         if (err) {
           return res.status(500).send("Oh!, something went wrong");
         } else {
-          const query = `UPDATE solicitud SET detalle_solicitud = '${data.detalle_solicitud}', fecha_solicitud = '${data.fecha_solicitud}', propiedad_id_propiedad = '${data.propiedad_id_propiedad}', propiedad_pago_alicuota_id_pago_alicuota = '${data.propiedad_pago_alicuota_id_pago_alicuota}', propiedad_propietario_id_propietario = '${data.propiedad_propietario_id_propietario}', propiedad_propietario_usuario_id_usuario = '${data.propiedad_propietario_usuario_id_usuario}' WHERE id_solicitudes = ?`;
+          const query = `UPDATE solicitudes SET detalle_solicitud = '${data.detalle_solicitud}', fecha_solicitud = '${data.fecha_solicitud}', propiedad_id_propiedad = '${data.propiedad_id_propiedad}' WHERE id_solicitudes = ?`;
           conn.query(query, [id], function (err, row) {
             if (err) {
               return res
