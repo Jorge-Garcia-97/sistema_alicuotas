@@ -32,16 +32,13 @@ router.post("/area-comunal/save/", (req, res) => {
     const data = {
       id_area: req.body.id_area,
       nombre_area: req.body.nombre_area,
-      valor_garantia_area: req.body.valor_garantia_area,
-      valor_alquiler_area: req.body.valor_alquiler_area,
       descripcion_area: req.body.descripcion_area,
-      imagen_area: req.body.imagen_area,
     };
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("Oh!, something went wrong");
       } else {
-        const query = `INSERT INTO area_comunal (id_area, nombre_area, valor_garantia, valor_alquiler, descripcion_area, imagen_area_id_imagen_area) VALUES ('${data.id_area}', '${data.nombre_area}', '${data.valor_garantia_area}', '${data.valor_alquiler_area}', '${data.descripcion_area}', '${data.imagen_area}')`;
+        const query = `INSERT INTO area_comunal (id_area_comunal, nombre_area, descripcion_area) VALUES ('${data.id_area}', '${data.nombre_area}', '${data.descripcion_area}')`;
         conn.query(query, function (err, row) {
           if (err) {
             return res
@@ -65,16 +62,13 @@ router.post("/area-comunal/edit/:id", (req, res) => {
   try {
     const { id } = req.params;
     const data = {
-      nombre_area: req.body.nombre_area,
-      valor_garantia_area: req.body.valor_garantia_area,
-      valor_alquiler_area: req.body.valor_alquiler_area,
       descripcion_area: req.body.descripcion_area,
     };    
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("Oh!, something went wrong");
       } else {
-        const query = `UPDATE area_comunal SET nombre_area = '${data.nombre_area}', valor_garantia_area = '${data.valor_garantia_area}', valor_alquiler_area = '${data.valor_alquiler_area}', descripcion_area = '${data.descripcion_area}' WHERE id_area = ?`;
+        const query = `UPDATE area_comunal SET descripcion_area = '${data.descripcion_area}' WHERE id_area_comunal = ?`;
         conn.query(query, [id], function (err, row) {
           if (err) {
             return res

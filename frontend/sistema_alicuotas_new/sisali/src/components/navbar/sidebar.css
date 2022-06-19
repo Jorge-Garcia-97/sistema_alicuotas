@@ -1,0 +1,28 @@
+.pro-sidebar {
+  height: calc(100vh - (57px));
+  background-color: #555555;
+  color: white;
+  /* box-shadow: 0 4px 4px 0px rgba(0, 0, 0, 0.1), 0 6px 6px 0 rgba(0, 0, 0, 0.1); */
+}
+.pro-sidebar .children {
+  height: calc(100vh - (57px));
+}
+.pro-sidebar .children .link:hover {
+  background-color: #262626;
+}
+.pro-sidebar .children a:hover {
+  color: white;
+}
+.pro-sidebar-inner .pro-sidebar-layout {
+  overflow-y: hidden;
+}
+.pro-icon {
+  font-size: 20px;
+}
+.pro-sidebar-inner .pro-sidebar-layout ul .pro-inner-item .pro-icon-wrapper {
+  color: white;
+  border-radius: 10px;
+}
+.color-blue {
+  color: #003093;
+}
