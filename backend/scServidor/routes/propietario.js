@@ -80,6 +80,7 @@ router.post("/propietario/save/", (req, res) => {
   try {
       const data = {
         id_propietario: req.body.id_propietario,
+        cedula_propietario: req.body.cedula_propietario,
         nombre_propietario: req.body.nombre_propietario,
         apellido_propietario: req.body.apellido_propietario,
         rol_propietario: req.body.rol_propietario,
@@ -87,7 +88,7 @@ router.post("/propietario/save/", (req, res) => {
         correo_propietario: req.body.correo_propietario,
         usuario_id_usuario: req.body.usuario_id_usuario,
       };
-      const query = `INSERT INTO usuario (id_propietario, nombre_propietario, apellido_propietario, rol_propietario, celular_propietario, correo_propietario, usuario_id_usuario) VALUES ('${data.id_propietario}', '${data.nombre_propietario}', '${data.apellido_propietario}', '${data.rol_propietario}', '${data.celular_propietario}', '${data.correo_propietario}', '${data.usuario_id_usuario}')`;
+      const query = `INSERT INTO usuario (id_propietario, cedula_propietario, nombre_propietario, apellido_propietario, rol_propietario, celular_propietario, correo_propietario, usuario_id_usuario) VALUES ('${data.cedula_propietario}', '${data.id_propietario}', '${data.nombre_propietario}', '${data.apellido_propietario}', '${data.rol_propietario}', '${data.celular_propietario}', '${data.correo_propietario}', '${data.usuario_id_usuario}')`;
       getConnection(function (err, conn) {
           if (err) {
               return res.status(500).send("¡Algo ha salido mal!");
@@ -114,9 +115,9 @@ router.post("/propietario/edit/:id", (req, res) => {
   try {
     const { id } = req.params;
     const data = {
+      cedula_propietario: req.body.cedula_propietario,
       nombre_propietario: req.body.nombre_propietario,
       apellido_propietario: req.body.apellido_propietario,
-      rol_propietario: req.body.rol_propietario,
       celular_propietario: req.body.celular_propietario,
       correo_propietario: req.body.correo_propietario,
     };    
@@ -124,7 +125,7 @@ router.post("/propietario/edit/:id", (req, res) => {
       if (err) {
         return res.status(500).send("Oh!, something went wrong");
       } else {
-        const query = `UPDATE propietario SET nombre_propietario = '${data.nombre_propietario}', apellido_propietario = '${data.apellido_propietario}', rol_propietario = '${data.rol_propietario}', celular_propietario = '${data.celular_propietario}', correo_propietario = '${data.correo_propietario}' WHERE id_propietario = ?`;
+        const query = `UPDATE propietario SET , cedula_propietario = '${data.cedula_propietario}', nombre_propietario = '${data.nombre_propietario}', apellido_propietario = '${data.apellido_propietario}', celular_propietario = '${data.celular_propietario}', correo_propietario = '${data.correo_propietario}' WHERE id_propietario = ?`;
         conn.query(query, [id], function (err, row) {
           if (err) {
             return res
