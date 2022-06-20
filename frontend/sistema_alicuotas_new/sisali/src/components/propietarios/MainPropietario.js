@@ -5,6 +5,7 @@ import { Spinner } from '@chakra-ui/react';
 import user from '../../img/usuario.png';
 import { Button, ButtonGroup } from '@chakra-ui/react';
 import { RegistroPropietario } from './RegistroPropietario';
+import { EditarPropietario } from './EditarPropietario';
 
 export const MainPropietario = () => {
   const [state, setState] = useState([]);
@@ -35,22 +36,26 @@ export const MainPropietario = () => {
     setIsOpen(true);
   };
 
+  const openEditModal = () => {
+    setIsOpen(true);
+  };
+
   return (
-    <>  
+    <>
       {cargando === true ? (
-          <div className="container h-100">
-            <div className="row h-100 align-items-center justify-content-center">
-              <div className="col-auto">
-                <Spinner
-                  thickness="4px"
-                  speed="0.65s"
-                  emptyColor="gray.200"
-                  color="blue.500"
-                  size="xl"
-                />
-              </div>
+        <div className="container h-100">
+          <div className="row h-100 align-items-center justify-content-center">
+            <div className="col-auto">
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
+              />
             </div>
           </div>
+        </div>
       ) : (
         <div className="container-fluid p-1">
           <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
@@ -105,10 +110,15 @@ export const MainPropietario = () => {
                         <Button
                           colorScheme="blue"
                           className="mt-2"
-                          onClick={openModal}
+                          onClick={openEditModal}
                         >
                           Editar Datos <i className="fa fa-info-circle ms-1" />
                         </Button>
+                        <EditarPropietario
+                          stateChanger={setRefresh}
+                          isOpen={isOpen}
+                          setIsOpen={setIsOpen}
+                        />
                       </div>
                     </div>
                   </div>
@@ -119,6 +129,8 @@ export const MainPropietario = () => {
                   isOpen={isOpen}
                   setIsOpen={setIsOpen}
                 />
+
+
               </>
             ) : (
               <>
