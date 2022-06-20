@@ -105,7 +105,7 @@ export const MainPropietario = () => {
                         <Button
                           colorScheme="blue"
                           className="mt-2"
-                          // onClick={openModal}
+                          onClick={openModal}
                         >
                           Editar Datos <i className="fa fa-info-circle ms-1" />
                         </Button>
