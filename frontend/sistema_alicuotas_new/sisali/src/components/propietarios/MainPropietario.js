@@ -39,7 +39,6 @@ export const MainPropietario = () => {
 
   const openEditModal = () => {
     setEditOpen(true);
-    console.log(editOpen);
   };
 
   return (
@@ -116,29 +115,27 @@ export const MainPropietario = () => {
                         >
                           Editar Datos <i className="fa fa-info-circle ms-1" />
                         </Button>
-
                       </div>
                     </div>
                   </div>
                 ))}
-
-                <RegistroPropietario
-                  stateChanger={setRefresh}
-                  isOpen={isOpen}
-                  setIsOpen={setIsOpen}
-                />
-
-                <EditarPropietario
-                  stateChanger={setRefresh}
-                  editOpen={editOpen}
-                  setEditOpen={setEditOpen}
-                />
               </>
             ) : (
               <>
                 <h1>No hay datos a mostrar</h1>
               </>
             )}
+            <RegistroPropietario
+              stateChanger={setRefresh}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+            />
+
+            <EditarPropietario
+              stateChanger={setRefresh}
+              editOpen={editOpen}
+              setEditOpen={setEditOpen}
+            />
           </div>
         </div>
       )}

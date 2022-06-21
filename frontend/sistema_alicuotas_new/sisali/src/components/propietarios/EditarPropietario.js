@@ -16,8 +16,8 @@ import {
 export const EditarPropietario = (props) => {
   const { stateChanger, editOpen, setEditOpen } = props;
 
-  //const initialRef = useRef(null);
-  //const finalRef = useRef(null);
+  const initialRef = useRef(null);
+  const finalRef = useRef(null);
 
   const onClose = () => {
     setEditOpen(false);
@@ -26,9 +26,9 @@ export const EditarPropietario = (props) => {
   return (
     <>
       <Modal
-        //initialFocusRef={initialRef}
-        //finalFocusRef={finalRef}
-        editOpen={editOpen}
+        initialFocusRef={initialRef}
+        finalFocusRef={finalRef}
+        isOpen={editOpen}
         onClose={onClose}
         size={'xl'}
       >
@@ -41,7 +41,7 @@ export const EditarPropietario = (props) => {
               <ModalBody>
                 <FormControl>
                   <FormLabel>Nombres</FormLabel>
-                  <Input placeholder="Nombres" />
+                  <Input ref={initialRef} placeholder="Nombres" />
                 </FormControl>
 
                 <FormControl mt={4}>
