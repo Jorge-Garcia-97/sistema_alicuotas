@@ -1,0 +1,32 @@
+.pro-sidebar {
+  height: -moz-calc(100vh - (57px));
+  height: -webkit-calc(100vh - (57px));
+  height: calc(100vh - (57px));
+  box-shadow: 0 4px 4px 0px rgba(0, 0, 0, 0.1), 0 6px 6px 0 rgba(0, 0, 0, 0.10);
+}
+.closemenu {
+  color:#000428;
+  position: absolute;
+  right: 0;
+  z-index: 9999;
+  line-height: 20px;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 26px;
+  top: 40px;
+  cursor: pointer;
+}
+.pro-sidebar-inner .pro-sidebar-layout {
+  overflow-y: hidden;
+}
+.pro-icon{
+  font-size: 22px;
+}
+.pro-sidebar-inner .pro-sidebar-layout ul .pro-inner-item .pro-icon-wrapper {
+  color:#003093;
+  border-radius: 10px;
+}
+.color-blue{
+  color:#003093;
+}
+
