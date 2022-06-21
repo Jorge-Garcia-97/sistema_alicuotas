@@ -13,7 +13,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-export const RegistroPropietario = props => {
+export const RegistroPropietario = (props) => {
   const { stateChanger, isOpen, setIsOpen } = props;
 
   const initialRef = useRef(null);
@@ -34,7 +34,7 @@ export const RegistroPropietario = props => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Registro de nuevo Usuario</ModalHeader>
+          <ModalHeader>Registro de nuevo Propietario</ModalHeader>
           <ModalCloseButton />
           <div className="row">
             <div className="col-sm-6">

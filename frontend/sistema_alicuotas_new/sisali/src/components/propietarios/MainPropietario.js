@@ -12,6 +12,7 @@ export const MainPropietario = () => {
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     setCargando(true);
@@ -37,7 +38,8 @@ export const MainPropietario = () => {
   };
 
   const openEditModal = () => {
-    setIsOpen(true);
+    setEditOpen(true);
+    console.log(editOpen);
   };
 
   return (
@@ -114,11 +116,7 @@ export const MainPropietario = () => {
                         >
                           Editar Datos <i className="fa fa-info-circle ms-1" />
                         </Button>
-                        <EditarPropietario
-                          stateChanger={setRefresh}
-                          isOpen={isOpen}
-                          setIsOpen={setIsOpen}
-                        />
+
                       </div>
                     </div>
                   </div>
@@ -130,7 +128,11 @@ export const MainPropietario = () => {
                   setIsOpen={setIsOpen}
                 />
 
-
+                <EditarPropietario
+                  stateChanger={setRefresh}
+                  editOpen={editOpen}
+                  setEditOpen={setEditOpen}
+                />
               </>
             ) : (
               <>
