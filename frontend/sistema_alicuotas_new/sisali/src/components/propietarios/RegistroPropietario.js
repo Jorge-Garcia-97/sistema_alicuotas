@@ -176,9 +176,13 @@ export const RegistroPropietario = props => {
                     name="rol"
                     onChange={handleInputChange}
                   >
+                    <option value="Administrador">Administrador</option>
                     <option value="Propietario">Propietario</option>
                     <option value="Presidente">Presidente</option>
+                    <option value="Vicepresidente">Vicepresidente</option>
+                    <option value="Secretario">Secretario</option>
                     <option value="Tesorero">Tesorero</option>
+                    <option value="Vocal">Vocal</option>
                   </Select>
                 </FormControl>
               </ModalBody>
