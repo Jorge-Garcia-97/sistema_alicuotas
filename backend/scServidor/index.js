@@ -27,8 +27,8 @@ app.use(require("./routes/propietario"));
 app.use(require("./routes/reservacion"));
 app.use(require("./routes/solicitud"));
 app.use(require("./routes/usuario"));
-app.use(require("./routes/imagenPropietario"));
-app.use(require("./routes/imagen_area_comunal"));
+//app.use(require("./routes/imagenPropietario"));
+//app.use(require("./routes/imagen_area_comunal"));
 
 app.listen(port, () => {
     console.log(`app listening at ${port}`);
