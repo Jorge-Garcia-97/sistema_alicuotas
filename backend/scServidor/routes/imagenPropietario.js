@@ -5,7 +5,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-router.get("/area-comunal/imagen/:id/", (req, res) => {
+router.get("/propietario/imagen/:id/", (req, res) => {
   try {
     const { id } = req.params;
     getConnection(function (err, conn) {
@@ -13,7 +13,7 @@ router.get("/area-comunal/imagen/:id/", (req, res) => {
         return res.status(500).send("Oh!, something went wrong");
       } else {
         conn.query(
-          "SELECT * FROM imagen_area WHERE area_comunal_id_area_comunal = ?",
+          "SELECT * FROM imagen_propietario WHERE propietario_id_propietario = ?",
           [id],
           function (err, row) {
             if (err) {
@@ -21,11 +21,11 @@ router.get("/area-comunal/imagen/:id/", (req, res) => {
             } else {
               var name = null;
               row.map((img) => {
-                name = img.empresa_id_empresa + "-area.png";
+                name = img.empresa_id_empresa + "-propietario.png";
                 fs.writeFileSync(
                   path.join(
                     __dirname,
-                    "../dbimages/" + img.empresa_id_empresa + "-area.png"
+                    "../dbimages/" + img.empresa_id_empresa + "-propietario.png"
                   ),
                   img.data_imagen
                 );
@@ -46,7 +46,7 @@ router.get("/area-comunal/imagen/:id/", (req, res) => {
 const diskstorage = multer.diskStorage({
   destination: path.join(__dirname, "../images/"),
   filename: (req, file, cb) => {
-    cb(null, Date.now() + "-area-" + file.originalname);
+    cb(null, Date.now() + "-propietario-" + file.originalname);
   },
 });
 
@@ -55,7 +55,7 @@ const fileUpload = multer({
 }).single("image");
 
 //Registrar imagen de empresa
-router.post("/area-comunal/imagen/save/:id/", fileUpload, (req, res) => {
+router.post("/propietario/imagen/save/:id/", fileUpload, (req, res) => {
   try {
     const { id } = req.params;
     const type = req.file.mimetype;
@@ -68,7 +68,7 @@ router.post("/area-comunal/imagen/save/:id/", fileUpload, (req, res) => {
         return res.status(500).send("Oh!, something went wrong");
       } else {
         conn.query(
-          "INSERT INTO imagen_area set id_imagen_area = ?, tipo_imagen = ?, nombre_imagen = ?, data_imagen = ?, area_comunal_id_area_comunal = ?",
+          "INSERT INTO imagen_propietario set id_imagen_propietario = ?, tipo_imagen = ?, nombre_imagen = ?, data_imagen = ?, propietario_id_propietario = ?",
           [type, name, data, id],
           function (err, row) {
             if (err) {
@@ -90,7 +90,7 @@ router.post("/area-comunal/imagen/save/:id/", fileUpload, (req, res) => {
 });
 
 //Actualizar imagen de empresa
-router.post("/area-comunal/imagen/edit/:id/", fileUpload, (req, res) => {
+router.post("/propietario/imagen/edit/:id/", fileUpload, (req, res) => {
   try {
     const { id } = req.params;
     const data = fs.readFileSync(
@@ -101,7 +101,7 @@ router.post("/area-comunal/imagen/edit/:id/", fileUpload, (req, res) => {
         return res.status(500).send("Oh!, something went wrong");
       } else {
         conn.query(
-          "UPDATE imagen_area set data_imagen = ? WHERE  area_comunal_id_area_comunal = ?",
+          "UPDATE imagen_propietario set data_imagen = ? WHERE  propietario_id_propietario = ?",
           [data, id],
           function (err, row) {
             if (err) {

@@ -13,6 +13,7 @@ export const MainPropietario = () => {
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [numberPropietarios, setNumberPropietarios] = useState(null);
 
   useEffect(() => {
     setCargando(true);
@@ -20,9 +21,9 @@ export const MainPropietario = () => {
       try {
         const propietarios = await get(`propietarios`);
         setState(propietarios);
+        setNumberPropietarios(propietarios.slice(-1)[0].id_propietario);
         setRefresh(false);
-        setCargando(false);
-        console.log(propietarios);
+        setCargando(false);        
       } catch (error) {
         toast.error(error);
       }
@@ -129,6 +130,7 @@ export const MainPropietario = () => {
               stateChanger={setRefresh}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
+              numberPropietarios={numberPropietarios}
             />
 
             <EditarPropietario

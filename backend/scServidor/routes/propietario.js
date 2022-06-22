@@ -88,7 +88,7 @@ router.post("/propietario/save/", (req, res) => {
       correo_propietario: req.body.correo_propietario,
       usuario_id_usuario: req.body.usuario_id_usuario,
     };
-    const query = `INSERT INTO usuario (id_propietario, cedula_propietario, nombre_propietario, apellido_propietario, rol_propietario, celular_propietario, correo_propietario, usuario_id_usuario) VALUES ('${data.cedula_propietario}', '${data.id_propietario}', '${data.nombre_propietario}', '${data.apellido_propietario}', '${data.rol_propietario}', '${data.celular_propietario}', '${data.correo_propietario}', '${data.usuario_id_usuario}')`;
+    const query = `INSERT INTO propietario (id_propietario, cedula_propietario, nombre_propietario, apellido_propietario, rol_propietario, celular_propietario, correo_propietario, usuario_id_usuario) VALUES ('${data.id_propietario}', '${data.cedula_propietario}', '${data.nombre_propietario}', '${data.apellido_propietario}', '${data.rol_propietario}', '${data.celular_propietario}', '${data.correo_propietario}', '${data.usuario_id_usuario}')`;
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");
@@ -97,15 +97,15 @@ router.post("/propietario/save/", (req, res) => {
           if (err) {
             return res.status(404).send("No se ha podido realizar su petición");
           } else {
-            return res.status(200).send("Ok");
+            var id = row.insertId;
+            return res.send({ id });
           }
         });
       }
       conn.release();
     });
   } catch (error) {
-    console.log(error);
-    res.send("Error. Please try again later.");
+    res.send("¡Error!. intente más tarde");
   }
 });
 
