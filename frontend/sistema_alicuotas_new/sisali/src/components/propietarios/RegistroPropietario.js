@@ -61,7 +61,7 @@ export const RegistroPropietario = props => {
                 icon: 'success',
                 title: 'Registro exitoso'
               })
-              setIsOpen(false);
+              setIsOpen(true);
               stateChanger(true);
             }else{
               Toast.fire({
