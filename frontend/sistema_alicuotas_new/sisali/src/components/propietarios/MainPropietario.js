@@ -15,16 +15,6 @@ export const MainPropietario = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
 
-  
-  const openModal = () => {
-    setIsOpen(true);
-  };
-
-  const openEditModal = () => {
-    console.log(imagenes);
-    // setEditOpen(true);
-  };
-
   useEffect(() => {
     async function cargarData() {
       const imgs = [];
@@ -48,6 +38,15 @@ export const MainPropietario = () => {
     cargarData();
     setCargando(true);    
   }, [refresh, setPropietarios]);
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const openEditModal = () => {
+    console.log(imagenes);
+    // setEditOpen(true);
+  };
 
   const Toast = Swal.mixin({
     toast: true,
