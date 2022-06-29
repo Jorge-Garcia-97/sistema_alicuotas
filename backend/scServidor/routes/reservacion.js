@@ -76,7 +76,6 @@ router.get("/reservacion/fecha/:id", (req, res) => {
 router.post("/reservacion/save/", (req, res) => {
     try {
         const data = {
-            id_reservacion: req.body.id_reservacion,
             motivo_reseracion: req.body.motivo_reseracion,
             fecha_inicio: req.body.fecha_inicio,
             fecha_fin: req.body.fecha_fin,
@@ -85,7 +84,7 @@ router.post("/reservacion/save/", (req, res) => {
             propiedad_id_propiedad: req.body.propiedad_id_propiedad,
             area_comunal_id_area_comunal: req.body.area_comunal_id_area_comunal,
         };
-        const query = `INSERT INTO reservacion (id_reservacion, motivo_reseracion, fecha_inicio, fecha_fin, valor_garantia, valor_alquiler, propiedad_id_propiedad, area_comunal_id_area_comunal) VALUES ('${data.id_reservacion}', '${data.motivo_reseracion}', '${data.fecha_inicio}','${data.fecha_fin}','${data.valor_garantia}','${data.valor_alquiler}','${data.propiedad_id_propiedad}','${data.area_comunal_id_area_comunal}')`;
+        const query = `INSERT INTO reservacion ( motivo_reseracion, fecha_inicio, fecha_fin, valor_garantia, valor_alquiler, propiedad_id_propiedad, area_comunal_id_area_comunal) VALUES ('${data.motivo_reseracion}', '${data.fecha_inicio}','${data.fecha_fin}','${data.valor_garantia}','${data.valor_alquiler}','${data.propiedad_id_propiedad}','${data.area_comunal_id_area_comunal}')`;
         getConnection(function (err, conn) {
             if (err) {
                 return res.status(500).send("¡Algo ha salido mal!");
