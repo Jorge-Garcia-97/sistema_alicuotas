@@ -79,7 +79,6 @@ router.get("/propietario/by-cedula/:cedula", (req, res) => {
 router.post("/propietario/save/", (req, res) => {
   try {
     const data = {
-      id_propietario: req.body.id_propietario,
       cedula_propietario: req.body.cedula_propietario,
       nombre_propietario: req.body.nombre_propietario,
       apellido_propietario: req.body.apellido_propietario,
@@ -88,13 +87,15 @@ router.post("/propietario/save/", (req, res) => {
       correo_propietario: req.body.correo_propietario,
       usuario_id_usuario: req.body.usuario_id_usuario,
     };
-    const query = `INSERT INTO propietario (id_propietario, cedula_propietario, nombre_propietario, apellido_propietario, rol_propietario, celular_propietario, correo_propietario, usuario_id_usuario) VALUES ('${data.id_propietario}', '${data.cedula_propietario}', '${data.nombre_propietario}', '${data.apellido_propietario}', '${data.rol_propietario}', '${data.celular_propietario}', '${data.correo_propietario}', '${data.usuario_id_usuario}')`;
+    // console.log(data);
+    const query = `INSERT INTO propietario (cedula_propietario, nombre_propietario, apellido_propietario, rol_propietario, celular_propietario, correo_propietario, usuario_id_usuario) VALUES ('${data.cedula_propietario}', '${data.nombre_propietario}', '${data.apellido_propietario}', '${data.rol_propietario}', '${data.celular_propietario}', '${data.correo_propietario}', '${data.usuario_id_usuario}')`;
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");
       } else {
         conn.query(query, function (err, row) {
           if (err) {
+            console.log(err);
             return res.status(404).send("No se ha podido realizar su petición");
           } else {
             var id = row.insertId;

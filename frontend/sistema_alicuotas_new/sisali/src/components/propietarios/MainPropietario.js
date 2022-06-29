@@ -1,46 +1,69 @@
-import React, { useEffect, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
 import { get } from '../../services/Get';
 import { Spinner } from '@chakra-ui/react';
 import user from '../../img/usuario.png';
-import { Button, ButtonGroup } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 import { RegistroPropietario } from './RegistroPropietario';
 import { EditarPropietario } from './EditarPropietario';
+import Swal from 'sweetalert2';
+import React ,{ useEffect, useState } from 'react';
 
 export const MainPropietario = () => {
-  const [state, setState] = useState([]);
+  const [propietarios, setPropietarios] = useState([]);
+  const [imagenes, setImagenes] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-  const [numberPropietarios, setNumberPropietarios] = useState(null);
 
   useEffect(() => {
-    setCargando(true);
     async function cargarData() {
+      const imgs = [];
       try {
         const propietarios = await get(`propietarios`);
-        setState(propietarios);
-        setNumberPropietarios(propietarios.slice(-1)[0].id_propietario);
+        propietarios.map(async item => {
+          let img_name = await get(`propietario/imagen/${item.id_propietario}`);
+          imgs.push(img_name.name);
+        });
+        setPropietarios(propietarios);
+        setImagenes(imgs);
         setRefresh(false);
-        setCargando(false);        
+        setCargando(false);
       } catch (error) {
-        toast.error(error);
+        Toast.fire({
+          icon: 'error',
+          title: 'Algo ha salido mal',
+        });
       }
     }
     cargarData();
-    return () => {
-      setState([]);
-    };
-  }, [refresh]);
+    setCargando(true);    
+  }, [refresh, setPropietarios]);
+
 
   const openModal = () => {
     setIsOpen(true);
   };
 
   const openEditModal = () => {
-    setEditOpen(true);
+    console.log(imagenes);
+    // setEditOpen(true);
   };
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: toast => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+    customClass: {
+      container: 'container-popup',
+      popup: 'popup',
+    },
+  });
 
   return (
     <>
@@ -76,17 +99,26 @@ export const MainPropietario = () => {
             </Button>
           </div>
           <div className="row">
-            {state.length > 0 ? (
+            {propietarios.length > 0 ? (
               <>
-                {state.map((item, i) => (
+                {propietarios.map((item, i) => (
                   <div className="col-lg-3 col-md-4 col-sm-12" key={i}>
                     <div className="card w-100">
-                      <img
-                        src={user}
-                        className="card-img-top d-block mx-auto my-1"
-                        alt="Foto usuario"
-                        style={{ width: '250px', height: '220px' }}
-                      />
+                      {[...imagenes][i] ? (
+                        <img
+                          src={`http://localhost:4000/${[...imagenes][i]}`}
+                          alt={'Imagen referencial'}
+                          style={{ maxHeight: '300px' }}
+                          className="d-block mx-auto w-100 h-100"
+                        />
+                      ) : (
+                        <img
+                          src={user}
+                          alt={'Imagen referencial'}
+                          style={{ maxHeight: '300px' }}
+                          className="d-block mx-auto w-100 h-100"
+                        />
+                      )}
                       <div className="card-body text-center border-top">
                         <h1 className="card-title fw-bold">
                           {item.nombre_propietario +
@@ -130,7 +162,6 @@ export const MainPropietario = () => {
               stateChanger={setRefresh}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
-              numberPropietarios={numberPropietarios}
             />
 
             <EditarPropietario

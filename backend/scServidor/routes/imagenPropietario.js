@@ -21,11 +21,11 @@ router.get("/propietario/imagen/:id/", (req, res) => {
             } else {
               var name = null;
               row.map((img) => {
-                name = img.empresa_id_empresa + "-propietario.png";
+                name = img.propietario_id_propietario + "-propietario.png";
                 fs.writeFileSync(
                   path.join(
                     __dirname,
-                    "../dbimages/" + img.empresa_id_empresa + "-propietario.png"
+                    "../dbimages/" + img.propietario_id_propietario + "-propietario.png"
                   ),
                   img.data_imagen
                 );
@@ -68,7 +68,7 @@ router.post("/propietario/imagen/save/:id/", fileUpload, (req, res) => {
         return res.status(500).send("Oh!, something went wrong");
       } else {
         conn.query(
-          "INSERT INTO imagen_propietario set id_imagen_propietario = ?, tipo_imagen = ?, nombre_imagen = ?, data_imagen = ?, propietario_id_propietario = ?",
+          "INSERT INTO imagen_propietario set tipo_imagen = ?, nombre_imagen = ?, data_imagen = ?, propietario_id_propietario = ?",
           [type, name, data, id],
           function (err, row) {
             if (err) {
@@ -85,6 +85,7 @@ router.post("/propietario/imagen/save/:id/", fileUpload, (req, res) => {
       conn.release();
     });
   } catch (error) {
+    console.log(error);
     res.send("Error. Please try again later.");
   }
 });

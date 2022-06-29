@@ -20,8 +20,9 @@ export const saveUsuario = async data => {
   }
 };
 
-export const savePropietario = async data => {
+export const savePropietario = async (data, usuario_id) => {
   try {
+    console.log(data);
     const response = await fetch(`http://localhost:4000/propietario/save/`, {
       method: 'POST',
       headers: {
@@ -29,14 +30,13 @@ export const savePropietario = async data => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        id_propietario: data.id,
         cedula_propietario: data.cedula,
         nombre_propietario: data.nombre,
         apellido_propietario: data.apellido,
         rol_propietario: data.rol,
         celular_propietario: data.telefono,
         correo_propietario: data.correo,
-        usuario_id_usuario: data.usuario,
+        usuario_id_usuario: usuario_id,
       }),
     });
     const json = await response.json();
