@@ -107,7 +107,6 @@ router.get("/usuario/by-nombre/:nombre", (req, res) => {
 router.post("/usuario/save/", (req, res) => {
   try {
     const data = {
-      id_usuario: req.body.id_usuario,
       nombre_usuario: req.body.nombre_usuario,
       contraseña_usuario: req.body.contraseña_usuario,
     };
@@ -115,7 +114,7 @@ router.post("/usuario/save/", (req, res) => {
       if (err) {
         return res.status(500).send("Oh!, something went wrong");
       } else {
-        const query = `INSERT INTO usuario (id_usuario, nombre_usuario, contraseña_usuario) VALUES ('${data.id_usuario}', '${data.nombre_usuario}', '${data.contraseña_usuario}')`;
+        const query = `INSERT INTO usuario ( nombre_usuario, contraseña_usuario) VALUES ('${data.nombre_usuario}', '${data.contraseña_usuario}')`;
         conn.query(query, function (err, row) {
           if (err) {
             return res
