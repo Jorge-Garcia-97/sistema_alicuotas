@@ -28,13 +28,12 @@ router.get("/pagoalicuota/", (req, res) => {
 router.post("/pagoalicuota/save/", (req, res) => {
     try {
       const data = {
-          id_pago_alicuota: req.body.id_pago_alicuota,
           valor_alicuota: req.body.valor_alicuota,
           fecha_alicuota: req.body.fecha_alicuota,
           estado_alicuota: req.body.estado_alicuota,
           atraso_alicuota: req.body.atraso_alicuota
       };
-      const query = `INSERT INTO pago_alicuota (id_pago_alicuota, valor_alicuota, fecha_alicuota, estado_alicuota, atraso_alicuota) VALUES ('${data.id_pago_alicuota}', '${data.valor_alicuota}', '${data.fecha_alicuota}','${data.estado_alicuota}','${data.atraso_alicuota}')`;
+      const query = `INSERT INTO pago_alicuota (valor_alicuota, fecha_alicuota, estado_alicuota, atraso_alicuota) VALUES ( '${data.valor_alicuota}', '${data.fecha_alicuota}','${data.estado_alicuota}','${data.atraso_alicuota}')`;
       getConnection(function (err, conn) {
         if (err) {
           return res.status(500).send("¡Algo ha salido mal!");
