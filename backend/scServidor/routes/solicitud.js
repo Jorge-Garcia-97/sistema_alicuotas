@@ -100,12 +100,11 @@ router.get("/solicitud/propiedad/:id", (req, res) => {
 router.post("/solicitud/save/", (req, res) => {
     try {
       const data = {
-        id_solicitudes: req.body.id_solicitudes,
         detalle_solicitud: req.body.detalle_solicitud,
         fecha_solicitud: req.body.fecha_solicitud,
         propiedad_id_propiedad: req.body.propiedad_id_propiedad,
       };
-      const query = `INSERT INTO solicitudes (id_solicitudes, detalle_solicitud, fecha_solicitud, propiedad_id_propiedad) VALUES ('${data.id_solicitudes}', '${data.detalle_solicitud}', '${data.fecha_solicitud}', '${data.propiedad_id_propiedad}')`;
+      const query = `INSERT INTO solicitudes ( detalle_solicitud, fecha_solicitud, propiedad_id_propiedad) VALUES ( '${data.detalle_solicitud}', '${data.fecha_solicitud}', '${data.propiedad_id_propiedad}')`;
       getConnection(function (err, conn) {
         if (err) {
           return res.status(500).send("¡Algo ha salido mal!");
