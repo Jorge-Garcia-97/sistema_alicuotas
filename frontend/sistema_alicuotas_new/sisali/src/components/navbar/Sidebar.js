@@ -39,10 +39,14 @@ export const Sidebar = () => {
           <Menu className="h-100 d-flex flex-column">
             <div className="mt-2 text-center px-2 h-100">
               {menuCollapse ? (
-                <>
+                <>                  
                   <MenuItem
                     className="py-3 my-2"
                     icon={<i className="fa fa-users"></i>}
+                  ></MenuItem>
+                  <MenuItem
+                    className="py-3 my-2"
+                    icon={<i className="fa fa-address-card-o"></i>}
                   ></MenuItem>
                   <MenuItem
                     className="py-3 my-2"
@@ -62,13 +66,21 @@ export const Sidebar = () => {
                   ></MenuItem>
                 </>
               ) : (
-                <>
+                <>                  
                   <Link to={'/propietarios'}>
                     <MenuItem
                       className="link py-3 my-2"
                       icon={<i className="fa fa-users me-1"></i>}
                     >
                       Propietarios
+                    </MenuItem>
+                  </Link>
+                  <Link to={'/administradores'}>
+                    <MenuItem
+                      className="link py-3 my-2"
+                      icon={<i className="fa fa-address-card-o me-1"></i>}
+                    >
+                      Administradores
                     </MenuItem>
                   </Link>
                   <Link to={'/areas'}>

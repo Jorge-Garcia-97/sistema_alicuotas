@@ -45,7 +45,7 @@ export const MainPropietario = () => {
 
   const openEditModal = () => {
     console.log(imagenes);
-    // setEditOpen(true);
+    setEditOpen(true);
   };
 
   const Toast = Swal.mixin({

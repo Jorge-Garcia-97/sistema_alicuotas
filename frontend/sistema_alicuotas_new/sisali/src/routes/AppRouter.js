@@ -6,12 +6,14 @@ import { MainAlicuotas } from '../components/alicuotas/MainAlicuotas';
 import { MainReservaciones } from '../components/reservaciones/MainReservaciones';
 import { MainSolicitudes } from '../components/solicitudes/MainSolicitudes';
 import { MainAreas } from '../components/areas-comunales/MainAreas';
+import { MainAdministradores } from '../components/administradores/MainAdministradores';
 
 export const AppRouter = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<RoutesApp />}>
+          <Route path="/administradores" element={<MainAdministradores />} />
           <Route path="/propietarios" element={<MainPropietario />} />
           <Route path="/areas" element={<MainAreas />} />
           <Route path="/alicuotas" element={<MainAlicuotas />} />
