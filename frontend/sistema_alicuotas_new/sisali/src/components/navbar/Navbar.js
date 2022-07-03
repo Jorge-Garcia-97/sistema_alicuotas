@@ -27,7 +27,7 @@ export const Navbar = () => {
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
                   <Link className="nav-link active" to={`/`}>
-                    <i className="fa fa-briefcase me-2" />
+                    <i className="fa fa-bell me-2" />
                   </Link>
                 </li>
                 <li className="nav-item dropdown">

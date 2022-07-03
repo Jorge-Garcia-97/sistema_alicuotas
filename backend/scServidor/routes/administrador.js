@@ -76,7 +76,6 @@ router.get("/administrador/by-cedula/:cedula", (req, res) => {
 router.post("/administrador/save/", (req, res) => {
   try {
     const data = {
-      id_administrador: req.body.id_administrador,
       nombre_administrador: req.body.nombre_administrador,
       celular_administrador: req.body.celular_administrador,
       correo_administrador: req.body.correo_administrador,
@@ -88,7 +87,7 @@ router.post("/administrador/save/", (req, res) => {
       if (err) {
         return res.status(500).send("Oh!, something went wrong");
       } else {
-        const query = `INSERT INTO administrador (id_administrador, nombre_administrador, celular_administrador, correo_administrador, cedula_administrador, estado_administrador, usuario_id_usuario) VALUES ('${data.id_administrador}', '${data.nombre_administrador}', '${data.celular_administrador}', '${data.correo_administrador}', '${data.cedula_administrador}', '${data.estado_administrador}', '${data.usuario_id_usuario}')`;
+        const query = `INSERT INTO administrador ( nombre_administrador, celular_administrador, correo_administrador, cedula_administrador, estado_administrador, usuario_id_usuario) VALUES ( '${data.nombre_administrador}', '${data.celular_administrador}', '${data.correo_administrador}', '${data.cedula_administrador}', '${data.estado_administrador}', '${data.usuario_id_usuario}')`;
         conn.query(query, function (err, row) {
           if (err) {
             return res

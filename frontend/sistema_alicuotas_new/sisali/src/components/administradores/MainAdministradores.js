@@ -1,62 +1,20 @@
+
 import { get } from '../../services/Get';
 import { Spinner } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
-import { RegistroPropietario } from './RegistroPropietario';
-import { EditarPropietario } from './EditarPropietario';
 import Swal from 'sweetalert2';
-import React, { useEffect, useState } from 'react';
-import { CardsPropietarios } from './CardsPropietarios';
+import React  , { useEffect, useState } from 'react';
 
-export const MainPropietario = () => {
-  const [propietarios, setPropietarios] = useState([]);
-  const [imagenes, setImagenes] = useState({
-    imgs: []
-  });
+
+export const MainAdministradores = () => {
+  const [administradores, setAdministradores] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
-
-  useEffect(() => {
-    setCargando(true);
-    cargarData();
-  }, [refresh]);
-
-  async function cargarData() {
-    const imgs = [];
-    try {
-      const propietarios = await get(`propietarios`);
-      propietarios.map(async item => {
-        let img_name = await get(`propietario/imagen/${item.id_propietario}`);
-        imgs.push(img_name.name);
-      });
-      setImagenes({
-        imgs: imgs
-      });
-      setPropietarios(propietarios);
-      setCargando(false);
-      setRefresh(false);
-    } catch (error) {
-      Toast.fire({
-        icon: 'error',
-        title: 'Algo ha salido mal',
-      });
-    }
-  }
 
   const openModal = () => {
     setIsOpen(true);
   };
-
-  const getName = (data, i) => {   
-    console.log(data, i)
-    return data.imgs[i]
-  }
-
-  // const openEditModal = () => {
-  //   console.log(imagenes);
-  //   // setEditOpen(true);
-  // };
 
   const Toast = Swal.mixin({
     toast: true,
@@ -94,8 +52,8 @@ export const MainPropietario = () => {
         <div className="container-fluid p-1">
           <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
             <h1 className="display-6 fw-bold">
-              <i className="fa fa-users me-1" />
-              Propietarios
+              <i className="fa fa-address-card-o me-1" />
+              Administradores
             </h1>
             <Button
               colorScheme="teal"
@@ -108,16 +66,44 @@ export const MainPropietario = () => {
             </Button>
           </div>
           <div className="row">
-            {propietarios.length > 0 ? (
+            {administradores.length > 0 ? (
               <>
-                {propietarios.map((item, i) => (
+                {administradores.map((item, i) => (
                   <div className="col-lg-3 col-md-4 col-sm-12" key={i}>
-                  <CardsPropietarios
-                    data_propietario={item}
-                    data_imagen = {getName(imagenes, i)}
-                    setOpenEditModal={setEditOpen}
-                  />
-                </div>
+                    <div className="card w-100">
+                    
+                      <div className="card-body text-center border-top">
+                        <h1 className="card-title fw-bold">
+                          {item.nombre_administrador +
+                            ' ' +
+                            item.apellido_propietario}
+                        </h1>
+                        <p className="card-text">
+                          <i className="fa fa-briefcase me-1" />
+                          {item.rol_propietario}
+                        </p>
+                        <p className="card-text">
+                          <i className="fa fa-address-card me-1" />
+                          {item.cedula_administrador}
+                        </p>
+                        <p className="card-text">
+                          <i className="fa fa-mobile me-1" />
+                          {item.celular_administrador}
+                        </p>
+                        <p className="card-text">
+                          <i className="fa fa-envelope me-1" />
+                          {item.correo_administrador}
+                        </p>
+                        <Button
+                          colorScheme="blue"
+                          className="mt-2"
+                          //onClick={openEditModal}
+                        >
+                          Editar Datos <i className="fa fa-info-circle ms-1" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </>
             ) : (
@@ -125,18 +111,9 @@ export const MainPropietario = () => {
                 <h1>No hay datos a mostrar</h1>
               </>
             )}
+           
 
-            <RegistroPropietario
-              stateChanger={setRefresh}
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-            />
-
-            <EditarPropietario
-              stateChanger={setRefresh}
-              editOpen={editOpen}
-              setEditOpen={setEditOpen}
-            />
+            
           </div>
         </div>
       )}
