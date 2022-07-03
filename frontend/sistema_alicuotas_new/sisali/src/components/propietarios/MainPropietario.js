@@ -1,53 +1,62 @@
 import { get } from '../../services/Get';
 import { Spinner } from '@chakra-ui/react';
-import user from '../../img/usuario.png';
 import { Button } from '@chakra-ui/react';
 import { RegistroPropietario } from './RegistroPropietario';
 import { EditarPropietario } from './EditarPropietario';
 import Swal from 'sweetalert2';
-import React ,{ useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { CardsPropietarios } from './CardsPropietarios';
 
 export const MainPropietario = () => {
   const [propietarios, setPropietarios] = useState([]);
-  const [imagenes, setImagenes] = useState([]);
+  const [imagenes, setImagenes] = useState({
+    imgs: []
+  });
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
-    async function cargarData() {
-      const imgs = [];
-      try {
-        const propietarios = await get(`propietarios`);
-        propietarios.map(async item => {
-          let img_name = await get(`propietario/imagen/${item.id_propietario}`);
-          imgs.push(img_name.name);
-        });
-        setPropietarios(propietarios);
-        setImagenes(imgs);
-        setRefresh(false);
-        setCargando(false);
-      } catch (error) {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
-        });
-      }
-    }
+    setCargando(true);
     cargarData();
-    setCargando(true);    
-  }, [refresh, setPropietarios]);
+  }, [refresh]);
 
+  async function cargarData() {
+    const imgs = [];
+    try {
+      const propietarios = await get(`propietarios`);
+      propietarios.map(async item => {
+        let img_name = await get(`propietario/imagen/${item.id_propietario}`);
+        imgs.push(img_name.name);
+      });
+      setImagenes({
+        imgs: imgs
+      });
+      setPropietarios(propietarios);
+      setCargando(false);
+      setRefresh(false);
+    } catch (error) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Algo ha salido mal',
+      });
+    }
+  }
 
   const openModal = () => {
     setIsOpen(true);
   };
 
-  const openEditModal = () => {
-    console.log(imagenes);
-    // setEditOpen(true);
-  };
+  const getName = (data, i) => {   
+    console.log(data, i)
+    return data.imgs[i]
+  }
+
+  // const openEditModal = () => {
+  //   console.log(imagenes);
+  //   // setEditOpen(true);
+  // };
 
   const Toast = Swal.mixin({
     toast: true,
@@ -103,54 +112,12 @@ export const MainPropietario = () => {
               <>
                 {propietarios.map((item, i) => (
                   <div className="col-lg-3 col-md-4 col-sm-12" key={i}>
-                    <div className="card w-100">
-                      {[...imagenes][i] ? (
-                        <img
-                          src={`http://localhost:4000/${[...imagenes][i]}`}
-                          alt={'Imagen referencial'}
-                          style={{ maxHeight: '300px' }}
-                          className="d-block mx-auto w-100 h-100"
-                        />
-                      ) : (
-                        <img
-                          src={user}
-                          alt={'Imagen referencial'}
-                          style={{ maxHeight: '300px' }}
-                          className="d-block mx-auto w-100 h-100"
-                        />
-                      )}
-                      <div className="card-body text-center border-top">
-                        <h1 className="card-title fw-bold">
-                          {item.nombre_propietario +
-                            ' ' +
-                            item.apellido_propietario}
-                        </h1>
-                        <p className="card-text">
-                          <i className="fa fa-briefcase me-1" />
-                          {item.rol_propietario}
-                        </p>
-                        <p className="card-text">
-                          <i className="fa fa-address-card me-1" />
-                          {item.cedula_propietario}
-                        </p>
-                        <p className="card-text">
-                          <i className="fa fa-mobile me-1" />
-                          {item.celular_propietario}
-                        </p>
-                        <p className="card-text">
-                          <i className="fa fa-envelope me-1" />
-                          {item.correo_propietario}
-                        </p>
-                        <Button
-                          colorScheme="blue"
-                          className="mt-2"
-                          onClick={openEditModal}
-                        >
-                          Editar Datos <i className="fa fa-info-circle ms-1" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                  <CardsPropietarios
+                    data_propietario={item}
+                    data_imagen = {getName(imagenes, i)}
+                    setOpenEditModal={setEditOpen}
+                  />
+                </div>
                 ))}
               </>
             ) : (
@@ -158,6 +125,7 @@ export const MainPropietario = () => {
                 <h1>No hay datos a mostrar</h1>
               </>
             )}
+
             <RegistroPropietario
               stateChanger={setRefresh}
               isOpen={isOpen}
