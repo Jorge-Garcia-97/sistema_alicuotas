@@ -1,22 +1,48 @@
 const express = require("express");
 const router = express.Router();
 var getConnection = require("../conexion");
+const path = require("path");
+const fs = require("fs");
 
 //consultar propietario
 router.get("/propietarios/", (req, res) => {
   try {
-    const { password } = req.params;
     getConnection(function (err, conn) {
       if (err) {
-        return res.status(500).send("Error ¯\_(°.°)_/¯");
+        return res.status(500).send("Error ¯_(°.°)_/¯");
       } else {
         const query =
-          "SELECT * FROM propietario";
-        conn.query(query, [password], function (err, row) {
+          "SELECT * FROM propietario as p, imagen_propietario as i WHERE i.propietario_id_propietario = p.id_propietario";
+        conn.query(query, function (err, row) {
           if (err) {
             return res.status(404).send("Disculpas, no a funcionado");
           } else {
-            return res.send(row);
+            let data = [];
+            row.map((item) => {
+              let tmp = {};
+              let name = item.propietario_id_propietario + "-propietario.png";
+              fs.writeFileSync(
+                path.join(
+                  __dirname,
+                  "../dbimages/" +
+                    item.propietario_id_propietario +
+                    "-propietario.png"
+                ),
+                item.data_imagen
+              );
+              tmp = {
+                id_propietario: item.id_propietario,
+                nombre_propietario: item.nombre_propietario,
+                apellido_propietario: item.apellido_propietario,
+                cedula_propietario: item.cedula_propietario,
+                celular_propietario: item.celular_propietario,
+                correo_propietario: item.correo_propietario,
+                rol_propietario: item.rol_propietario,
+                imagen_propietario: name,
+              }
+              data.push(tmp);
+            });
+            return res.send({ data });
           }
         });
       }
@@ -73,7 +99,6 @@ router.get("/propietario/by-cedula/:cedula", (req, res) => {
     res.send("¡Error!. Intente más tarde.");
   }
 });
-
 
 //Registrar nuevo propietario
 router.post("/propietario/save/", (req, res) => {

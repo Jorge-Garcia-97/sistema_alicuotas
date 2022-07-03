@@ -8,9 +8,8 @@ import React, { useEffect, useState } from 'react';
 import { CardsPropietarios } from './CardsPropietarios';
 
 export const MainPropietario = () => {
-  const [propietarios, setPropietarios] = useState([]);
-  const [imagenes, setImagenes] = useState({
-    imgs: []
+  const [propietarios, setPropietarios] = useState({
+    propietarios: []
   });
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
@@ -23,17 +22,11 @@ export const MainPropietario = () => {
   }, [refresh]);
 
   async function cargarData() {
-    const imgs = [];
     try {
-      const propietarios = await get(`propietarios`);
-      propietarios.map(async item => {
-        let img_name = await get(`propietario/imagen/${item.id_propietario}`);
-        imgs.push(img_name.name);
+      const response = await get(`propietarios`);      
+      setPropietarios({
+        propietarios: response.data
       });
-      setImagenes({
-        imgs: imgs
-      });
-      setPropietarios(propietarios);
       setCargando(false);
       setRefresh(false);
     } catch (error) {
@@ -47,11 +40,6 @@ export const MainPropietario = () => {
   const openModal = () => {
     setIsOpen(true);
   };
-
-  const getName = (data, i) => {   
-    console.log(data, i)
-    return data.imgs[i]
-  }
 
   // const openEditModal = () => {
   //   console.log(imagenes);
@@ -108,17 +96,9 @@ export const MainPropietario = () => {
             </Button>
           </div>
           <div className="row">
-            {propietarios.length > 0 ? (
+            {propietarios.propietarios ? (
               <>
-                {propietarios.map((item, i) => (
-                  <div className="col-lg-3 col-md-4 col-sm-12" key={i}>
-                  <CardsPropietarios
-                    data_propietario={item}
-                    data_imagen = {getName(imagenes, i)}
-                    setOpenEditModal={setEditOpen}
-                  />
-                </div>
-                ))}
+                <CardsPropietarios {...propietarios} />
               </>
             ) : (
               <>

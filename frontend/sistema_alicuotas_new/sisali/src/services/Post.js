@@ -89,27 +89,27 @@ export const savePropiedad = async (data, propietario_id) => {
   }
 };
 
-export const saveArea = async (data, nombre_area) => {
-  try {
-    console.log(data);
-    const response = await fetch(`http://localhost:4000/area-comunal/save/`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        nombre_area: nombre_area,
-        descripcion_area: descripcion_area,
-      }),
-    });
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-};
+// export const saveArea = async (data, nombre_area) => {
+//   try {
+//     console.log(data);
+//     const response = await fetch(`http://localhost:4000/area-comunal/save/`, {
+//       method: 'POST',
+//       headers: {
+//         Accept: 'application/json',
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         nombre_area: nombre_area,
+//         descripcion_area: descripcion_area,
+//       }),
+//     });
+//     const json = await response.json();
+//     return json;
+//   } catch (error) {
+//     console.error(error);
+//     return false;
+//   }
+// };
 
 export const saveImagenArea = async (data, id) => {
   try {
