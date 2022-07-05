@@ -246,13 +246,14 @@ export const RegistroPropietario = props => {
                       onChange={handleInputChange}
                       variant="flushed"
                     >
-                      <option value="Administrador">Administrador</option>
                       <option value="Propietario">Propietario</option>
+                      <option value="Arrendatario">Arrendatario</option>
                       <option value="Presidente">Presidente</option>
                       <option value="Vicepresidente">Vicepresidente</option>
                       <option value="Secretario">Secretario</option>
                       <option value="Tesorero">Tesorero</option>
                       <option value="Vocal">Vocal</option>
+                      <option value="Vocal-sup">Vocal Suplente</option>
                     </Select>
                   </InputGroup>
                 </FormControl>
