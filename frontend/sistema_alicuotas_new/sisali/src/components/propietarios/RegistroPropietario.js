@@ -61,7 +61,7 @@ export const RegistroPropietario = props => {
                 icon: 'success',
                 title: 'Registro exitoso'
               })
-              setIsOpen(true);
+              setIsOpen(false);
               stateChanger(true);
             }else{
               Toast.fire({
@@ -151,7 +151,7 @@ export const RegistroPropietario = props => {
                       ref={initialRef}
                       id="nombre"
                       name="nombre"
-                      type="tel"
+                      type="text"
                       value={inputs.nombre}
                       onChange={handleInputChange}
                       placeholder="Nombres"

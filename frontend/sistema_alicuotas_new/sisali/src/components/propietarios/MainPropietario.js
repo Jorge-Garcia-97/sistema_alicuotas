@@ -2,19 +2,23 @@ import { get } from '../../services/Get';
 import { Spinner } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
 import { RegistroPropietario } from './RegistroPropietario';
-import { EditarPropietario } from './EditarPropietario';
 import Swal from 'sweetalert2';
 import React, { useEffect, useState } from 'react';
 import { CardsPropietarios } from './CardsPropietarios';
+import { InformacionPropietario } from './InformacionPropietario';
 
 export const MainPropietario = () => {
   const [propietarios, setPropietarios] = useState({
-    propietarios: []
+    propietarios: [],
   });
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
+  const [propietario, setPropietario] = useState({});
+  // const [propietario, setPropietario] = useState({
+  //   propietario: [],
+  // });
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     setCargando(true);
@@ -23,9 +27,9 @@ export const MainPropietario = () => {
 
   async function cargarData() {
     try {
-      const response = await get(`propietarios`);      
+      const response = await get(`propietarios/Activo`);
       setPropietarios({
-        propietarios: response.data
+        propietarios: response.data,
       });
       setCargando(false);
       setRefresh(false);
@@ -98,7 +102,12 @@ export const MainPropietario = () => {
           <div className="row">
             {propietarios.propietarios ? (
               <>
-                <CardsPropietarios {...propietarios} />
+                <CardsPropietarios
+                  {...propietarios}
+                  setPropietario={setPropietario}
+                  showInfo={showInfo}
+                  setShowInfo={setShowInfo}
+                />
               </>
             ) : (
               <>
@@ -112,10 +121,12 @@ export const MainPropietario = () => {
               setIsOpen={setIsOpen}
             />
 
-            <EditarPropietario
+            <InformacionPropietario
+              // {...propietario}
+              propietario={propietario}
+              showInfo={showInfo}
+              setShowInfo={setShowInfo}
               stateChanger={setRefresh}
-              editOpen={editOpen}
-              setEditOpen={setEditOpen}
             />
           </div>
         </div>
