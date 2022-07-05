@@ -3,15 +3,20 @@ import user from '../../img/usuario.png';
 import { Button } from '@chakra-ui/react';
 
 export const CardsPropietarios = props => {
-  const { propietarios, setOpenEditModal } = props;
+  const { propietarios, setPropietario, showInfo, setShowInfo } = props;
   const [state, setState] = useState([]);
 
   useEffect(() => {
     setState(propietarios);
+    console.log(showInfo)
   }, []);
 
-  const abrirModal = () => {
-    setOpenEditModal(true);
+  const handleData = (rowdata) => {
+    // setPropietario({
+    //   propietario: rowdata,
+    // });
+    setPropietario(rowdata);
+    setShowInfo(true);
   };
 
   return (
@@ -62,7 +67,7 @@ export const CardsPropietarios = props => {
                 <Button
                   colorScheme="blue"
                   style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
-                  onClick={abrirModal}
+                  onClick={() => handleData(item)}
                   className="pt-1 pb-2"
                 >
                   Más información <i className="fa fa-info-circle ms-1" />
