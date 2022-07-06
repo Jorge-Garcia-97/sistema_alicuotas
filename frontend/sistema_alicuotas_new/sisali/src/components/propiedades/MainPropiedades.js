@@ -1,20 +1,21 @@
 import { get } from '../../services/Get';
 import { Spinner } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
-import { RegistroPropietario } from './RegistroPropietario';
+//import { RegistroPropietario } from './RegistroPropietario';
 import Swal from 'sweetalert2';
 import React, { useEffect, useState } from 'react';
-import { CardsPropietarios } from './CardsPropietarios';
-import { InformacionPropietario } from './InformacionPropietario';
+import { CardPropiedades } from './CardPropiedades';
+//import { InformacionPropietario } from './InformacionPropietario';
 
-export const MainPropietario = () => {
-  const [propietarios, setPropietarios] = useState({
-    propietarios: [],
+export const MainPropiedades = () => {
+
+  const [propiedades, setPropiedades] = useState({
+    propiedades: [],
   });
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [propietario, setPropietario] = useState({});
+  const [propiedad, setPropiedad] = useState({});
   // const [propietario, setPropietario] = useState({
   //   propietario: [],
   // });
@@ -27,11 +28,10 @@ export const MainPropietario = () => {
 
   async function cargarData() {
     try {
-      const response = await get(`propietarios/Activo`);
-      setPropietarios({
-        propietarios: response.data,
+      const response = await get(`propiedades`);
+      setPropiedades({
+        propiedades: response
       });
-      console.log(propietarios);
       setCargando(false);
       setRefresh(false);
     } catch (error) {
@@ -45,11 +45,6 @@ export const MainPropietario = () => {
   const openModal = () => {
     setIsOpen(true);
   };
-
-  // const openEditModal = () => {
-  //   console.log(imagenes);
-  //   // setEditOpen(true);
-  // };
 
   const Toast = Swal.mixin({
     toast: true,
@@ -69,7 +64,7 @@ export const MainPropietario = () => {
 
   return (
     <>
-      {cargando === true ? (
+       {cargando === true ? (
         <div className="container h-100">
           <div className="row h-100 align-items-center justify-content-center">
             <div className="col-auto">
@@ -88,7 +83,7 @@ export const MainPropietario = () => {
           <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
             <h1 className="display-6 fw-bold">
               <i className="fa fa-users me-1" />
-              Propietarios
+              Propiedades
             </h1>
             <Button
               colorScheme="teal"
@@ -101,22 +96,22 @@ export const MainPropietario = () => {
             </Button>
           </div>
           <div className="row">
-            {propietarios.propietarios ? (
+            { propiedades.propiedades ? (
               <>
-                <CardsPropietarios
-                  {...propietarios}
-                  setPropietario={setPropietario}
+                 <CardPropiedades
+                 {...propiedades}
+                  setPropiedad={setPropiedad}
                   showInfo={showInfo}
                   setShowInfo={setShowInfo}
-                />
+                  /> 
               </>
             ) : (
               <>
-                <h1>No hay datos a mostrar</h1>
+                <h1>ESTOY EN MAIN PROPIEDADES No hay datos a mostrar</h1>
               </>
             )}
 
-            <RegistroPropietario
+            {/* <RegistroPropietario
               stateChanger={setRefresh}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
@@ -128,7 +123,7 @@ export const MainPropietario = () => {
               showInfo={showInfo}
               setShowInfo={setShowInfo}
               stateChanger={setRefresh}
-            />
+            /> */}
           </div>
         </div>
       )}

@@ -9,7 +9,7 @@ router.get("/propiedades/", (req, res) => {
         if (err) {
           return res.status(500).send("¡Algo ha salido mal!");
         } else {
-          conn.query("SELECT * FROM propiedad", function (err, row) {
+          conn.query("SELECT pd.id_propiedad, pd.numero_casa, pd.direccion_propiedad, pr.id_propietario, pr.nombre_propietario, pr.apellido_propietario, pr.celular_propietario FROM propiedad as pd, propietario as pr WHERE pd.propietario_id_propietario = pr.id_propietario;", function (err, row) {
             if (err) {
               return res.status(404).send("No se ha encontrado ninguna propiedad");
             } else {
