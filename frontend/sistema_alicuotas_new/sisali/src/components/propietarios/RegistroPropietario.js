@@ -42,13 +42,13 @@ export const RegistroPropietario = props => {
   const guardarRegistro = async () => {
     let data = {...inputs};
     if (data.apellido !== "" && data.nombre !== "" && data.cedula !== "" && data.correo !== "" && data.rol !=="" && data.telefono !== "") {
-      let data = {
-        correo: inputs.correo,
+      let data_user = {
+        correo: data.correo,
         password: 'admin123',
       };
-      const resp = await saveUsuario(data);
+      const resp = await saveUsuario(data_user);
       if (resp.id > 0) {
-        const response = await savePropietario({ ...inputs }, resp.id);
+        const response = await savePropietario(data, resp.id);
         if (response.id > 0) {
           if (file) {
             const formdata = new FormData();
@@ -85,7 +85,7 @@ export const RegistroPropietario = props => {
     } else {
       Toast.fire({
         icon: 'error',
-        title: 'Algo ha salido mal'
+        title: 'Necesitas llenar todos los datos'
       })
     }
   };

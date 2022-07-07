@@ -1,50 +1,45 @@
 import { get } from '../../services/Get';
 import { Spinner } from '@chakra-ui/react';
-import user from '../../img/usuario.png';
 import { Button } from '@chakra-ui/react';
 import Swal from 'sweetalert2';
-import React ,{ useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { CardsAreas } from './CardsAreas';
+import { RegistroArea } from './RegistrarArea';
+import { InformacionArea } from './InformacionArea';
 
 export const MainAreas = () => {
-  const [areas, setAreas] = useState([]);
-  const [imagenes, setImagenes] = useState([]);
+  const [state, setState] = useState({
+    areas: [],
+  });
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
-
+  const [area, setArea] = useState({});
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
-    async function cargarData() {
-      const imgs = [];
-      try {
-        const areas = await get(`areas`);
-        areas.map(async item => {
-          let img_name = await get(`area/imagen/${item.id_area_comunal}`);
-          imgs.push(img_name.name);
-        });
-        setAreas(areas);
-        setImagenes(imgs);
-        setRefresh(false);
-        setCargando(false);
-      } catch (error) {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
-        });
-      }
-    }
+    setCargando(true);
     cargarData();
-    setCargando(true);    
-  }, [refresh, setAreas]);
+  }, [refresh]);
+
+  async function cargarData() {
+    try {
+      const response = await get(`areacomunal/ACTIVO`);
+      setState({
+        areas: response.data,
+      });
+      setRefresh(false);
+      setCargando(false);
+    } catch (error) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Algo ha salido mal',
+      });
+    }
+  }
 
   const openModal = () => {
     setIsOpen(true);
-  };
-
-  const openEditModal = () => {
-    //console.log(imagenes);
-    setEditOpen(true);
   };
 
   const Toast = Swal.mixin({
@@ -97,52 +92,36 @@ export const MainAreas = () => {
             </Button>
           </div>
           <div className="row">
-            {areas.length > 0 ? (
+            {state.areas ? (
               <>
-                {areas.map((item, i) => (
-                  <div className="col-lg-3 col-md-4 col-sm-12" key={i}>
-                    <div className="card w-100">
-                      {[...imagenes][i] ? (
-                        <img
-                          src={`http://localhost:4000/${[...imagenes][i]}`}
-                          alt={'Imagen referencial'}
-                          style={{ maxHeight: '300px' }}
-                          className="d-block mx-auto w-100 h-100"
-                        />
-                      ) : (
-                        <img
-                          src={user}
-                          alt={'Imagen referencial'}
-                          style={{ maxHeight: '300px' }}
-                          className="d-block mx-auto w-100 h-100"
-                        />
-                      )}
-                      <div className="card-body text-center border-top">
-                        <h1 className="card-title fw-bold">
-                          {item.nombre_area +
-                            ' ' +
-                            item.detalle_area}
-                        </h1>
-                        <Button
-                          colorScheme="blue"
-                          className="mt-2"
-                          onClick={openEditModal}
-                        >
-                          Editar Datos <i className="fa fa-info-circle ms-1" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                <CardsAreas
+                  {...state}
+                  setArea={setArea}
+                  showInfo={showInfo}
+                  setShowInfo={setShowInfo}
+                />
               </>
             ) : (
               <>
                 <h1>No hay datos a mostrar</h1>
               </>
             )}
+
+            <RegistroArea
+              stateChanger={setRefresh}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+            />
+
+            <InformacionArea
+              area={area}
+              showInfo={showInfo}
+              setShowInfo={setShowInfo}
+              stateChanger={setRefresh}
+            />
           </div>
         </div>
       )}
     </>
   );
-}
+};
