@@ -5,6 +5,8 @@ import { Button } from '@chakra-ui/react';
 import Swal from 'sweetalert2';
 import React, { useEffect, useState } from 'react';
 import { CardPropiedades } from './CardPropiedades';
+import { RegistroPropiedades } from './RegistroPropiedades';
+import { InformacionPropiedad } from './InformacionPropiedad';
 //import { InformacionPropietario } from './InformacionPropietario';
 
 export const MainPropiedades = () => {
@@ -12,6 +14,10 @@ export const MainPropiedades = () => {
   const [propiedades, setPropiedades] = useState({
     propiedades: [],
   });
+  const [propietarios, setPropietarios] = useState({
+    propietarios: [],
+  });
+
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -28,9 +34,13 @@ export const MainPropiedades = () => {
 
   async function cargarData() {
     try {
-      const response = await get(`propiedades`);
+      const response = await get(`propiedades/ACTIVO`);
       setPropiedades({
         propiedades: response
+      });
+      const responsePropietarios = await get(`propietarios/Activo`);
+      setPropietarios({
+        propietarios: responsePropietarios.data
       });
       setCargando(false);
       setRefresh(false);
@@ -111,19 +121,20 @@ export const MainPropiedades = () => {
               </>
             )}
 
-            {/* <RegistroPropietario
+            <RegistroPropiedades 
+              {...propietarios}
               stateChanger={setRefresh}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
             />
 
-            <InformacionPropietario
-              // {...propietario}
-              propietario={propietario}
+            <InformacionPropiedad
+              propiedad={propiedad}
+              propietarios={propietarios}
               showInfo={showInfo}
               setShowInfo={setShowInfo}
               stateChanger={setRefresh}
-            /> */}
+            />
           </div>
         </div>
       )}

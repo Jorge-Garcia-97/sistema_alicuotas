@@ -135,7 +135,7 @@ export const editImagenPropietario = async (data, id) => {
   }
 };
 
-export const savePropiedad = async (data, propietario_id) => {
+export const savePropiedad = async (data) => {
   try {
     console.log(data);
     const response = await fetch(`http://localhost:4000/propiedades/save/`, {
@@ -147,11 +147,64 @@ export const savePropiedad = async (data, propietario_id) => {
       body: JSON.stringify({
         numero_casa: data.numero_casa,
         direccion_propiedad: data.direccion_propiedad,
-        propietario_id_propietario: data.propietario_id,
+        estado_propiedad: 'ACTIVO',
+        propietario_id_propietario: data.propietario_id_propietario,
       }),
     });
-    const json = await response.json();
-    return json;
+    
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+
+export const editPropiedad = async (data, id) => {
+  try {
+    console.log(data);
+    const response = await fetch(`http://localhost:4000/propiedades/edit/${id}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        numero_casa: data.numero_casa,
+        direccion_propiedad: data.direccion_propiedad,
+        propietario_id_propietario: data.propietario_id_propietario,
+      }),
+    });
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export const deletePropiedad = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:4000/propiedad/delete/${id}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },      
+    });
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.error(error);
     return false;
