@@ -27,11 +27,10 @@ export const MainPropietario = () => {
 
   async function cargarData() {
     try {
-      const response = await get(`propietarios/Activo`);
+      const response = await get(`propietarios/ACTIVO`);
       setPropietarios({
         propietarios: response.data,
       });
-      console.log(propietarios);
       setCargando(false);
       setRefresh(false);
     } catch (error) {
@@ -45,11 +44,6 @@ export const MainPropietario = () => {
   const openModal = () => {
     setIsOpen(true);
   };
-
-  // const openEditModal = () => {
-  //   console.log(imagenes);
-  //   // setEditOpen(true);
-  // };
 
   const Toast = Swal.mixin({
     toast: true,

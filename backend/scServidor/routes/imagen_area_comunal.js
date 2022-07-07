@@ -5,7 +5,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-router.get("/area-comunal/imagen/:id/", (req, res) => {
+router.get("/areacomunal/imagen/:id/", (req, res) => {
   try {
     const { id } = req.params;
     getConnection(function (err, conn) {
@@ -21,11 +21,11 @@ router.get("/area-comunal/imagen/:id/", (req, res) => {
             } else {
               var name = null;
               row.map((img) => {
-                name = img.empresa_id_empresa + "-area.png";
+                name = img.area_comunal_id_area_comunal + "-area.png";
                 fs.writeFileSync(
                   path.join(
                     __dirname,
-                    "../dbimages/" + img.empresa_id_empresa + "-area.png"
+                    "../dbimages/" + img.area_comunal_id_area_comunal + "-area.png"
                   ),
                   img.data_imagen
                 );
@@ -55,7 +55,7 @@ const fileUpload = multer({
 }).single("image");
 
 //Registrar imagen de empresa
-router.post("/area-comunal/imagen/save/:id/", fileUpload, (req, res) => {
+router.post("/areacomunal/imagen/save/:id/", fileUpload, (req, res) => {
   try {
     const { id } = req.params;
     const type = req.file.mimetype;
@@ -65,14 +65,15 @@ router.post("/area-comunal/imagen/save/:id/", fileUpload, (req, res) => {
     );
     getConnection(function (err, conn) {
       if (err) {
+        console.log(err);
         return res.status(500).send("Oh!, something went wrong");
       } else {
         conn.query(
-          "INSERT INTO imagen_area set id_imagen_area = ?, tipo_imagen = ?, nombre_imagen = ?, data_imagen = ?, area_comunal_id_area_comunal = ?",
+          "INSERT INTO imagen_area set tipo_imagen = ?, nombre_imagen = ?, data_imagen = ?, area_comunal_id_area_comunal = ?",
           [type, name, data, id],
           function (err, row) {
             if (err) {
-              console.log(err.stack);
+              console.log(err);
               return res
                 .status(404)
                 .send("Sorry for that. The request could not be made.");
@@ -85,12 +86,13 @@ router.post("/area-comunal/imagen/save/:id/", fileUpload, (req, res) => {
       conn.release();
     });
   } catch (error) {
+    console.log(error);
     res.send("Error. Please try again later.");
   }
 });
 
 //Actualizar imagen de empresa
-router.post("/area-comunal/imagen/edit/:id/", fileUpload, (req, res) => {
+router.post("/areacomunal/imagen/edit/:id/", fileUpload, (req, res) => {
   try {
     const { id } = req.params;
     const data = fs.readFileSync(

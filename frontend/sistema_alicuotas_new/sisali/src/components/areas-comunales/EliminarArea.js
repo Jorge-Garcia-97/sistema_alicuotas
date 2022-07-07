@@ -1,4 +1,4 @@
-import { DeleteIcon } from '@chakra-ui/icons';
+import React from 'react';
 import {
   Button,
   Modal,
@@ -9,25 +9,30 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/react';
-import React from 'react';
-import { deletePropietario } from '../../services/Post';
+import { DeleteIcon } from '@chakra-ui/icons';
+import { deleteAreaComunal } from '../../services/Post';
 
-export const EliminarPropietario = props => {
-  const { id_propietario, stateChanger, showDeleteModal, setShowDeleteModal, setShowInfo } =
-    props;
+export const EliminarArea = (props) => {
+  const {
+    id_area_comunal,
+    stateChanger,
+    showDeleteModal,
+    setShowDeleteModal,
+    setShowInfo,
+  } = props;
 
   const onDelete = async () => {
-    const response = await deletePropietario(id_propietario);
+    const response = await deleteAreaComunal(id_area_comunal);
     if (response) {
-        onClose();
-        setShowInfo(false);
-        stateChanger(true);        
+      onClose();
+      setShowInfo(false);
+      stateChanger(true);
     }
-  }
+  };
 
   const onClose = () => {
     setShowDeleteModal(false);
-  }
+  };
 
   return (
     <>
@@ -37,13 +42,15 @@ export const EliminarPropietario = props => {
           <ModalHeader>Modal Title</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <h3>¿Desea eliminar el área comunal?</h3>
+            <h3>¿Desea eliminar el usuario?</h3>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="red" mr={3} onClick={onDelete}>
               <DeleteIcon color="gray.300" className="me-1" /> Confirmar
             </Button>
-            <Button variant="ghost" onClick={onClose}>Cancelar</Button>
+            <Button variant="ghost" onClick={onClose}>
+              Cancelar
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

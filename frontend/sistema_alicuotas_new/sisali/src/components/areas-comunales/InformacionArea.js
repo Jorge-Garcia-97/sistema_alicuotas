@@ -21,19 +21,19 @@ import {
   EmailIcon,
   PhoneIcon,
 } from '@chakra-ui/icons';
-import { editPropietario } from '../../services/Post';
 import Swal from 'sweetalert2';
 import { ModalFileInput } from './ModalFileInput';
-import { EliminarPropietario } from './EliminarPropietario';
+import { editArea } from '../../services/Post';
+import { EliminarArea } from './EliminarArea';
 
-export const InformacionPropietario = props => {
-  const { propietario, showInfo, setShowInfo, stateChanger } = props;
+export const InformacionArea = (props) => {
+  const { area, showInfo, setShowInfo, stateChanger } = props;
   const [state, setState] = useState([]);
   const [showInputFile, setShowInputFile] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    setState(propietario);
+    setState(area);
     return () => {
       setState([]);
     };
@@ -41,7 +41,7 @@ export const InformacionPropietario = props => {
 
   const onUpdate = async () => {
     console.log(state);
-    const response = await editPropietario(state, state.id_propietario);
+    const response = await editArea(state, area.id_area_comunal);
     if (response) {
       Toast.fire({
         icon: 'success',
@@ -92,7 +92,7 @@ export const InformacionPropietario = props => {
     let tmpName = e.target.name;
     let tmpValue = e.target && e.target.value;
     let _tmp = { ...state };
-    _tmp[`${tmpName}_propietario`] = tmpValue;
+    _tmp[`${tmpName}_area`] = tmpValue;
     setState(_tmp);
   };
 
@@ -107,14 +107,14 @@ export const InformacionPropietario = props => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Información del Propietario</ModalHeader>
+          <ModalHeader>Información del área comunal</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div className="row">
               <div className="col-sm-4">
-                {state.imagen_propietario ? (
+                {state.imagen_area ? (
                   <img
-                    src={`http://localhost:4000/${state.imagen_propietario}`}
+                    src={`http://localhost:4000/${state.imagen_area}`}
                     alt={'Imagen referencial'}
                     style={{ maxHeight: '200px', maxWidth: '300px' }}
                     className="d-block mx-auto w-100 h-100"
@@ -136,29 +136,36 @@ export const InformacionPropietario = props => {
                     <EditIcon color="gray.300" className="me-1" />
                     Foto
                   </Button>
-                  {/* <Button
-                    onClick={onClose}
-                    colorScheme="green"
-                    className="mt-2 w-100"
-                  >
-                    <PlusSquareIcon color="gray.300" className="me-1" />{' '}
-                    Propiedad
-                  </Button> */}
-
-                  
                   <Button
                     onClick={onDelete}
                     colorScheme="red"
                     className="mt-2 w-100"
                   >
-                    <DeleteIcon color="gray.300" className="me-1" />{' '}
-                    Eliminar
+                    <DeleteIcon color="gray.300" className="me-1" /> Eliminar
                   </Button>
                 </div>
               </div>
               <div className="col-sm-8">
                 <FormControl isRequired>
-                  <FormLabel htmlFor="nombre">Nombres</FormLabel>
+                  <FormLabel htmlFor="nombre">Nombre</FormLabel>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents="none"
+                      children={<EditIcon color="gray.300" />}
+                    />
+                    <Input                      
+                      id="nombre"
+                      name="nombre"
+                      type="text"
+                      value={state.nombre_area}
+                      readOnly
+                      placeholder="Nombre"
+                      variant="flushed"
+                    />
+                  </InputGroup>
+                  <FormLabel htmlFor="descripcion" mt={3}>
+                    Descripción
+                  </FormLabel>
                   <InputGroup>
                     <InputLeftElement
                       pointerEvents="none"
@@ -166,87 +173,15 @@ export const InformacionPropietario = props => {
                     />
                     <Input
                       ref={initialRef}
-                      id="nombre"
-                      name="nombre"
+                      id="descripcion"
+                      name="descripcion"
                       type="text"
-                      value={state.nombre_propietario}
+                      value={state.descripcion_area}
                       onChange={handleInputChange}
-                      placeholder="Nombres"
+                      placeholder="Descripción"
                       variant="flushed"
                     />
-                  </InputGroup>
-                  <FormLabel htmlFor="apellido" mt={3}>
-                    Apellidos
-                  </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<EditIcon color="gray.300" />}
-                    />
-                    <Input
-                      id="apellido"
-                      name="apellido"
-                      type="text"
-                      value={state.apellido_propietario}
-                      onChange={handleInputChange}
-                      placeholder="Apellidos"
-                      variant="flushed"
-                    />
-                  </InputGroup>
-                  <FormLabel htmlFor="cedula" mt={3}>
-                    Cédula
-                  </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<EditIcon color="gray.300" />}
-                    />
-                    <Input
-                      id="cedula"
-                      name="cedula"
-                      type="text"
-                      value={state.cedula_propietario}
-                      onChange={handleInputChange}
-                      placeholder="Cedula"
-                      variant="flushed"
-                    />
-                  </InputGroup>
-                  <FormLabel htmlFor="correo" mt={3}>
-                    Correo
-                  </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<EmailIcon color="gray.300" />}
-                    />
-                    <Input
-                      id="correo"
-                      name="correo"
-                      type="email"
-                      value={state.correo_propietario}
-                      onChange={handleInputChange}
-                      placeholder="Apellidos"
-                      variant="flushed"
-                    />
-                  </InputGroup>
-                  <FormLabel htmlFor="celular" mt={3}>
-                    Teléfono
-                  </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<PhoneIcon color="gray.300" />}
-                    />
-                    <Input
-                      id="celular"
-                      name="celular"
-                      type="text"
-                      value={state.celular_propietario}
-                      onChange={handleInputChange}
-                      placeholder="Teléfono"
-                      variant="flushed"
-                    />
-                  </InputGroup>
+                  </InputGroup>                  
                 </FormControl>
 
                 <div className="mt-3 w-100 text-center">
@@ -265,18 +200,19 @@ export const InformacionPropietario = props => {
           <ModalFileInput
             setShowInputFile={setShowInputFile}
             showInputFile={showInputFile}
-            id_propietario={state.id_propietario}
+            id_area_comunal={state.id_area_comunal}
             stateChanger={stateChanger}
             setShowInfo={setShowInfo}
           />
 
-          <EliminarPropietario 
-            id_propietario={state.id_propietario}
+          <EliminarArea
+            id_area_comunal={state.id_area_comunal}
             stateChanger={stateChanger}
             showDeleteModal={showDeleteModal}
             setShowDeleteModal={setShowDeleteModal}
             setShowInfo={setShowInfo}
           />
+
         </ModalContent>
       </Modal>
     </>
