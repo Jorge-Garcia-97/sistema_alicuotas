@@ -50,20 +50,23 @@ export const savePropietario = async (data, usuario_id) => {
 export const editPropietario = async (data, id) => {
   try {
     console.log(data);
-    const response = await fetch(`http://localhost:4000/propietario/edit/${id}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        cedula_propietario: data.cedula_propietario,
-        nombre_propietario: data.nombre_propietario,
-        apellido_propietario: data.apellido_propietario,
-        celular_propietario: data.celular_propietario,
-        correo_propietario: data.correo_propietario,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:4000/propietario/edit/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          cedula_propietario: data.cedula_propietario,
+          nombre_propietario: data.nombre_propietario,
+          apellido_propietario: data.apellido_propietario,
+          celular_propietario: data.celular_propietario,
+          correo_propietario: data.correo_propietario,
+        }),
+      }
+    );
     if (response.status === 200) {
       return true;
     } else {
@@ -75,15 +78,18 @@ export const editPropietario = async (data, id) => {
   }
 };
 
-export const deletePropietario = async (id) => {
+export const deletePropietario = async id => {
   try {
-    const response = await fetch(`http://localhost:4000/propietario/delete/${id}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },      
-    });
+    const response = await fetch(
+      `http://localhost:4000/propietario/delete/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     if (response.status === 200) {
       return true;
     } else {
@@ -135,7 +141,7 @@ export const editImagenPropietario = async (data, id) => {
   }
 };
 
-export const savePropiedad = async (data) => {
+export const savePropiedad = async data => {
   try {
     console.log(data);
     const response = await fetch(`http://localhost:4000/propiedades/save/`, {
@@ -151,35 +157,36 @@ export const savePropiedad = async (data) => {
         propietario_id_propietario: data.propietario_id_propietario,
       }),
     });
-    
+
     if (response.status === 200) {
       return true;
     } else {
       return false;
     }
-  
   } catch (error) {
     console.error(error);
     return false;
   }
 };
-
 
 export const editPropiedad = async (data, id) => {
   try {
     console.log(data);
-    const response = await fetch(`http://localhost:4000/propiedades/edit/${id}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        numero_casa: data.numero_casa,
-        direccion_propiedad: data.direccion_propiedad,
-        propietario_id_propietario: data.propietario_id_propietario,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:4000/propiedades/edit/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          numero_casa: data.numero_casa,
+          direccion_propiedad: data.direccion_propiedad,
+          propietario_id_propietario: data.propietario_id_propietario,
+        }),
+      }
+    );
     if (response.status === 200) {
       return true;
     } else {
@@ -191,15 +198,18 @@ export const editPropiedad = async (data, id) => {
   }
 };
 
-export const deletePropiedad = async (id) => {
+export const deletePropiedad = async id => {
   try {
-    const response = await fetch(`http://localhost:4000/propiedad/delete/${id}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },      
-    });
+    const response = await fetch(
+      `http://localhost:4000/propiedad/delete/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     if (response.status === 200) {
       return true;
     } else {
@@ -211,7 +221,7 @@ export const deletePropiedad = async (id) => {
   }
 };
 
-export const saveArea = async (data) => {
+export const saveArea = async data => {
   try {
     console.log(data);
     const response = await fetch(`http://localhost:4000/areacomunal/save/`, {
@@ -237,16 +247,19 @@ export const saveArea = async (data) => {
 export const editArea = async (data, id) => {
   try {
     console.log(data, id);
-    const response = await fetch(`http://localhost:4000/areacomunal/edit/${id}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        descripcion_area: data.descripcion_area,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:4000/areacomunal/edit/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          descripcion_area: data.descripcion_area,
+        }),
+      }
+    );
     if (response.status === 200) {
       return true;
     } else {
@@ -300,14 +313,45 @@ export const editImagenArea = async (data, id) => {
   }
 };
 
-export const deleteAreaComunal = async (id) => {
+export const deleteAreaComunal = async id => {
   try {
-    const response = await fetch(`http://localhost:4000/areacomunal/delete/${id}`, {
+    const response = await fetch(
+      `http://localhost:4000/areacomunal/delete/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export const savePagos = async data => {
+  try {
+    const response = await fetch(`http://localhost:4000/pagoalicuota/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-      },      
+      },
+      body: JSON.stringify({
+        mes_alicuota: data.mes_alicuota,
+        valor_alicuota: data.valor_alicuota,
+        valor_pendiente_alicuota: data.valor_pendiente_alicuota,
+        fecha_maxima_alicuota: data.dateMax,
+        estado_alicuota: data.estado_alicuota,
+        propiedad_id_propiedad: data.id_propiedad,
+      }),
     });
     if (response.status === 200) {
       return true;

@@ -24,7 +24,7 @@ export const RoutesApp = () => {
                   }}
                 >
                   <div className="p-2 h-100">
-                    <div className="card h-100 overflow-auto p-2">
+                    <div className="card h-100 overflow-auto p-2 shadow">
                       <Outlet></Outlet>
                     </div>
                   </div>
