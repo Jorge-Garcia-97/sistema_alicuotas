@@ -92,11 +92,13 @@ export const RegistroPropiedades = (props) => {
   return (
     <>
     <Modal
+        isCentered
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isOpen}
         onClose={onClose}
         size={'xl'}
+        motionPreset='slideInBottom'
       >
       <ModalOverlay />
         <ModalContent>

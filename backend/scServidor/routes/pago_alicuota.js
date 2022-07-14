@@ -9,7 +9,8 @@ router.get("/pagoalicuota/", (req, res) => {
         if (err) {
           return res.status(500).send("¡Algo ha salido mal!");
         } else {
-          conn.query("SELECT * FROM pago_alicuota", function (err, row) {
+          const query = "SELECT pg.id_pago_alicuota, pg.mes_alicuota, pg.fecha_maxima_alicuota, pg.valor_alicuota, pg.valor_pendiente_alicuota, pg.estado_alicuota, pd.id_propiedad, pd.numero_casa, p.id_propietario, p.nombre_propietario, p.apellido_propietario FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario";
+          conn.query(query, function (err, row) {
             if (err) {
               return res.status(404).send("No se ha encontrado ningún pago de alícuota");
             } else {
@@ -28,18 +29,21 @@ router.get("/pagoalicuota/", (req, res) => {
 router.post("/pagoalicuota/save/", (req, res) => {
     try {
       const data = {
+          mes_alicuota: req.body.mes_alicuota,
           valor_alicuota: req.body.valor_alicuota,
-          fecha_alicuota: req.body.fecha_alicuota,
-          estado_alicuota: req.body.estado_alicuota,
-          atraso_alicuota: req.body.atraso_alicuota
+          valor_pendiente_alicuota: req.body.valor_pendiente_alicuota,
+          fecha__maxima_alicuota: req.body.fecha_maxima_alicuota,
+          estado_alicuota: req.body.estado_alicuota,  
+          propiedad_id_propiedad: req.body.propiedad_id_propiedad
       };
-      const query = `INSERT INTO pago_alicuota (valor_alicuota, fecha_alicuota, estado_alicuota, atraso_alicuota) VALUES ( '${data.valor_alicuota}', '${data.fecha_alicuota}','${data.estado_alicuota}','${data.atraso_alicuota}')`;
+      const query = `INSERT INTO pago_alicuota (mes_alicuota, fecha_maxima_alicuota, valor_alicuota, valor_pendiente_alicuota, estado_alicuota, propiedad_id_propiedad) VALUES ( '${data.mes_alicuota}', '${data.fecha__maxima_alicuota}','${data.valor_alicuota}','${data.valor_pendiente_alicuota}','${data.estado_alicuota}','${data.propiedad_id_propiedad}')`;
       getConnection(function (err, conn) {
         if (err) {
           return res.status(500).send("¡Algo ha salido mal!");
         } else {
           conn.query(query, function (err, row) {
             if (err) {
+              console.log(err)
               return res
                 .status(404)
                 .send("No se ha podido realizar su petición");

@@ -1,9 +1,9 @@
+import React, { useEffect, useState } from 'react';
 import { get } from '../../services/Get';
 import { Spinner } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
 import { RegistroPropietario } from './RegistroPropietario';
 import Swal from 'sweetalert2';
-import React, { useEffect, useState } from 'react';
 import { CardsPropietarios } from './CardsPropietarios';
 import { InformacionPropietario } from './InformacionPropietario';
 
@@ -22,24 +22,25 @@ export const MainPropietario = () => {
 
   useEffect(() => {
     setCargando(true);
-    cargarData();
-  }, [refresh]);
-
-  async function cargarData() {
-    try {
-      const response = await get(`propietarios/ACTIVO`);
-      setPropietarios({
-        propietarios: response.data,
-      });
-      setCargando(false);
-      setRefresh(false);
-    } catch (error) {
-      Toast.fire({
-        icon: 'error',
-        title: 'Algo ha salido mal',
-      });
+    
+    async function cargarData() {
+      try {
+        const response = await get(`propietarios/ACTIVO`);
+        setPropietarios({
+          propietarios: response.data,
+        });
+        setCargando(false);
+        setRefresh(false);
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: 'Algo ha salido mal',
+        });
+      }
     }
-  }
+    
+    cargarData();
+  }, [refresh]);  
 
   const openModal = () => {
     setIsOpen(true);
