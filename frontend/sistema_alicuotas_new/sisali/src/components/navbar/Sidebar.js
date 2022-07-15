@@ -46,7 +46,7 @@ export const Sidebar = () => {
                   ></MenuItem>
                   <MenuItem
                     className="py-3 my-2"
-                    icon={<i className="fa fa-file-alt"></i>}
+                    icon={<i className="fa fa-home"></i>}
                   ></MenuItem>
                   <MenuItem
                     className="py-3 my-2"
@@ -54,7 +54,7 @@ export const Sidebar = () => {
                   ></MenuItem>
                   <MenuItem
                     className="py-3 my-2"
-                    icon={<i className="fa fa-home"></i>}
+                    icon={<i className="fa fa-map"></i>}
                   ></MenuItem>
                   <MenuItem
                     className="py-3 my-2"
@@ -83,7 +83,7 @@ export const Sidebar = () => {
                   <Link to={'/propiedades'}>
                     <MenuItem
                       className="link py-3 my-2"
-                      icon={<i className="fa fa-file-alt me-1"></i>}
+                      icon={<i className="fa fa-home me-1"></i>}
                     >
                       Propiedades
                     </MenuItem>
@@ -99,7 +99,7 @@ export const Sidebar = () => {
                   <Link to={'/areas'}>
                     <MenuItem
                       className="link py-3 my-2"
-                      icon={<i className="fa fa-home me-1"></i>}
+                      icon={<i className="fa fa-map me-1"></i>}
                     >
                       Areas
                     </MenuItem>
