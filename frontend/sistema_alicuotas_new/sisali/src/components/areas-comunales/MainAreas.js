@@ -78,7 +78,7 @@ export const MainAreas = () => {
         <div className="container-fluid p-1">
           <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
             <h1 className="display-6 fw-bold">
-              <i className="fa fa-users me-1" />
+              <i className="fa fa-map me-1" />
               Areas Comunales
             </h1>
             <Button
