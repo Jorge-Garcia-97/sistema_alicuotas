@@ -7,7 +7,7 @@ export const get = async url => {
         'Content-Type': 'application/json',
       },
     });
-    const json = await response.json();
+    const json = response ? await response.json() : undefined;
     return json;
   } catch (error) {
     console.error(error);

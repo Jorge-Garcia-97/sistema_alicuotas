@@ -1,7 +1,18 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { logout } from '../../reducer/auth';
 
 export const Navbar = () => {
+  const { nombre, apellido } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  
+  const cerrarSesion = () => {
+    dispatch(logout());
+    // localStorage.clear;
+  };
+
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark ps-2 pe-5">
@@ -40,7 +51,7 @@ export const Navbar = () => {
                     to="/"
                   >
                     <i className="fa fa-user-circle me-2" />
-                    Cuenta
+                    {nombre + " " + apellido}
                   </Link>
                   <ul
                     className="dropdown-menu shadow"
@@ -56,7 +67,7 @@ export const Navbar = () => {
                       <hr className="dropdown-divider" />
                     </li>
                     <li>
-                      <Link className="dropdown-item" to="/">
+                      <Link className="dropdown-item" onClick={cerrarSesion} to="/">
                         <i className="fa fa-sign-out-alt me-1" />
                         Cerrar sesión
                       </Link>

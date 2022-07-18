@@ -80,16 +80,17 @@ router.get("/usuario/:id", (req, res) => {
 });
 
 //Consulta por nombre
-router.get("/usuario/by-nombre/:nombre", (req, res) => {
-  const { nombre } = req.params;
+router.get("/usuario/inicio/:nombre/:password", (req, res) => {
+  const { nombre, password } = req.params;
   try {
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");
       } else {
-        query = "SELECT * FROM usuario WHERE nombre_usuario = ?";
-        conn.query(query, [nombre], function (err, row) {
+        query = "SELECT * FROM usuario as u, propietario as p WHERE u.nombre_usuario = ? AND u.contraseña_usuario = ? AND u.id_usuario = p.usuario_id_usuario";
+        conn.query(query, [nombre, password], function (err, row) {
           if (err) {
+            console.log(err);
             return res.status(404).send("No se ha encontrado ningún dato");
           } else {
             return res.send(row);
