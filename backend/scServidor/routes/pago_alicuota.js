@@ -9,7 +9,7 @@ router.get("/pagoalicuota/", (req, res) => {
         if (err) {
           return res.status(500).send("¡Algo ha salido mal!");
         } else {
-          const query = "SELECT pg.id_pago_alicuota, pg.mes_alicuota, pg.fecha_maxima_alicuota, pg.valor_alicuota, pg.valor_pendiente_alicuota, pg.estado_alicuota, pd.id_propiedad, pd.numero_casa, p.id_propietario, p.nombre_propietario, p.apellido_propietario, p.celular_propietario FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario";
+          const query = "SELECT pg.id_pago_alicuota, pg.mes_alicuota, pg.fecha_maxima_alicuota, pg.valor_alicuota, pg.valor_pendiente_alicuota, pg.estado_alicuota, pd.id_propiedad, pd.numero_casa, p.id_propietario, p.nombre_propietario, p.apellido_propietario, p.celular_propietario, p.correo_propietario FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario";
           conn.query(query, function (err, row) {
             if (err) {
               return res.status(404).send("No se ha encontrado ningún pago de alícuota");

@@ -22,7 +22,7 @@ import { AiOutlineDollarCircle } from 'react-icons/ai';
 import { saveMultas } from '../../services/Post';
 
 export const RegistroMultas = props => {
-  const { stateChanger, isOpen, setIsOpen, inputsPadre, setInputsPadre } = props;
+  const { isOpen, setIsOpen, setMultas } = props;
   const [inputs, setInputs] = useState({
     fecha_multa: '',
     motivo_multa: '',
@@ -57,19 +57,16 @@ export const RegistroMultas = props => {
         Toast.fire({
           icon: 'success',
           title: 'Registro exitoso',
-        });
-        setIsOpen(false);               
-        setInputsPadre({
-          ...inputsPadre,
-          multa: {
+        });                       
+        setMultas({
             id_multas: response.id,
             fecha_multa: inputs_data.fecha_multa,
             motivo_multa: inputs_data.motivo_multa,
             valor_multa: inputs_data.valor_multa,
             estado_multa: "PENDIENTE"
-          }
         });
-        stateChanger(true);
+        // stateChanger(true);
+        setIsOpen(false);
       } else {
         Toast.fire({
           icon: 'error',

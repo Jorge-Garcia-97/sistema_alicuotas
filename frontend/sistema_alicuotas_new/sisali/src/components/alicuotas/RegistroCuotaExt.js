@@ -22,7 +22,7 @@ import { AiOutlineDollarCircle } from 'react-icons/ai';
 import { saveCuotaExtra } from '../../services/Post';
 
 export const RegistroCuotaExt = props => {
-  const { stateChanger, isOpenCuota, setIsOpenCuota, inputsPadre, setInputsPadre } = props;
+  const { isOpenCuota, setIsOpenCuota, setCuota } = props;
   const [inputs, setInputs] = useState({
     detalle_cuota: '',
     valor_cuota: '',
@@ -50,24 +50,21 @@ export const RegistroCuotaExt = props => {
 
   const actionGuardar = async () => {
     const inputs_data = { ...inputs };
-    if (inputs_data.detalle_cuota != " " && inputs_data.valor_cuota != " ") {
+    if (inputs_data.detalle_cuota != ' ' && inputs_data.valor_cuota != ' ') {
       const response = await saveCuotaExtra(inputs_data);
       if (response.id > 0) {
         Toast.fire({
           icon: 'success',
           title: 'Registro exitoso',
         });
-        setIsOpenCuota(false);                
-        setInputsPadre({
-          ...inputsPadre,
-          cuota_extraordinaria: {
-            id_cuota: response.id,
-            detalle_cuota: inputs_data.detalle_cuota,
-            valor_cuota: inputs_data.valor_cuota,
-            estado_cuota: "PENDIENTE"
-          },
+        setCuota({
+          id_cuota: response.id,
+          detalle_cuota: inputs_data.detalle_cuota,
+          valor_cuota: inputs_data.valor_cuota,
+          estado_cuota: 'PENDIENTE',
         });
-        stateChanger(true);
+        // stateChanger(true);
+        setIsOpenCuota(false);
       } else {
         Toast.fire({
           icon: 'error',

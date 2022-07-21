@@ -23,11 +23,13 @@ import {
   Th,
   Td,
   TableContainer,
+  Text,
 } from '@chakra-ui/react';
 import Swal from 'sweetalert2';
 import { CalendarIcon, EditIcon } from '@chakra-ui/icons';
 import moment from 'moment';
 import { BiDollarCircle, BiUserCircle } from 'react-icons/bi';
+import { BsPhone, BsEnvelope } from 'react-icons/bs';
 import { GrCircleInformation } from 'react-icons/gr';
 import { RegistroMultas } from './RegistroMultas';
 import { RegistroCuotaExt } from './RegistroCuotaExt';
@@ -36,33 +38,45 @@ import { get } from '../../services/Get';
 export const ValidarPago = props => {
   const { stateChanger, isOpenValidarPago, setIsOpenValidarPago, data } = props;
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenConfirmation, setIsOpenConfirmation] = useState(false);
   const [isOpenCuota, setIsOpenCuota] = useState(false);
   const [inputs, setInputs] = useState({
     date: '',
     mes: '',
+    fecha_pago: '',
     propietario: '',
     valor: '',
     propiedad: '',
     numero_casa: '',
     codigo: '',
     telefono: '',
+    correo: '',
     metodo_pago: '',
     valor_pagado: 0,
     valor_pendiente: 0,
     concepto: '',
-    multa: {
-      id_multas: 0,
-      fecha_multa: "",
-      motivo_multa: "",
-      valor_multa: 0,
-      estado_multa: ""
-    },
-    cuota_extraordinaria: {
-      id_cuota: 0,
-      detalle_cuota: "",
-      valor_cuota: 0,
-      estado_cuota: ""
-    },
+  });
+  const [multas, setMultas] = useState({
+    id_multas: 0,
+    fecha_multa: '',
+    motivo_multa: '',
+    valor_multa: 0,
+    estado_multa: '',
+  });
+  const [cuota, setCuota] = useState({
+    id_cuota: 0,
+    detalle_cuota: '',
+    valor_cuota: 0,
+    estado_cuota: '',
+  });
+  const [totales, setTotales] = useState({
+    valor_pagado: 0,
+    valor_pendiente: 0,
+    valor_multas: 0,
+    valor_multa_fecha: 0,
+    valor_cuotas: 0,
+    valor_mensual: 0,
+    valor_total: 0,
   });
 
   useEffect(() => {
@@ -70,61 +84,101 @@ export const ValidarPago = props => {
       setInputs({
         date: data.fecha_maxima_alicuota,
         mes: data.mes_alicuota,
+        fecha_pago: moment(new Date()).format('YYYY-MM-DD'),
         propietario: data.nombre_propietario + ' ' + data.apellido_propietario,
         valor: parseFloat(data.valor_alicuota),
         propiedad: data.id_propiedad,
         numero_casa: data.numero_casa,
         codigo: `00-${data.id_pago_alicuota}`,
         telefono: data.celular_propietario,
+        correo: data.correo_propietario,
         metodo_pago: '',
         valor_pagado: 0,
         valor_pendiente: 0,
         concepto: '',
-        multa: {
-          id_multas: 0,
-          fecha_multa: "",
-          motivo_multa: "",
-          valor_multa: 0,
-          estado_multa: ""
-        },
-        cuota_extraordinaria: {
-          id_cuota: 0,
-          detalle_cuota: "",
-          valor_cuota: 0,
-          estado_cuota: ""
-        },
       });
     }
     return () => {
       setInputs({
         date: '',
         mes: '',
+        fecha_pago: '',
         propietario: '',
         valor: '',
         propiedad: '',
         numero_casa: '',
         codigo: '',
         telefono: '',
+        correo: '',
         metodo_pago: '',
         valor_pagado: 0,
         valor_pendiente: 0,
         concepto: '',
-        multa: {
-          id_multas: 0,
-          fecha_multa: "",
-          motivo_multa: "",
-          valor_multa: 0,
-          estado_multa: ""
-        },
-        cuota_extraordinaria: {
-          id_cuota: 0,
-          detalle_cuota: "",
-          valor_cuota: 0,
-          estado_cuota: ""
-        },
+      });
+      setMultas({
+        id_multas: 0,
+        fecha_multa: '',
+        motivo_multa: '',
+        valor_multa: 0,
+        estado_multa: '',
+      });
+      setCuota({
+        id_cuota: 0,
+        detalle_cuota: '',
+        valor_cuota: 0,
+        estado_cuota: '',
+      });
+      setTotales({
+        valor_pagado: 0,
+        valor_pendiente: 0,
+        valor_multas: 0,
+        valor_multa_fecha: 0,
+        valor_cuotas: 0,
+        valor_mensual: 0,
+        valor_total: 0,
       });
     };
   }, [isOpenValidarPago]);
+
+  useEffect(() => {
+    let multa_fecha = 0;
+    let exceso = moment(inputs.fecha_pago).diff(inputs.date, 'days');
+    if (exceso > 1 && exceso < 29) {
+      multa_fecha = 6;
+    } 
+    if (exceso >= 30 && exceso < 90) {
+      multa_fecha = 12;
+    }
+    if (exceso >= 90) {
+      multa_fecha = 30;
+    }
+    setTotales({
+      valor_pagado: parseFloat(inputs.valor_pagado),
+      valor_pendiente:
+        parseFloat(multas.valor_multa) +
+          multa_fecha +
+          parseFloat(inputs.valor) +
+          parseFloat(cuota.valor_cuota) -
+          parseFloat(inputs.valor_pagado) >
+        0
+          ? parseFloat(multas.valor_multa) +
+            multa_fecha +
+            parseFloat(inputs.valor) +
+            parseFloat(cuota.valor_cuota) -
+            parseFloat(inputs.valor_pagado)
+          : 0,
+      valor_multas: parseFloat(multas.valor_multa),
+      valor_multa_fecha: multa_fecha,
+      valor_cuotas: parseFloat(cuota.valor_cuota),
+      valor_mensual: parseFloat(inputs.valor),
+      valor_total:
+        parseFloat(multas.valor_multa) +
+        parseFloat(inputs.valor) +
+        parseFloat(cuota.valor_cuota) +
+        multa_fecha,
+    });
+    multa_fecha = 0;
+  }, [inputs, multas, cuota]);
 
   const actionGuardar = () => {
     console.log('Accion guardar');
@@ -133,8 +187,17 @@ export const ValidarPago = props => {
   const initialRef = useRef(null);
   const finalRef = useRef(null);
 
-  const onClose = () => {
+  const onCloseModal = () => {
+    setIsOpenConfirmation(false);
     setIsOpenValidarPago(false);
+  };
+
+  const onOpenConfirmation = () => {
+    setIsOpenConfirmation(true);
+  };
+
+  const onCloseConfirmation = () => {
+    setIsOpenConfirmation(false);
   };
 
   const Toast = Swal.mixin({
@@ -168,7 +231,7 @@ export const ValidarPago = props => {
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isOpenValidarPago}
-        onClose={onClose}
+        onClose={onOpenConfirmation}
         size={'6xl'}
         motionPreset="slideInBottom"
       >
@@ -197,7 +260,7 @@ export const ValidarPago = props => {
                   />
                 </InputGroup>
               </FormControl>
-              <FormControl className="me-1">
+              <FormControl className="me-1 ms-1">
                 <FormLabel htmlFor="date">Fecha máxima de pago: </FormLabel>
                 <InputGroup>
                   <InputLeftElement
@@ -215,17 +278,17 @@ export const ValidarPago = props => {
                   />
                 </InputGroup>
               </FormControl>
-              <FormControl className="me-1">
-                <FormLabel htmlFor="date">Fecha de pago: </FormLabel>
+              <FormControl className="ms-1">
+                <FormLabel htmlFor="fecha_pago">Fecha de pago: </FormLabel>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
                     children={<CalendarIcon color="gray.500" />}
                   />
                   <Input
-                    id="date"
-                    name="date"
-                    value={moment(inputs.date).format('YYYY-MM-DD')}
+                    id="fecha_pago"
+                    name="fecha_pago"
+                    value={moment(inputs.fecha_pago).format('YYYY-MM-DD')}
                     readOnly
                     className="form-control"
                     type="date"
@@ -233,8 +296,10 @@ export const ValidarPago = props => {
                   />
                 </InputGroup>
               </FormControl>
-              <FormControl>
-                <FormLabel htmlFor="nombre">Propietario: </FormLabel>
+            </div>
+            <div className="d-flex px-3 mt-2">
+              <FormControl className="me-1">
+                <FormLabel htmlFor="nombre">Nombres y apellidos: </FormLabel>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
@@ -250,25 +315,61 @@ export const ValidarPago = props => {
                   />
                 </InputGroup>
               </FormControl>
+              <FormControl className="ms-1 me-1">
+                <FormLabel htmlFor="telefono">Teléfono: </FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<Icon as={BsPhone} color="gray.500" />}
+                  />
+                  <Input
+                    id="telefono"
+                    name="telefono"
+                    type="text"
+                    value={inputs.telefono}
+                    readOnly
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl className="ms-1">
+                <FormLabel htmlFor="correo">Correo: </FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<Icon as={BsEnvelope} color="gray.500" />}
+                  />
+                  <Input
+                    id="correo"
+                    name="correo"
+                    type="text"
+                    value={inputs.correo}
+                    readOnly
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
             </div>
-            <div className="d-flex mt-2 w-100">
+            <div className="d-flex mt-3 w-100">
               <div className="me-1 w-50">
                 <div className="d-flex justify-content-between">
                   <h1 className="fw-bold mt-3 mb-2">Detalle de Multas</h1>
-                  <Button
-                    colorScheme="teal"
-                    className="px-3 mt-2 mb-1"
-                    variant="solid"
-                    size={'sm'}
-                    onClick={openRegistroMulta}
-                  >
-                    Agregar
-                    <i className="fa fa-plus-circle ms-1" />
-                  </Button>
+                  {multas.id_multas == 0 && (
+                    <Button
+                      colorScheme="teal"
+                      className="px-3 mt-2 mb-1"
+                      variant="solid"
+                      size={'sm'}
+                      onClick={openRegistroMulta}
+                    >
+                      Agregar
+                      <i className="fa fa-plus-circle ms-1" />
+                    </Button>
+                  )}
                 </div>
                 <Divider />
                 <div>
-                {inputs.multa.id_multas > 0 ? (
+                  {multas.id_multas > 0 ? (
                     <>
                       <TableContainer>
                         <Table variant="simple" size="sm">
@@ -276,15 +377,15 @@ export const ValidarPago = props => {
                             <Tr>
                               <Th>Fecha</Th>
                               <Th>Motivo</Th>
-                              <Th>Valor</Th>
+                              <Th isNumeric>Valor</Th>
                               <Th>Estado</Th>
                             </Tr>
                           </Thead>
                           <Tbody>
-                            <Td>{inputs.multa.fecha_multa}</Td>
-                            <Td>{inputs.multa.motivo_multa}</Td>
-                            <Td>{inputs.multa.valor_multa}</Td>
-                            <Td>{inputs.multa.estado_multa}</Td>
+                            <Td>{multas.fecha_multa}</Td>
+                            <Td>{multas.motivo_multa}</Td>
+                            <Td isNumeric>{multas.valor_multa}</Td>
+                            <Td>{multas.estado_multa}</Td>
                           </Tbody>
                         </Table>
                       </TableContainer>
@@ -299,34 +400,36 @@ export const ValidarPago = props => {
               <div className="ms-1 w-50">
                 <div className="d-flex justify-content-between">
                   <h1 className="fw-bold mt-3 mb-2">Cuota Extraordinaria</h1>
-                  <Button
-                    colorScheme="teal"
-                    className="px-3 mt-2 mb-1"
-                    variant="solid"
-                    size={'sm'}
-                    onClick={openModalCuota}
-                  >
-                    Agregar
-                    <i className="fa fa-plus-circle ms-1" />
-                  </Button>
+                  {cuota.id_cuota == 0 && (
+                    <Button
+                      colorScheme="teal"
+                      className="px-3 mt-2 mb-1"
+                      variant="solid"
+                      size={'sm'}
+                      onClick={openModalCuota}
+                    >
+                      Agregar
+                      <i className="fa fa-plus-circle ms-1" />
+                    </Button>
+                  )}
                 </div>
                 <Divider />
                 <div>
-                  {inputs.cuota_extraordinaria.id_cuota > 0 ? (
+                  {cuota.id_cuota > 0 ? (
                     <>
                       <TableContainer>
                         <Table variant="simple" size="sm">
                           <Thead>
                             <Tr>
                               <Th>Detalle</Th>
-                              <Th>Valor</Th>
+                              <Th isNumeric>Valor</Th>
                               <Th>Estado</Th>
                             </Tr>
                           </Thead>
                           <Tbody>
-                            <Td>{inputs.cuota_extraordinaria.detalle_cuota}</Td>
-                            <Td>{inputs.cuota_extraordinaria.valor_cuota}</Td>
-                            <Td>{inputs.cuota_extraordinaria.estado_cuota}</Td>
+                            <Td>{cuota.detalle_cuota}</Td>
+                            <Td isNumeric>{cuota.valor_cuota}</Td>
+                            <Td>{cuota.estado_cuota}</Td>
                           </Tbody>
                         </Table>
                       </TableContainer>
@@ -342,19 +445,26 @@ export const ValidarPago = props => {
             <h1 className="fw-bold mt-4 mb-2">Información del Pago</h1>
             <Divider />
             <div className="d-flex px-3 mt-2">
-              <FormControl className="me-1">
-                <FormLabel htmlFor="valor">Valor a pagar: </FormLabel>
+              <FormControl isRequired className="me-1">
+                <FormLabel htmlFor="concepto">Concepto del Pago: </FormLabel>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
-                    children={<Icon as={BiDollarCircle} color="gray.500" />}
+                    children={
+                      <Icon as={GrCircleInformation} color="gray.500" />
+                    }
                   />
                   <Input
-                    id="valor"
-                    name="valor"
+                    id="concepto"
+                    name="concepto"
                     type="text"
-                    value={inputs.valor}
-                    readOnly
+                    value={inputs.concepto}
+                    onChange={e =>
+                      setInputs({
+                        ...inputs,
+                        concepto: e.target.value,
+                      })
+                    }
                     variant="flushed"
                   />
                 </InputGroup>
@@ -381,7 +491,7 @@ export const ValidarPago = props => {
                 </InputGroup>
               </FormControl>
               <FormControl isRequired className="me-1">
-                <FormLabel htmlFor="valor_pagado">Saldo entregado: </FormLabel>
+                <FormLabel htmlFor="valor_pagado">Total a cancelar: </FormLabel>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
@@ -395,85 +505,195 @@ export const ValidarPago = props => {
                     onChange={e =>
                       setInputs({
                         ...inputs,
-                        valor_pagado: parseFloat(e.target.value),
-                        valor_pendiente:
-                          inputs.valor - parseFloat(e.target.value),
+                        valor_pagado: e.target.value ? e.target.value : 0,
                       })
                     }
-                    variant="flushed"
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl className="me-1">
-                <FormLabel htmlFor="valor_pendiente">
-                  Saldo pendiente:{' '}
-                </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<Icon as={BiDollarCircle} color="gray.500" />}
-                  />
-                  <Input
-                    id="valor_pendiente"
-                    name="valor_pendiente"
-                    type="number"
-                    value={inputs.valor_pendiente}
-                    readOnly
                     variant="flushed"
                   />
                 </InputGroup>
               </FormControl>
             </div>
-            <div className="d-flex px-3 mt-2">
-              <FormControl isRequired className="me-1">
-                <FormLabel htmlFor="concepto">Concepto del Pago: </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={
-                      <Icon as={GrCircleInformation} color="gray.500" />
-                    }
-                  />
-                  <Input
-                    id="concepto"
-                    name="concepto"
-                    type="text"
-                    value={inputs.concepto}
-                    onChange={e =>
-                      setInputs({
-                        ...inputs,
-                        concepto: e.target.value,
-                      })
-                    }
-                    variant="flushed"
-                  />
-                </InputGroup>
-              </FormControl>
+            <div className="d-flex px-3 mt-3">
+              <div className="flex-grow-1"></div>
+              <div className="">
+                <FormControl>
+                  <div className="d-flex justify-content-end">
+                    <FormLabel className="mt-2" htmlFor="valor_mensual">
+                      Total por mensualidad:{' '}
+                    </FormLabel>
+                    <InputGroup className="w-25">
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<Icon as={BiDollarCircle} color="gray.500" />}
+                      />
+                      <Input
+                        id="valor_mensual"
+                        name="valor_mensual"
+                        type="number"
+                        value={totales.valor_mensual}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </div>
+                </FormControl>
+                <FormControl>
+                  <div className="d-flex justify-content-end">
+                    <FormLabel className="mt-2" htmlFor="valor_multas">
+                      Total por multas:{' '}
+                    </FormLabel>
+                    <InputGroup className="w-25">
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<Icon as={BiDollarCircle} color="gray.500" />}
+                      />
+                      <Input
+                        id="valor_multas"
+                        name="valor_multas"
+                        type="number"
+                        value={totales.valor_multas}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </div>
+                </FormControl>
+                <FormControl>
+                  <div className="d-flex justify-content-end">
+                    <FormLabel className="mt-2" htmlFor="valor_cuotas">
+                      Total por cuotas ext.:{' '}
+                    </FormLabel>
+                    <InputGroup className="w-25">
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<Icon as={BiDollarCircle} color="gray.500" />}
+                      />
+                      <Input
+                        id="valor_cuotas"
+                        name="valor_cuotas"
+                        type="number"
+                        value={totales.valor_cuotas}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </div>
+                </FormControl>
+                <FormControl>
+                  <div className="d-flex justify-content-end">
+                    <FormLabel className="mt-2" htmlFor="valor_multa_fecha">
+                      Multa por retraso:{' '}
+                    </FormLabel>
+                    <InputGroup className="w-25">
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<Icon as={BiDollarCircle} color="gray.500" />}
+                      />
+                      <Input
+                        id="valor_multa_fecha"
+                        name="valor_multa_fecha"
+                        type="number"
+                        value={totales.valor_multa_fecha}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </div>
+                </FormControl>
+                <FormControl>
+                  <div className="d-flex justify-content-end">
+                    <FormLabel className="mt-2" htmlFor="valor_pendiente">
+                      Saldo pendiente:{' '}
+                    </FormLabel>
+                    <InputGroup className="w-25">
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<Icon as={BiDollarCircle} color="gray.500" />}
+                      />
+                      <Input
+                        id="valor_pendiente"
+                        name="valor_pendiente"
+                        type="number"
+                        value={totales.valor_pendiente}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </div>
+                </FormControl>
+                <FormControl>
+                  <div className="d-flex justify-content-end">
+                    <FormLabel className="mt-2" htmlFor="valor_total">
+                      Total:{' '}
+                    </FormLabel>
+                    <InputGroup className="w-25">
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<Icon as={BiDollarCircle} color="gray.500" />}
+                      />
+                      <Input
+                        id="valor_total"
+                        name="valor_total"
+                        type="number"
+                        value={totales.valor_total}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </div>
+                </FormControl>
+              </div>
             </div>
           </ModalBody>
           <ModalFooter mt={3} bgColor={'blackAlpha.50'}>
             <Button colorScheme="blue" mr={3} onClick={actionGuardar}>
               Guardar
             </Button>
-            <Button colorScheme="red" onClick={onClose}>
+            <Button colorScheme="red" onClick={onOpenConfirmation}>
               Cancelar
             </Button>
           </ModalFooter>
         </ModalContent>
         <RegistroMultas
-          stateChanger={stateChanger}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          inputsPadre={inputs}
-          setInputsPadre={setInputs}
+          setMultas={setMultas}
         />
         <RegistroCuotaExt
-          stateChanger={stateChanger}
           isOpenCuota={isOpenCuota}
           setIsOpenCuota={setIsOpenCuota}
-          inputsPadre={inputs}
-          setInputsPadre={setInputs}
+          setCuota={setCuota}
         />
+
+        {/* Verificar cancelación */}
+        <Modal
+          blockScrollOnMount={true}
+          isCentered
+          isOpen={isOpenConfirmation}
+          onClose={onCloseConfirmation}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Cancelar Validación</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Text fontWeight="bold" mb="1rem">
+                ¿Está seguro de querer cancelar? <br />
+              </Text>
+              <Text mb="1rem">
+                Se perderán todos los datos registrados para esta validación.
+              </Text>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="orange" mr={3} onClick={onCloseModal}>
+                Aceptar
+              </Button>
+              <Button colorScheme="red" onClick={onCloseConfirmation}>
+                Cancelar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Modal>
     </>
   );
