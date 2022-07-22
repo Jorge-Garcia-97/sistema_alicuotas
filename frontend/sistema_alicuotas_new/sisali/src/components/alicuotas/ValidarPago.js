@@ -590,7 +590,7 @@ export const ValidarPago = props => {
             <div className="d-flex px-3 mt-3">
               <div className="flex-grow-1">
                 <FormControl isRequired>
-                  <FormLabel htmlFor="correo">Comprobante de pago</FormLabel>
+                  <FormLabel htmlFor="correo">Evidencia de pago</FormLabel>
                   <input
                     id="fileinput"
                     onChange={selectedHandler}
