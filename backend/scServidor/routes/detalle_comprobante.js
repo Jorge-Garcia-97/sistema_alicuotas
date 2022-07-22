@@ -70,7 +70,19 @@ router.post("/detalle_comprobante/save/", (req, res) => {
       multas_id_multas: req.body.multas_id_multas,
     };
     console.log(data);
-    const query = `INSERT INTO detalle_comprobante (forma_pago, concepto_comprobante, pago_alicuota_id_pago_alicuota, comprobante_id_comprobante, cuota_extraordinaria_id_cuota_extraordinaria, multas_id_multas) VALUES ('${data.forma_pago}', '${data.concepto_comprobante}', '${data.pago_alicuota_id_pago_alicuota}', '${data.comprobante_id_comprobante}', '${data.cuota_extraordinaria_id_cuota_extraordinaria}', '${data.multas_id_multas}')`;
+    var query = "";
+    if (data.cuota_extraordinaria_id_cuota_extraordinaria !== null && data.multas_id_multas !== null) {
+      query = `INSERT INTO detalle_comprobante (forma_pago, concepto_comprobante, pago_alicuota_id_pago_alicuota, comprobante_id_comprobante, cuota_extraordinaria_id_cuota_extraordinaria, multas_id_multas) VALUES ('${data.forma_pago}', '${data.concepto_comprobante}', '${data.pago_alicuota_id_pago_alicuota}', '${data.comprobante_id_comprobante}', '${data.cuota_extraordinaria_id_cuota_extraordinaria}', '${data.multas_id_multas}')`;
+    } else {
+      if (data.multas_id_multas !== null){
+        query = `INSERT INTO detalle_comprobante (forma_pago, concepto_comprobante, pago_alicuota_id_pago_alicuota, comprobante_id_comprobante, cuota_extraordinaria_id_cuota_extraordinaria) VALUES ('${data.forma_pago}', '${data.concepto_comprobante}', '${data.pago_alicuota_id_pago_alicuota}', '${data.comprobante_id_comprobante}', '${data.cuota_extraordinaria_id_cuota_extraordinaria}')`;        
+      }
+      if (data.cuota_extraordinaria_id_cuota_extraordinaria !== null){
+        query = `INSERT INTO detalle_comprobante (forma_pago, concepto_comprobante, pago_alicuota_id_pago_alicuota, comprobante_id_comprobante, multas_id_multas) VALUES ('${data.forma_pago}', '${data.concepto_comprobante}', '${data.pago_alicuota_id_pago_alicuota}', '${data.comprobante_id_comprobante}', '${data.multas_id_multas}')`;
+      } else {
+        query = `INSERT INTO detalle_comprobante (forma_pago, concepto_comprobante, pago_alicuota_id_pago_alicuota, comprobante_id_comprobante) VALUES ('${data.forma_pago}', '${data.concepto_comprobante}', '${data.pago_alicuota_id_pago_alicuota}', '${data.comprobante_id_comprobante}')`;
+      }
+    }
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");

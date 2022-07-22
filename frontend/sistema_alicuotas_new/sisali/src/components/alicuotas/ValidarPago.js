@@ -188,6 +188,7 @@ export const ValidarPago = props => {
     let inputs_to_send = {...inputs};
     let multas_to_send = {...multas};
     let cuota_to_send = {...cuota};
+    let totales_to_send = {...totales};
     if (inputs_to_send.concepto !== "" && inputs_to_send.valor_pagado > 0 && inputs_to_send.metodo_pago !== "")  {
       let comprobante_to_send = {
         codigo_comprobante: inputs_to_send.codigo,
@@ -200,8 +201,8 @@ export const ValidarPago = props => {
           concepto_comprobante: inputs_to_send.concepto,
           id_pago_alicuota: inputs_to_send.id_pago_alicuota,
           id_comprobante: resp.id,
-          id_cuota_extraordinaria: cuota_to_send.id_cuota > 0 ? cuota_to_send.id_cuota : undefined,
-          id_multas: multas_to_send.id_multas > 0 ? multas_to_send.id_multas : undefined,
+          id_cuota_extraordinaria: cuota_to_send.id_cuota > 0 ? cuota_to_send.id_cuota : null,
+          id_multas: multas_to_send.id_multas > 0 ? multas_to_send.id_multas : null,
         };
         const response = await saveDetalleComprobante(detalle_comprobante_to_send);
         if (response.id > 0) {
@@ -214,7 +215,7 @@ export const ValidarPago = props => {
             if (carga) {              
               let data = {
                 estado_alicuota: "PAGADO",
-                valor_pendiente_alicuota: inputs_to_send.valor_pendiente,
+                valor_pendiente_alicuota: totales_to_send.valor_pendiente,
               }
               const acutalizar_estado_pago = await editEstadoPagos(data, inputs_to_send.id_pago_alicuota);
               const acutalizar_valor_pago = await editValorPendientePago(data, inputs_to_send.id_pago_alicuota);
