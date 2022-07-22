@@ -26,20 +26,21 @@ import {
   Text,
 } from '@chakra-ui/react';
 import Swal from 'sweetalert2';
-import { CalendarIcon, EditIcon } from '@chakra-ui/icons';
+import { CalendarIcon } from '@chakra-ui/icons';
 import moment from 'moment';
 import { BiDollarCircle, BiUserCircle } from 'react-icons/bi';
 import { BsPhone, BsEnvelope } from 'react-icons/bs';
 import { GrCircleInformation } from 'react-icons/gr';
 import { RegistroMultas } from './RegistroMultas';
 import { RegistroCuotaExt } from './RegistroCuotaExt';
-import { get } from '../../services/Get';
+import { editEstadoPagos, editValorPendientePago, saveComprobante, saveDetalleComprobante, saveImagenEvidencia } from '../../services/Post';
 
 export const ValidarPago = props => {
   const { stateChanger, isOpenValidarPago, setIsOpenValidarPago, data } = props;
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenConfirmation, setIsOpenConfirmation] = useState(false);
   const [isOpenCuota, setIsOpenCuota] = useState(false);
+  const [file, setfile] = useState(null);
   const [inputs, setInputs] = useState({
     date: '',
     mes: '',
@@ -49,6 +50,7 @@ export const ValidarPago = props => {
     propiedad: '',
     numero_casa: '',
     codigo: '',
+    id_pago_alicuota: '',
     telefono: '',
     correo: '',
     metodo_pago: '',
@@ -90,6 +92,7 @@ export const ValidarPago = props => {
         propiedad: data.id_propiedad,
         numero_casa: data.numero_casa,
         codigo: `00-${data.id_pago_alicuota}`,
+        id_pago_alicuota: data.id_pago_alicuota,
         telefono: data.celular_propietario,
         correo: data.correo_propietario,
         metodo_pago: '',
@@ -108,6 +111,7 @@ export const ValidarPago = props => {
         propiedad: '',
         numero_casa: '',
         codigo: '',
+        id_pago_alicuota: '',
         telefono: '',
         correo: '',
         metodo_pago: '',
@@ -145,7 +149,7 @@ export const ValidarPago = props => {
     let exceso = moment(inputs.fecha_pago).diff(inputs.date, 'days');
     if (exceso > 1 && exceso < 29) {
       multa_fecha = 6;
-    } 
+    }
     if (exceso >= 30 && exceso < 90) {
       multa_fecha = 12;
     }
@@ -180,8 +184,73 @@ export const ValidarPago = props => {
     multa_fecha = 0;
   }, [inputs, multas, cuota]);
 
-  const actionGuardar = () => {
-    console.log('Accion guardar');
+  const guardarRegistro = async () => {
+    let inputs_to_send = {...inputs};
+    let multas_to_send = {...multas};
+    let cuota_to_send = {...cuota};
+    if (inputs_to_send.concepto !== "" && inputs_to_send.valor_pagado > 0 && inputs_to_send.metodo_pago !== "")  {
+      let comprobante_to_send = {
+        codigo_comprobante: inputs_to_send.codigo,
+        fecha_comprobante: inputs_to_send.fecha_pago,
+      };      
+      const resp = await saveComprobante(comprobante_to_send);
+      if (resp.id > 0) {
+        let detalle_comprobante_to_send = {
+          forma_pago: inputs_to_send.metodo_pago,
+          concepto_comprobante: inputs_to_send.concepto,
+          id_pago_alicuota: inputs_to_send.id_pago_alicuota,
+          id_comprobante: resp.id,
+          id_cuota_extraordinaria: cuota_to_send.id_cuota > 0 ? cuota_to_send.id_cuota : undefined,
+          id_multas: multas_to_send.id_multas > 0 ? multas_to_send.id_multas : undefined,
+        };
+        const response = await saveDetalleComprobante(detalle_comprobante_to_send);
+        if (response.id > 0) {
+          if (file) {
+            const formdata = new FormData();
+            formdata.append("image", file);
+            const carga = await saveImagenEvidencia(formdata, response.id);
+            document.getElementById("fileinput").value = null;
+            setfile(null);
+            if (carga) {              
+              let data = {
+                estado_alicuota: "PAGADO",
+                valor_pendiente_alicuota: inputs_to_send.valor_pendiente,
+              }
+              const acutalizar_estado_pago = await editEstadoPagos(data, inputs_to_send.id_pago_alicuota);
+              const acutalizar_valor_pago = await editValorPendientePago(data, inputs_to_send.id_pago_alicuota);
+              if(acutalizar_estado_pago && acutalizar_valor_pago){
+                Toast.fire({
+                  icon: 'success',
+                  title: 'Registro exitoso'
+                });
+                setIsOpenValidarPago(false);
+                stateChanger(true);
+              }               
+            }else{
+              Toast.fire({
+                icon: 'error',
+                title: 'Algo ha salido mal'
+              })
+            }
+          }        
+        } else {
+          Toast.fire({
+            icon: 'error',
+            title: 'Algo ha salido mal'
+          })
+        }
+      } else {
+        Toast.fire({
+          icon: 'error',
+          title: 'Algo ha salido mal'
+        })
+      }
+    } else {
+      Toast.fire({
+        icon: 'error',
+        title: 'Necesitas llenar todos los datos'
+      })
+    }
   };
 
   const initialRef = useRef(null);
@@ -200,6 +269,10 @@ export const ValidarPago = props => {
     setIsOpenConfirmation(false);
   };
 
+  const selectedHandler = (e) => {
+    setfile(e.target.files[0]);
+  };
+  
   const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -514,7 +587,17 @@ export const ValidarPago = props => {
               </FormControl>
             </div>
             <div className="d-flex px-3 mt-3">
-              <div className="flex-grow-1"></div>
+              <div className="flex-grow-1">
+                <FormControl isRequired>
+                  <FormLabel htmlFor="correo">Comprobante de pago</FormLabel>
+                  <input
+                    id="fileinput"
+                    onChange={selectedHandler}
+                    className="form-control"
+                    type="file"
+                  />
+                </FormControl>
+              </div>
               <div className="">
                 <FormControl>
                   <div className="d-flex justify-content-end">
@@ -646,7 +729,7 @@ export const ValidarPago = props => {
             </div>
           </ModalBody>
           <ModalFooter mt={3} bgColor={'blackAlpha.50'}>
-            <Button colorScheme="blue" mr={3} onClick={actionGuardar}>
+            <Button colorScheme="blue" mr={3} onClick={guardarRegistro}>
               Guardar
             </Button>
             <Button colorScheme="red" onClick={onOpenConfirmation}>

@@ -21,11 +21,11 @@ router.get("/imagen_evidencia/imagen/:id/", (req, res) => {
             } else {
               var name = null;
               row.map((img) => {
-                name = img.empresa_id_empresa + "-evidencia.png";
+                name = img.id_imagen_evidencia + "-evidencia.png";
                 fs.writeFileSync(
                   path.join(
                     __dirname,
-                    "../dbimages/" + img.empresa_id_empresa + "-evidencia.png"
+                    "../dbimages/" + img.id_imagen_evidencia + "-evidencia.png"
                   ),
                   img.data_imagen
                 );
@@ -56,23 +56,24 @@ const fileUpload = multer({
 
 //Registrar imagen de empresa
 router.post("/imagen_evidencia/imagen/save/:id/", fileUpload, (req, res) => {
-  try {
+  try {    
     const { id } = req.params;
     const type = req.file.mimetype;
     const name = req.file.originalname;
     const data = fs.readFileSync(
       path.join(__dirname, "../images/" + req.file.filename)
     );
+    console.log(id);
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("Oh!, something went wrong");
       } else {
         conn.query(
-          "INSERT INTO imagen_evidencia set id_imagen_evidencia = ?, tipo_imagen = ?, nombre_imagen = ?, data_imagen = ?, detalle_comprobante_id_detalle_comprobante = ?",
+          "INSERT INTO imagen_evidencia set tipo_imagen = ?, nombre_imagen = ?, data_imagen = ?, detalle_comprobante_id_detalle_comprobante = ?",
           [type, name, data, id],
           function (err, row) {
             if (err) {
-              console.log(err.stack);
+              console.log(err);
               return res
                 .status(404)
                 .send("Sorry for that. The request could not be made.");
