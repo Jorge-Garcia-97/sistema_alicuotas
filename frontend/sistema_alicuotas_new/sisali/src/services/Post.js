@@ -19,6 +19,85 @@ export const saveUsuario = async data => {
   }
 };
 
+export const saveAdministrador = async (data, usuario_id) => {
+  try {
+    console.log(data);
+    const response = await fetch(`http://localhost:4000/administrador/save/`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        nombre_administrador: data.nombre,
+        celular_administrador: data.celular,
+        correo_administrador: data.correo,
+        cedula_administrador: data.cedula,
+        estado_administrador: 'ACTIVO',
+        usuario_id_usuario: usuario_id,
+      }),
+    });
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export const editAdministrador = async (data, id) => {
+  try {
+    console.log(data);
+    const response = await fetch(
+      `http://localhost:4000/administrador/edit/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre_administrador: data.nombre,
+          celular_administrador: data.celular,
+          correo_administrador: data.correo,
+          cedula_administrador: data.cedula,
+        }),
+      }
+    );
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export const deleteAdministrador = async id => {
+  try {
+    const response = await fetch(
+      `http://localhost:4000/administrador/delete/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
 export const savePropietario = async (data, usuario_id) => {
   try {
     console.log(data);
