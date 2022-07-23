@@ -15,62 +15,33 @@ import {
   InputGroup,
   Icon,
 } from '@chakra-ui/react';
-import Swal from 'sweetalert2';
-import { CalendarIcon } from '@chakra-ui/icons';
 import { GrCircleInformation } from 'react-icons/gr';
 import { AiOutlineDollarCircle } from 'react-icons/ai';
-import { saveCuotaExtra } from '../../services/Post';
 
 export const RegistroCuotaExt = props => {
-  const { isOpenCuota, setIsOpenCuota, setCuota } = props;
+  const { isOpenCuota, setIsOpenCuota, setCuota, cuotas } = props;
   const [inputs, setInputs] = useState({
     detalle_cuota: '',
     valor_cuota: '',
-    // estado_cuota: '',
+    estado_cuota: '',
   });
 
   const initialRef = useRef(null);
   const finalRef = useRef(null);
 
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
-
   const actionGuardar = async () => {
     const inputs_data = { ...inputs };
-    if (inputs_data.detalle_cuota != ' ' && inputs_data.valor_cuota != ' ') {
-      const response = await saveCuotaExtra(inputs_data);
-      if (response.id > 0) {
-        Toast.fire({
-          icon: 'success',
-          title: 'Registro exitoso',
-        });
-        setCuota({
-          id_cuota: response.id,
-          detalle_cuota: inputs_data.detalle_cuota,
-          valor_cuota: inputs_data.valor_cuota,
-          estado_cuota: 'PENDIENTE',
-        });
-        // stateChanger(true);
-        setIsOpenCuota(false);
-      } else {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
-        });
-      }
+    const temp = [...cuotas];
+    if (inputs_data.detalle_cuota !== '' && inputs_data.valor_cuota !== '') {
+      let cuota = {
+        detalle_cuota: inputs_data.detalle_cuota,
+        valor_cuota: inputs_data.valor_cuota,
+        estado_cuota: 'PENDIENTE',
+      };
+      temp.push(cuota);
+      setCuota(temp);
+      setIsOpenCuota(false);
+      setInputs({});
     }
   };
 

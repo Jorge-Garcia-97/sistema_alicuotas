@@ -5,6 +5,7 @@ import { get } from '../../services/Get';
 import { InformacionAlicuotas } from './InformacionAlicuotas';
 import { RegistrarAlicuota } from './RegistrarAlicuota';
 import { ValidarPago } from './ValidarPago';
+import { InformacionPago } from './InformacionPago';
 
 export const MainAlicuotas = () => {
   const [state, setState] = useState({
@@ -15,6 +16,7 @@ export const MainAlicuotas = () => {
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenValidarPago, setIsOpenValidarPago] = useState(false);
+  const [isOpenInformacionPago, setIsOpenInformacionPago] = useState(false);
   const [data, setData] = useState();
 
   useEffect(() => {
@@ -114,6 +116,13 @@ export const MainAlicuotas = () => {
               isOpenValidarPago={isOpenValidarPago}
               setIsOpenValidarPago={setIsOpenValidarPago}
             />
+
+            {/* <InformacionPago 
+              data={data}
+              isOpen={isOpenInformacionPago}
+              setIsOpen={setIsOpenInformacionPago}
+            />             */}
+
           </div>
         </div>
       )}

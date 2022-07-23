@@ -34,7 +34,7 @@ router.get("/cuota_extra/:id", (req, res) => {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");
       } else {
-        conn.query("SELECT * FROM cuota_extra WHERE id_cuota_extraordinaria = ?", [id], function (err, row) {
+        conn.query("SELECT * FROM cuota_extraordinaria WHERE id_cuota_extraordinaria = ?", [id], function (err, row) {
           if (err) {
             return res
               .status(404)

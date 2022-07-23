@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import moment from 'moment';
 import { CheckCircleIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { get } from '../../services/Get';
 
 export const InformacionAlicuotas = props => {
   const { alicuotas, setIsOpenValidarPago, setData } = props;
@@ -85,10 +86,60 @@ export const InformacionAlicuotas = props => {
     setFiltroEstado(estado);
   };
 
-  const openValidarPago = (item) => {
+  const openValidarPago = item => {
     setData(item);
     setIsOpenValidarPago(true);
-  }
+  };
+
+  const openInformacionPago = async item => {
+    console.log(item);
+    // var response_1 = await get(
+    //   `/detalle_comprobante/alicuota/${item.id_pago_alicuota}`
+    // );
+    // if (response_1) {
+    //   var response_2 = "";
+    //   var response_3 = "";
+    //   if (response_1.cuota_extraordinaria_id_cuota_extraordinaria){
+    //     response_2 = await get(
+    //       `/cuota_extra/${response_1.cuota_extraordinaria_id_cuota_extraordinaria}`
+    //     );
+    //   }
+    //   if(response_1.multas_id_multas){
+    //     response_3 = await get(
+    //       `/multa/${response_1.multas_id_multas}`
+    //     );
+    //   }      
+    // }
+    // let to_send = {
+    //   id_detalle_comprobante: 0,
+    //   forma_pago: '',
+    //   concepto_comprobante: '',
+    //   comprobante_id_comprobante: 0,
+    //   cuota_extraordinaria_id_cuota_extraordinaria: 0,
+    //   multas_id_multas: 0,
+    //   id_comprobante: 12,
+    //   codigo_comprobante: '',
+    //   fecha_comprobante: '',
+    //   mes_alicuota: '',
+    //   fecha_maxima_alicuota: '',
+    //   valor_alicuota: 0,
+    //   valor_pendiente_alicuota: 0,
+    //   id_pago_alicuota: 0,
+    //   numero_casa: 0,
+    //   nombre_propietario: '',
+    //   apellido_propietario: '',
+    //   celular_propietario: '',
+    //   correo_propietario: '',
+    //   fecha_multa: "",
+    //   motivo_multa: "",
+    //   valor_multa: 0,
+    //   estado_multa: "",
+    //   detalle_cuota: "",
+    //   valor_cuota: 0,
+    //   estado_cuota: ""
+    // };
+    // setData(to_send);
+  };
 
   return (
     <>
@@ -240,7 +291,14 @@ export const InformacionAlicuotas = props => {
                           </Button>
                         </>
                       ) : (
-                        <span>Sin acciones</span>
+                        <Button
+                          size="sm"
+                          colorScheme={'telegram'}
+                          onClick={() => openInformacionPago(item)}
+                          rightIcon={<CheckCircleIcon />}
+                        >
+                          Revisar Pago
+                        </Button>
                       )}
                     </Td>
                   </Tr>
