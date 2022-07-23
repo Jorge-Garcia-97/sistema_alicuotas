@@ -281,14 +281,7 @@ export const InformacionAlicuotas = props => {
                           >
                             Editar
                           </Button>
-                          <Button
-                            size="sm"
-                            colorScheme={'red'}
-                            ml={2}
-                            rightIcon={<DeleteIcon />}
-                          >
-                            Borrar
-                          </Button>
+                          
                         </>
                       ) : (
                         <Button
