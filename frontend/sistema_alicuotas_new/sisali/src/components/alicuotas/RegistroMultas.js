@@ -15,11 +15,9 @@ import {
   InputGroup,
   Icon,
 } from '@chakra-ui/react';
-import Swal from 'sweetalert2';
 import { CalendarIcon } from '@chakra-ui/icons';
 import { GrCircleInformation } from 'react-icons/gr';
 import { AiOutlineDollarCircle } from 'react-icons/ai';
-import { saveMultas } from '../../services/Post';
 
 export const RegistroMultas = props => {
   const { isOpen, setIsOpen, setMultas, multas } = props;

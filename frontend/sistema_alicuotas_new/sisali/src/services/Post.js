@@ -527,11 +527,15 @@ export const saveMultas = async data => {
         fecha_multa: data.fecha_multa,
         motivo_multa: data.motivo_multa,
         valor_multa: data.valor_multa,
-        estado_multa: 'PENDIENTE',
+        estado_multa: data.estado_multa,
+        detalle_comprobante_id_detalle_comprobante: data.id_detalle_comprobante
       }),
     });
-    const json = await response.json();
-    return json;
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.error(error);
     return false;
@@ -600,11 +604,15 @@ export const saveCuotaExtra = async data => {
       body: JSON.stringify({
         detalle_cuota: data.detalle_cuota,
         valor_cuota: data.valor_cuota,
-        estado_cuota: 'PENDIENTE',
+        estado_cuota: data.estado_cuota,
+        detalle_comprobante_id_detalle_comprobante: data.id_detalle_comprobante
       }),
     });
-    const json = await response.json();
-    return json;
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.error(error);
     return false;
@@ -729,9 +737,6 @@ export const saveDetalleComprobante = async data => {
           concepto_comprobante: data.concepto_comprobante,
           pago_alicuota_id_pago_alicuota: data.id_pago_alicuota,
           comprobante_id_comprobante: data.id_comprobante,
-          cuota_extraordinaria_id_cuota_extraordinaria:
-            data.id_cuota_extraordinaria,
-          multas_id_multas: data.id_multas,
         }),
       }
     );

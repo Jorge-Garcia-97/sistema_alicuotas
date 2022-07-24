@@ -37,8 +37,10 @@ import {
   editEstadoPagos,
   editValorPendientePago,
   saveComprobante,
+  saveCuotaExtra,
   saveDetalleComprobante,
   saveImagenEvidencia,
+  saveMultas,
 } from '../../services/Post';
 import { AiFillDelete } from 'react-icons/ai';
 
@@ -98,114 +100,164 @@ export const ValidarPago = props => {
       });
     }
     return () => {
-      setInputs({
-        date: '',
-        mes: '',
-        fecha_pago: '',
-        propietario: '',
-        valor: '',
-        propiedad: '',
-        numero_casa: '',
-        codigo: '',
-        id_pago_alicuota: '',
-        telefono: '',
-        correo: '',
-        metodo_pago: '',
-        valor_pagado: 0,
-        valor_pendiente: 0,
-        concepto: '',
-      });
-      setTotales({
-        valor_pagado: 0,
-        valor_pendiente: 0,
-        valor_multas: 0,
-        valor_multa_fecha: 0,
-        valor_cuotas: 0,
-        valor_mensual: 0,
-        valor_total: 0,
-      });
-      setMultas([]);
+      setInputs({});
       setCuota([]);
     };
   }, [isOpenValidarPago]);
 
   useEffect(() => {
-    let multa_fecha = 0;
-    let exceso = moment(inputs.fecha_pago).diff(inputs.date, 'days');
-    if (exceso > 1 && exceso < 29) {
-      multa_fecha = 6;
+    if (data) {
+      var temp = [];
+      let multa_fecha = 0;
+      let exceso = moment(new Date()).diff(data.fecha_maxima_alicuota, 'days');
+      if (exceso > 1 && exceso < 29) {
+        multa_fecha = 6;
+        let multa = {
+          fecha_multa: moment(new Date()).format('YYYY-MM-DD'),
+          motivo_multa: 'Retraso pago de alicuota',
+          valor_multa: multa_fecha,
+          estado_multa: 'PENDIENTE',
+        };
+        temp.push(multa);
+        setMultas(temp);
+      }
+      if (exceso >= 30 && exceso < 90) {
+        multa_fecha = 12;
+        let multa = {
+          fecha_multa: moment(new Date()).format('YYYY-MM-DD'),
+          motivo_multa: 'Retraso pago de alicuota',
+          valor_multa: multa_fecha,
+          estado_multa: 'PENDIENTE',
+        };
+        temp.push(multa);
+        setMultas(temp);
+      }
+      if (exceso >= 90) {
+        multa_fecha = 30;
+        let multa = {
+          fecha_multa: moment(new Date()).format('YYYY-MM-DD'),
+          motivo_multa: 'Retraso pago de alicuota',
+          valor_multa: multa_fecha,
+          estado_multa: 'PENDIENTE',
+        };
+        temp.push(multa);
+        setMultas(temp);
+      }
     }
-    if (exceso >= 30 && exceso < 90) {
-      multa_fecha = 12;
-    }
-    if (exceso >= 90) {
-      multa_fecha = 30;
-    }
+    return () => {
+      setMultas([]);
+    };
+  }, [isOpenValidarPago]);
+
+  useEffect(() => {
+    var multas_array = [...multas];
+    var cuotas_array = [...cuota];
+    var temp_valor_multas = 0;
+    multas_array.map(multa => {
+      temp_valor_multas += parseFloat(multa.valor_multa);
+    });
+    var temp_valor_cuotas = 0;
+    cuotas_array.map(c => {
+      temp_valor_cuotas += parseFloat(c.valor_cuota);
+    });
     setTotales({
       valor_pagado: parseFloat(inputs.valor_pagado),
       valor_pendiente:
-        parseFloat(multas.valor_multa) +
-          multa_fecha +
+        parseFloat(temp_valor_multas) +
           parseFloat(inputs.valor) +
-          parseFloat(cuota.valor_cuota) -
+          parseFloat(temp_valor_cuotas) -
           parseFloat(inputs.valor_pagado) >
         0
-          ? parseFloat(multas.valor_multa) +
-            multa_fecha +
+          ? parseFloat(temp_valor_multas) +
             parseFloat(inputs.valor) +
-            parseFloat(cuota.valor_cuota) -
+            parseFloat(temp_valor_cuotas) -
             parseFloat(inputs.valor_pagado)
           : 0,
-      valor_multas: parseFloat(multas.valor_multa),
-      valor_multa_fecha: multa_fecha,
-      valor_cuotas: parseFloat(cuota.valor_cuota),
+      valor_multas: parseFloat(temp_valor_multas),
+      valor_cuotas: parseFloat(temp_valor_cuotas),
       valor_mensual: parseFloat(inputs.valor),
       valor_total:
-        parseFloat(multas.valor_multa) +
+        parseFloat(temp_valor_multas) +
         parseFloat(inputs.valor) +
-        parseFloat(cuota.valor_cuota) +
-        multa_fecha,
+        parseFloat(temp_valor_cuotas),
     });
-    multa_fecha = 0;
+    return () => {
+      setTotales({});
+    };
   }, [inputs, multas, cuota]);
 
   const guardarRegistro = async () => {
     let inputs_to_send = { ...inputs };
-    let multas_to_send = { ...multas };
-    let cuota_to_send = { ...cuota };
+    let multas_to_send = [...multas];
+    let cuotas_to_send = [...cuota];
     let totales_to_send = { ...totales };
     if (
       inputs_to_send.concepto !== '' &&
       inputs_to_send.valor_pagado > 0 &&
-      inputs_to_send.metodo_pago !== ''
+      inputs_to_send.metodo_pago !== '' &&
+      file
     ) {
       let comprobante_to_send = {
         codigo_comprobante: inputs_to_send.codigo,
         fecha_comprobante: inputs_to_send.fecha_pago,
       };
-      const resp = await saveComprobante(comprobante_to_send);
-      if (resp.id > 0) {
+      const comprobante = await saveComprobante(comprobante_to_send);
+      if (comprobante.id > 0) {
         let detalle_comprobante_to_send = {
           forma_pago: inputs_to_send.metodo_pago,
           concepto_comprobante: inputs_to_send.concepto,
           id_pago_alicuota: inputs_to_send.id_pago_alicuota,
-          id_comprobante: resp.id,
-          id_cuota_extraordinaria:
-            cuota_to_send.id_cuota > 0 ? cuota_to_send.id_cuota : null,
-          id_multas:
-            multas_to_send.id_multas > 0 ? multas_to_send.id_multas : null,
+          id_comprobante: comprobante.id,
         };
-        const response = await saveDetalleComprobante(
+        const detalle_comprobante = await saveDetalleComprobante(
           detalle_comprobante_to_send
         );
-        if (response.id > 0) {
-          if (file) {
-            const formdata = new FormData();
-            formdata.append('image', file);
-            const carga = await saveImagenEvidencia(formdata, response.id);
-            document.getElementById('fileinput').value = null;
-            setfile(null);
-            if (carga) {
+        if (detalle_comprobante.id > 0) {
+          const formdata = new FormData();
+          formdata.append('image', file);
+          const carga_imagen = await saveImagenEvidencia(
+            formdata,
+            detalle_comprobante.id
+          );
+          document.getElementById('fileinput').value = null;
+          setfile(null);
+          const registro_multas = [];
+          multas_to_send.map(async multa => {
+            let multa_temp = {
+              fecha_multa: multa.fecha_multa,
+              motivo_multa: multa.motivo_multa,
+              valor_multa: multa.valor_multa,
+              estado_multa: 'PENDIENTE',
+              id_detalle_comprobante: detalle_comprobante.id,
+            };
+            const response = await saveMultas(multa_temp);
+            if (response) {
+              registro_multas.push(response);
+            }
+          });
+          const registro_cuotas = [];
+          cuotas_to_send.map(async cuota => {
+            let cuota_temp = {
+              detalle_cuota: cuota.detalle_cuota,
+              valor_cuota: cuota.valor_cuota,
+              estado_cuota: 'PENDIENTE',
+              id_detalle_comprobante: detalle_comprobante.id,
+            };
+            const response = await saveCuotaExtra(cuota_temp);
+            if (response) {
+              registro_cuotas.push(response);
+            }
+          });
+          if (
+            registro_cuotas.includes(false) ||
+            registro_cuotas.includes(false)
+          ) {
+            Toast.fire({
+              icon: 'error',
+              title: 'Algo ha salido mal',
+            });
+          } else {
+            if (carga_imagen) {
               let data = {
                 estado_alicuota: 'PAGADO',
                 valor_pendiente_alicuota: totales_to_send.valor_pendiente,
@@ -219,17 +271,13 @@ export const ValidarPago = props => {
                 inputs_to_send.id_pago_alicuota
               );
               if (acutalizar_estado_pago && acutalizar_valor_pago) {
-                Toast.fire({
-                  icon: 'success',
-                  title: 'Registro exitoso',
-                });
                 setIsOpenValidarPago(false);
                 stateChanger(true);
               }
             } else {
               Toast.fire({
                 icon: 'error',
-                title: 'Algo ha salido mal',
+                title: 'Algo ha salido mal al cargar la imagen de evidencia',
               });
             }
           }
@@ -299,7 +347,7 @@ export const ValidarPago = props => {
       container: 'container-popup',
       popup: 'popup',
     },
-  });
+  });  
 
   const openRegistroMulta = () => {
     setIsOpen(true);
@@ -377,6 +425,23 @@ export const ValidarPago = props => {
                     readOnly
                     className="form-control"
                     type="date"
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl className="me-1">
+                <FormLabel htmlFor="valor">Valor Mensualidad: </FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<Icon as={BiDollarCircle} color="gray.500" />}
+                  />
+                  <Input
+                    id="valor"
+                    name="valor"
+                    type="text"
+                    value={inputs.valor}
+                    readOnly
                     variant="flushed"
                   />
                 </InputGroup>
