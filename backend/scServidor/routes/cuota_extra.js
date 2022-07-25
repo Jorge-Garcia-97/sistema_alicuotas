@@ -51,6 +51,31 @@ router.get("/cuota_extra/:id", (req, res) => {
   }
 });
 
+//consultar cuota extraordinaria
+router.get("/cuota_extra/detalle/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    getConnection(function (err, conn) {
+      if (err) {
+        return res.status(500).send("¡Algo ha salido mal!");
+      } else {
+        conn.query("SELECT * FROM cuota_extraordinaria WHERE detalle_comprobante_id_detalle_comprobante = ?", [id], function (err, row) {
+          if (err) {
+            return res
+              .status(404)
+              .send("No se ha encontrado ninguna cuota extraordinaria");
+          } else {
+            return res.send(row);
+          }
+        });
+      }
+      conn.release();
+    });
+  } catch (error) {
+    res.send("¡Error!. intente más tarde");
+  }
+});
+
 //Registrar multa
 router.post("/cuota_extra/save/", (req, res) => {
   try {

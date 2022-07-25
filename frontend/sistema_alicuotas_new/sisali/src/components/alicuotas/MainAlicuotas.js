@@ -18,6 +18,8 @@ export const MainAlicuotas = () => {
   const [isOpenValidarPago, setIsOpenValidarPago] = useState(false);
   const [isOpenInformacionPago, setIsOpenInformacionPago] = useState(false);
   const [data, setData] = useState();
+  const [data_multas, setData_Multas] = useState();
+  const [data_cuotas, setData_Cuotas] = useState();
 
   useEffect(() => {
     setCargando(true);
@@ -96,11 +98,14 @@ export const MainAlicuotas = () => {
               <i className="fa fa-plus-circle ms-1" />
             </Button>
           </div>
-          <div className="container-fluid border shadow-sm">            
+          <div className="container-fluid border shadow-sm">
             <InformacionAlicuotas
               {...state}
               setData={setData}
+              setData_Cuotas={setData_Cuotas}
+              setData_Multas={setData_Multas}
               setIsOpenValidarPago={setIsOpenValidarPago}
+              setIsOpenInformacionPago={setIsOpenInformacionPago}
             />
 
             <RegistrarAlicuota
@@ -117,12 +122,13 @@ export const MainAlicuotas = () => {
               setIsOpenValidarPago={setIsOpenValidarPago}
             />
 
-            {/* <InformacionPago 
+            <InformacionPago
               data={data}
+              data_cuotas={data_cuotas}
+              data_multas={data_multas}
               isOpen={isOpenInformacionPago}
               setIsOpen={setIsOpenInformacionPago}
-            />             */}
-
+            />
           </div>
         </div>
       )}

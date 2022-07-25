@@ -14,7 +14,6 @@ import {
   FormLabel,
   FormControl,
   Divider,
-  Select,
   Icon,
   Table,
   Thead,
@@ -27,76 +26,103 @@ import {
 import moment from 'moment';
 import { BiDollarCircle, BiUserCircle } from 'react-icons/bi';
 import { BsPhone, BsEnvelope } from 'react-icons/bs';
+import { GrCircleInformation } from 'react-icons/gr';
+import { AiFillPrinter } from 'react-icons/ai';
+import { CalendarIcon } from '@chakra-ui/icons';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 export const InformacionPago = props => {
-  const { isOpen, setIsOpen, data } = props;
+  const { isOpen, setIsOpen, data, data_multas, data_cuotas } = props;
   const [state, setState] = useState({
-    id_detalle_comprobante: 0,
     forma_pago: '',
     concepto_comprobante: '',
-    comprobante_id_comprobante: 0,
-    cuota_extraordinaria_id_cuota_extraordinaria: 0,
-    multas_id_multas: 0,
-    id_comprobante: 12,
     codigo_comprobante: '',
     fecha_comprobante: '',
     mes_alicuota: '',
     fecha_maxima_alicuota: '',
     valor_alicuota: 0,
     valor_pendiente_alicuota: 0,
-    id_pago_alicuota: 0,
     numero_casa: 0,
     nombre_propietario: '',
     apellido_propietario: '',
     celular_propietario: '',
     correo_propietario: '',
-    fecha_multa: '',
-    motivo_multa: '',
-    valor_multa: 0,
-    estado_multa: '',
-    detalle_cuota: '',
-    valor_cuota: 0,
-    estado_cuota: '',
+  });
+  const [multas, setMultas] = useState([]);
+  const [cuotas, setCuotas] = useState([]);
+  const [totales, setTotales] = useState({
+    valor_pagado: 0,
+    valor_pendiente: 0,
+    valor_multas: 0,
+    valor_cuotas: 0,
+    valor_mensual: 0,
+    valor_total: 0,
   });
 
   useEffect(() => {
+    console.log(data);
     if (data) {
-    //   setInputs({
-    //     date: data.fecha_maxima_alicuota,
-    //     mes: data.mes_alicuota,
-    //     fecha_pago: moment(new Date()).format('YYYY-MM-DD'),
-    //     propietario: data.nombre_propietario + ' ' + data.apellido_propietario,
-    //     valor: parseFloat(data.valor_alicuota),
-    //     propiedad: data.id_propiedad,
-    //     numero_casa: data.numero_casa,
-    //     codigo: `00-${data.id_pago_alicuota}`,
-    //     id_pago_alicuota: data.id_pago_alicuota,
-    //     telefono: data.celular_propietario,
-    //     correo: data.correo_propietario,
-    //     metodo_pago: '',
-    //     valor_pagado: 0,
-    //     valor_pendiente: 0,
-    //     concepto: '',
-    //   });
+      setState({
+        forma_pago: data.forma_pago,
+        concepto_comprobante: data.concepto_comprobante,
+        codigo_comprobante: data.codigo_comprobante,
+        fecha_comprobante: data.fecha_comprobante,
+        mes_alicuota: data.mes_alicuota,
+        fecha_maxima_alicuota: data.fecha_maxima_alicuota,
+        valor_alicuota: data.valor_alicuota,
+        valor_pendiente_alicuota: data.valor_pendiente_alicuota,
+        numero_casa: data.numero_casa,
+        nombre_propietario: data.nombre_propietario,
+        apellido_propietario: data.apellido_propietario,
+        celular_propietario: data.celular_propietario,
+        correo_propietario: data.correo_propietario,
+      });
+    }
+    if (data_cuotas) {
+      setCuotas(data_cuotas);
+    }
+    if (data_multas) {
+      setMultas(data_multas);
     }
     return () => {
-    //   setInputs({
-    //     date: '',
-    //     mes: '',
-    //     fecha_pago: '',
-    //     propietario: '',
-    //     valor: '',
-    //     propiedad: '',
-    //     numero_casa: '',
-    //     codigo: '',
-    //     id_pago_alicuota: '',
-    //     telefono: '',
-    //     correo: '',
-    //     metodo_pago: '',
-    //     valor_pagado: 0,
-    //     valor_pendiente: 0,
-    //     concepto: '',
-    //   });
+      setCuotas([]);
+      setMultas([]);
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    var temp_valor_multas = 0;
+    var temp_valor_cuotas = 0;
+    if (data_multas) {
+      var multas_array = data_multas;
+      multas_array.map(multa => {
+        temp_valor_multas += parseFloat(multa.valor_multa);
+      });
+    }
+    if (data_cuotas) {
+      var cuotas_array = data_cuotas;
+      cuotas_array.map(c => {
+        temp_valor_cuotas += parseFloat(c.valor_cuota);
+      });
+    }
+    setTotales({
+      valor_pagado:
+        parseFloat(temp_valor_multas) +
+        parseFloat(temp_valor_cuotas) +
+        parseFloat(state.valor_alicuota) -
+        parseFloat(state.valor_pendiente_alicuota),
+      valor_pendiente: parseFloat(state.valor_pendiente_alicuota),
+      valor_multas: parseFloat(temp_valor_multas),
+      valor_cuotas: parseFloat(temp_valor_cuotas),
+      valor_mensual: parseFloat(state.valor_alicuota),
+      valor_total:
+        parseFloat(temp_valor_multas) +
+        parseFloat(temp_valor_cuotas) +
+        parseFloat(state.valor_alicuota),
+    });
+    return () => {
+      setTotales({});
     };
   }, [isOpen]);
 
@@ -107,9 +133,197 @@ export const InformacionPago = props => {
     setIsOpen(false);
   };
 
+  const print = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(12);
+    const header_info = [
+      ['COMPROBANTE', 'FECHA', 'PROPIETARIO', 'TELÉFONO', 'CORREO'],
+    ];
+    const header_mensualidad = [
+      ['MES', 'FECHA MÁXIMA DE PAGO', 'VALOR MENSUALIDAD'],
+    ];
+    const header_cuotas = [['DESCRIPCIÓN CUOTAS EXTRAORDINARIAS', 'VALOR']];
+    const header_multas = [['FECHA', 'DESCRIPCIÓN DE MULTAS', 'VALOR']];
+    const header_pagos = [['CONCEPTO DE PAGO', 'MÉTODO DE PAGO', 'VALOR']];
+
+    const data1 = [
+      [
+        state.codigo_comprobante,
+        moment(state.fecha_comprobante).format('YYYY-MM-DD'),
+        state.nombre_propietario + ' ' + state.apellido_propietario,
+        state.celular_propietario,
+        state.correo_propietario,
+      ],
+    ];
+
+    const data2 = [
+      [
+        state.mes_alicuota,
+        moment(state.fecha_maxima_alicuota).format('YYYY-MM-DD'),
+        Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+        }).format(state.valor_alicuota),
+      ],
+    ];
+
+    const data3 = [];
+    const cuotas_array = [...cuotas];
+    cuotas_array.map((cuota, i) => {
+      data3[i] = [
+        cuota.detalle_cuota,
+        Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+        }).format(cuota.valor_cuota),
+      ];
+    });
+
+    const data4 = [];
+    const multas_array = [...multas];
+    multas_array.map((multa, i) => {
+      data4[i] = [
+        moment(multa.fecha_multa).format('YYYY-MM-DD'),
+        multa.motivo_multa,
+        Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+        }).format(multa.valor_multa),
+      ];
+    });
+
+    const valores_finales = { ...totales };
+
+    const data5 = [
+      [
+        state.concepto_comprobante,
+        state.forma_pago,
+        Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+        }).format(valores_finales.valor_pagado),
+      ],
+    ];
+
+    const totales1 = [
+      [
+        'TOTAL POR MENSUALIDAD:',
+        Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+        }).format(valores_finales.valor_mensual),
+      ],
+      [
+        'TOTAL POR MULTAS:',
+        Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+        }).format(valores_finales.valor_multas),
+      ],
+      [
+        'TOTAL POR CUOTAS:',
+        Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+        }).format(valores_finales.valor_cuotas),
+      ],
+      [
+        'TOTAL SALDO PENDIENTE:',
+        Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+        }).format(valores_finales.valor_pendiente),
+      ],
+      [
+        'TOTAL PAGADO:',
+        Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+        }).format(valores_finales.valor_pagado),
+      ],
+      [
+        'TOTAL A PAGAR:',
+        Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+        }).format(valores_finales.valor_total),
+      ],
+    ];
+
+    doc.text('REPORTE DE ALICUOTAS', 15, 15);
+    doc.autoTable({
+      startY: 20,
+      head: header_info,
+      body: data1,
+    });
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 10,
+      head: header_mensualidad,
+      body: data2,
+      columnStyles: {
+        0: { halign: 'left' },
+        1: { halign: 'left' },
+        2: { halign: 'center' },
+      },
+    });
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 10,
+      head: header_cuotas,
+      body: data3,
+      columnStyles: {
+        0: { halign: 'left' },
+        1: { halign: 'center' },
+      },
+    });
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 10,
+      head: header_multas,
+      body: data4,
+      columnStyles: {
+        0: { halign: 'left' },
+        1: { halign: 'left' },
+        2: { halign: 'center' },
+      },
+    });
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 10,
+      head: header_pagos,
+      body: data5,
+      columnStyles: {
+        0: { halign: 'left' },
+        1: { halign: 'left' },
+        2: { halign: 'center' },
+      },
+    });
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 10,
+      margin: { left: 115, right: 15 },
+      columnStyles: {
+        0: { fontStyle: 'bold', halign: 'right' },
+        1: { halign: 'center' },
+      },
+      body: totales1,
+    });
+    doc.text('_______________________', 25, 250);
+    doc.text('Firma Responsable', 35, 260);
+    doc.text('_______________________', 125, 250);
+    doc.text('Firma Propietario', 137, 260);
+    doc.save(`sisali-${state.codigo_comprobante}.pdf`);
+  };
+
   return (
     <>
-      {/* <Modal
+      <Modal
         isCentered
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
@@ -120,9 +334,7 @@ export const InformacionPago = props => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader bgColor={'blackAlpha.50'}>
-            Información del Pago
-          </ModalHeader>
+          <ModalHeader bgColor={'blackAlpha.50'}>Revisar Pago</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <h1 className="fw-bold mb-2">Información General</h1>
@@ -139,7 +351,7 @@ export const InformacionPago = props => {
                     id="mes"
                     name="mes"
                     type="text"
-                    value={inputs.mes}
+                    value={state.mes_alicuota}
                     readOnly
                     variant="flushed"
                   />
@@ -155,15 +367,16 @@ export const InformacionPago = props => {
                   <Input
                     id="date"
                     name="date"
-                    value={moment(inputs.date).format('YYYY-MM-DD')}
+                    value={moment(state.fecha_maxima_alicuota).format(
+                      'YYYY-MM-DD'
+                    )}
                     readOnly
-                    className="form-control"
-                    type="date"
+                    type="text"
                     variant="flushed"
                   />
                 </InputGroup>
               </FormControl>
-              <FormControl className="ms-1">
+              <FormControl className="ms-1 me-1">
                 <FormLabel htmlFor="fecha_pago">Fecha de pago: </FormLabel>
                 <InputGroup>
                   <InputLeftElement
@@ -173,10 +386,26 @@ export const InformacionPago = props => {
                   <Input
                     id="fecha_pago"
                     name="fecha_pago"
-                    value={moment(inputs.fecha_pago).format('YYYY-MM-DD')}
+                    value={moment(state.fecha_comprobante).format('YYYY-MM-DD')}
                     readOnly
-                    className="form-control"
-                    type="date"
+                    type="text"
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl className="ms-1">
+                <FormLabel htmlFor="valor">Valor Mensualidad: </FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<Icon as={BiDollarCircle} color="gray.500" />}
+                  />
+                  <Input
+                    id="valor"
+                    name="valor"
+                    type="text"
+                    value={state.valor_alicuota}
+                    readOnly
                     variant="flushed"
                   />
                 </InputGroup>
@@ -194,7 +423,11 @@ export const InformacionPago = props => {
                     id="nombre"
                     name="nombre"
                     type="text"
-                    value={inputs.propietario}
+                    value={
+                      state.nombre_propietario +
+                      ' ' +
+                      state.apellido_propietario
+                    }
                     readOnly
                     variant="flushed"
                   />
@@ -211,7 +444,7 @@ export const InformacionPago = props => {
                     id="telefono"
                     name="telefono"
                     type="text"
-                    value={inputs.telefono}
+                    value={state.celular_propietario}
                     readOnly
                     variant="flushed"
                   />
@@ -228,7 +461,7 @@ export const InformacionPago = props => {
                     id="correo"
                     name="correo"
                     type="text"
-                    value={inputs.correo}
+                    value={state.correo_propietario}
                     readOnly
                     variant="flushed"
                   />
@@ -242,24 +475,40 @@ export const InformacionPago = props => {
                 </div>
                 <Divider />
                 <div>
-                  <TableContainer>
-                    <Table variant="simple" size="sm">
-                      <Thead>
-                        <Tr>
-                          <Th>Fecha</Th>
-                          <Th>Motivo</Th>
-                          <Th isNumeric>Valor</Th>
-                          <Th>Estado</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        <Td>{multas.fecha_multa}</Td>
-                        <Td>{multas.motivo_multa}</Td>
-                        <Td isNumeric>{multas.valor_multa}</Td>
-                        <Td>{multas.estado_multa}</Td>
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
+                  {multas.length > 0 ? (
+                    <>
+                      <TableContainer>
+                        <Table variant="simple" size="sm">
+                          <Thead>
+                            <Tr>
+                              <Th>Fecha</Th>
+                              <Th>Motivo</Th>
+                              <Th isNumeric>Valor</Th>
+                              <Th>Estado</Th>
+                            </Tr>
+                          </Thead>
+                          <Tbody>
+                            {multas.map((multa, i) => (
+                              <Tr key={i}>
+                                <Td>
+                                  {moment(multa.fecha_multa).format(
+                                    'YYYY-MM-DD'
+                                  )}
+                                </Td>
+                                <Td>{multa.motivo_multa}</Td>
+                                <Td isNumeric>{multa.valor_multa}</Td>
+                                <Td>{multa.estado_multa}</Td>
+                              </Tr>
+                            ))}
+                          </Tbody>
+                        </Table>
+                      </TableContainer>
+                    </>
+                  ) : (
+                    <>
+                      <p>No se registran cuotas extraordinarias</p>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="ms-1 w-50">
@@ -268,34 +517,80 @@ export const InformacionPago = props => {
                 </div>
                 <Divider />
                 <div>
-                  <TableContainer>
-                    <Table variant="simple" size="sm">
-                      <Thead>
-                        <Tr>
-                          <Th>Detalle</Th>
-                          <Th isNumeric>Valor</Th>
-                          <Th>Estado</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        <Td>{cuota.detalle_cuota}</Td>
-                        <Td isNumeric>{cuota.valor_cuota}</Td>
-                        <Td>{cuota.estado_cuota}</Td>
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
+                  {cuotas.length > 0 ? (
+                    <>
+                      <TableContainer>
+                        <Table variant="simple" size="sm">
+                          <Thead>
+                            <Tr>
+                              <Th>Detalle</Th>
+                              <Th isNumeric>Valor</Th>
+                              <Th>Estado</Th>
+                            </Tr>
+                          </Thead>
+                          <Tbody>
+                            {cuotas.map((c, i) => (
+                              <Tr key={i}>
+                                <Td>{c.detalle_cuota}</Td>
+                                <Td isNumeric>{c.valor_cuota}</Td>
+                                <Td>{c.estado_cuota}</Td>
+                              </Tr>
+                            ))}
+                          </Tbody>
+                        </Table>
+                      </TableContainer>
+                    </>
+                  ) : (
+                    <>
+                      <p>No se registran cuotas extraordinarias</p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
             <h1 className="fw-bold mt-4 mb-2">Información del Pago</h1>
             <Divider />
             <div className="d-flex px-3 mt-2">
-              <FormControl isRequired className="me-1">
-                <FormLabel htmlFor="metodo_pago">Forma de pago: </FormLabel>
-                <InputGroup></InputGroup>
+              <FormControl className="me-1">
+                <FormLabel htmlFor="concepto">Concepto del Pago: </FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={
+                      <Icon as={GrCircleInformation} color="gray.500" />
+                    }
+                  />
+                  <Input
+                    id="concepto"
+                    name="concepto"
+                    type="text"
+                    value={state.concepto_comprobante}
+                    readOnly
+                    variant="flushed"
+                  />
+                </InputGroup>
               </FormControl>
-              <FormControl isRequired className="me-1">
-                <FormLabel htmlFor="valor_pagado">Total a cancelar: </FormLabel>
+              <FormControl className="me-1">
+                <FormLabel htmlFor="metodo_pago">Forma de pago: </FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={
+                      <Icon as={GrCircleInformation} color="gray.500" />
+                    }
+                  />
+                  <Input
+                    id="metodo_pago"
+                    name="metodo_pago"
+                    type="text"
+                    value={state.forma_pago}
+                    readOnly
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl className="me-1">
+                <FormLabel htmlFor="valor_pagado">Total cancelado: </FormLabel>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
@@ -305,19 +600,15 @@ export const InformacionPago = props => {
                     id="valor_pagado"
                     name="valor_pagado"
                     type="number"
-                    value={inputs.valor_pagado}
-                    isReadOnly
+                    value={totales.valor_pagado}
+                    readOnly
                     variant="flushed"
                   />
                 </InputGroup>
               </FormControl>
             </div>
             <div className="d-flex px-3 mt-3">
-              <div className="flex-grow-1">
-                <FormControl isRequired>
-                  <FormLabel htmlFor="correo">Comprobante de pago</FormLabel>
-                </FormControl>
-              </div>
+              <div className="flex-grow-1"></div>
               <div className="">
                 <FormControl>
                   <div className="d-flex justify-content-end">
@@ -384,27 +675,6 @@ export const InformacionPago = props => {
                 </FormControl>
                 <FormControl>
                   <div className="d-flex justify-content-end">
-                    <FormLabel className="mt-2" htmlFor="valor_multa_fecha">
-                      Multa por retraso:{' '}
-                    </FormLabel>
-                    <InputGroup className="w-25">
-                      <InputLeftElement
-                        pointerEvents="none"
-                        children={<Icon as={BiDollarCircle} color="gray.500" />}
-                      />
-                      <Input
-                        id="valor_multa_fecha"
-                        name="valor_multa_fecha"
-                        type="number"
-                        value={totales.valor_multa_fecha}
-                        readOnly
-                        variant="flushed"
-                      />
-                    </InputGroup>
-                  </div>
-                </FormControl>
-                <FormControl>
-                  <div className="d-flex justify-content-end">
                     <FormLabel className="mt-2" htmlFor="valor_pendiente">
                       Saldo pendiente:{' '}
                     </FormLabel>
@@ -447,27 +717,20 @@ export const InformacionPago = props => {
                 </FormControl>
               </div>
             </div>
+            <div className='w-100 text-center'>
+              <Button colorScheme="telegram" onClick={print}>
+                Imprimir Reporte <Icon className='ms-1' as={AiFillPrinter} color="white" />
+              </Button>
+            </div>
           </ModalBody>
           <ModalFooter mt={3} bgColor={'blackAlpha.50'}>
-            <Button colorScheme="blue" mr={3} onClick={guardarRegistro}>
-              Guardar
-            </Button>
-            <Button colorScheme="red" onClick={onOpenConfirmation}>
-              Cancelar
+            <Button colorScheme="red" onClick={onClose}>
+              Cerrar
             </Button>
           </ModalFooter>
         </ModalContent>
-        <RegistroMultas
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          setMultas={setMultas}
-        />
-        <RegistroCuotaExt
-          isOpenCuota={isOpenCuota}
-          setIsOpenCuota={setIsOpenCuota}
-          setCuota={setCuota}
-        />
-      </Modal> */}
+      </Modal>
     </>
   );
 };
+

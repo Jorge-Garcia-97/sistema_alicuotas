@@ -73,7 +73,6 @@ export const ValidarPago = props => {
     valor_pagado: 0,
     valor_pendiente: 0,
     valor_multas: 0,
-    valor_multa_fecha: 0,
     valor_cuotas: 0,
     valor_mensual: 0,
     valor_total: 0,
@@ -191,6 +190,7 @@ export const ValidarPago = props => {
     let multas_to_send = [...multas];
     let cuotas_to_send = [...cuota];
     let totales_to_send = { ...totales };
+    // console.log(totales_to_send.valor_pendiente);
     if (
       inputs_to_send.concepto !== '' &&
       inputs_to_send.valor_pagado > 0 &&
@@ -227,7 +227,7 @@ export const ValidarPago = props => {
               fecha_multa: multa.fecha_multa,
               motivo_multa: multa.motivo_multa,
               valor_multa: multa.valor_multa,
-              estado_multa: 'PENDIENTE',
+              estado_multa: totales_to_send.valor_pendiente == 0 ? 'PAGADO' : 'PENDIENTE',
               id_detalle_comprobante: detalle_comprobante.id,
             };
             const response = await saveMultas(multa_temp);
@@ -240,7 +240,7 @@ export const ValidarPago = props => {
             let cuota_temp = {
               detalle_cuota: cuota.detalle_cuota,
               valor_cuota: cuota.valor_cuota,
-              estado_cuota: 'PENDIENTE',
+              estado_cuota: totales_to_send.valor_pendiente == 0 ? 'PAGADO' : 'PENDIENTE',
               id_detalle_comprobante: detalle_comprobante.id,
             };
             const response = await saveCuotaExtra(cuota_temp);
@@ -405,13 +405,12 @@ export const ValidarPago = props => {
                     name="date"
                     value={moment(inputs.date).format('YYYY-MM-DD')}
                     readOnly
-                    className="form-control"
                     type="date"
                     variant="flushed"
                   />
                 </InputGroup>
               </FormControl>
-              <FormControl className="ms-1">
+              <FormControl className="ms-1 me-1">
                 <FormLabel htmlFor="fecha_pago">Fecha de pago: </FormLabel>
                 <InputGroup>
                   <InputLeftElement
@@ -423,13 +422,12 @@ export const ValidarPago = props => {
                     name="fecha_pago"
                     value={moment(inputs.fecha_pago).format('YYYY-MM-DD')}
                     readOnly
-                    className="form-control"
                     type="date"
                     variant="flushed"
                   />
                 </InputGroup>
               </FormControl>
-              <FormControl className="me-1">
+              <FormControl className="ms-1">
                 <FormLabel htmlFor="valor">Valor Mensualidad: </FormLabel>
                 <InputGroup>
                   <InputLeftElement
