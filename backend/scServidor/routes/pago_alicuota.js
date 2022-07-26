@@ -28,6 +28,33 @@ router.get("/pagoalicuota/", (req, res) => {
   }
 });
 
+//consultar pagos de alicuotas
+router.get("/pagoalicuota/mes/:mes", (req, res) => {
+  try {
+    const { mes } = req.params;
+    getConnection(function (err, conn) {
+      if (err) {
+        return res.status(500).send("¡Algo ha salido mal!");
+      } else {
+        const query =
+          "SELECT * FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario and pg.mes_alicuota = ?";
+        conn.query(query, [mes], function (err, row) {
+          if (err) {
+            return res
+              .status(404)
+              .send("No se ha encontrado ningún pago de alícuota");
+          } else {
+            return res.send(row);
+          }
+        });
+      }
+      conn.release();
+    });
+  } catch (error) {
+    res.send("¡Error!. intente más tarde");
+  }
+});
+
 //Registrar nuevo pago de alícuota
 router.post("/pagoalicuota/save/", (req, res) => {
   try {
@@ -67,10 +94,9 @@ router.post("/pagoalicuota/edit/:id", (req, res) => {
     const data = {
       mes_alicuota: req.body.mes_alicuota,
       valor_alicuota: req.body.valor_alicuota,
-      valor_pendiente_alicuota: req.body.valor_pendiente_alicuota,
       fecha_maxima_alicuota: req.body.fecha_maxima_alicuota,
     };
-    const query = `UPDATE pago_alicuota SET mes_alicuota= '${data.mes_alicuota}', fecha_maxima_alicuota = '${data.fecha_maxima_alicuota}', valor_alicuota = '${data.valor_alicuota}', valor_pendiente_alicuota = '${data.valor_pendiente_alicuota}}' WHERE id_pago_alicuota = ?`;
+    const query = `UPDATE pago_alicuota SET mes_alicuota= '${data.mes_alicuota}', fecha_maxima_alicuota = '${data.fecha_maxima_alicuota}', valor_alicuota = '${data.valor_alicuota}' WHERE id_pago_alicuota = ?`;
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");

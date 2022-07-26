@@ -6,6 +6,7 @@ import { InformacionAlicuotas } from './InformacionAlicuotas';
 import { RegistrarAlicuota } from './RegistrarAlicuota';
 import { ValidarPago } from './ValidarPago';
 import { InformacionPago } from './InformacionPago';
+import { EditarAlicuota } from './EditarAlicuota';
 
 export const MainAlicuotas = () => {
   const [state, setState] = useState({
@@ -17,7 +18,9 @@ export const MainAlicuotas = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenValidarPago, setIsOpenValidarPago] = useState(false);
   const [isOpenInformacionPago, setIsOpenInformacionPago] = useState(false);
+  const [isOpenEditarPago, setIsOpenEditarPago] = useState(false);
   const [data, setData] = useState();
+  const [dataImagen, setDataImagen] = useState();
   const [data_multas, setData_Multas] = useState();
   const [data_cuotas, setData_Cuotas] = useState();
 
@@ -102,10 +105,12 @@ export const MainAlicuotas = () => {
             <InformacionAlicuotas
               {...state}
               setData={setData}
+              setDataImagen={setDataImagen}
               setData_Cuotas={setData_Cuotas}
               setData_Multas={setData_Multas}
               setIsOpenValidarPago={setIsOpenValidarPago}
               setIsOpenInformacionPago={setIsOpenInformacionPago}
+              setIsOpenEditarPago={setIsOpenEditarPago}
             />
 
             <RegistrarAlicuota
@@ -122,8 +127,16 @@ export const MainAlicuotas = () => {
               setIsOpenValidarPago={setIsOpenValidarPago}
             />
 
+            <EditarAlicuota
+              data={data}
+              stateChanger={setRefresh}
+              isOpen={isOpenEditarPago}
+              setIsOpen={setIsOpenEditarPago}
+            />
+
             <InformacionPago
               data={data}
+              dataImagen={dataImagen}
               data_cuotas={data_cuotas}
               data_multas={data_multas}
               isOpen={isOpenInformacionPago}

@@ -18,7 +18,16 @@ import { CheckCircleIcon, EditIcon } from '@chakra-ui/icons';
 import { get } from '../../services/Get';
 
 export const InformacionAlicuotas = props => {
-  const { alicuotas, setIsOpenValidarPago, setData, setData_Cuotas, setData_Multas, setIsOpenInformacionPago } = props;
+  const {
+    alicuotas,
+    setIsOpenValidarPago,
+    setData,
+    setData_Cuotas,
+    setData_Multas,
+    setIsOpenInformacionPago,
+    setIsOpenEditarPago,
+    setDataImagen
+  } = props;
   const [state, setState] = useState([]);
   const [filtroMes, setFiltroMes] = useState();
   const [filtroPropietario, setFiltroPropietario] = useState();
@@ -95,7 +104,7 @@ export const InformacionAlicuotas = props => {
     try {
       const data_detalles = await get(
         `detalle_comprobante/alicuota/${item.id_pago_alicuota}`
-      );      
+      );
       if (data_detalles) {
         let to_send = {
           forma_pago: data_detalles[0].forma_pago,
@@ -118,7 +127,7 @@ export const InformacionAlicuotas = props => {
         );
         const data_multas = await get(
           `multa/detalle/${data_detalles[0].id_detalle_comprobante}`
-        );
+        );        
         if (data_multas.length > 0) {
           const multas_to_send = [];
           data_multas.map(multa => {
@@ -143,12 +152,19 @@ export const InformacionAlicuotas = props => {
             cuotas_to_send.push(data_cuota_temp);
           });
           setData_Cuotas(cuotas_to_send);
-        }    
+        }
+        const response_imagen = await get(`imagen_evidencia/imagen/${data_detalles[0].id_detalle_comprobante}`);
+        setDataImagen(response_imagen.name);
         setIsOpenInformacionPago(true);
-      }    
+      }
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const openEditarPago = async (item) => {
+    setData(item);
+    setIsOpenEditarPago(true);    
   };
 
   return (
@@ -288,6 +304,7 @@ export const InformacionAlicuotas = props => {
                             colorScheme={'yellow'}
                             ml={2}
                             rightIcon={<EditIcon />}
+                            onClick={() => openEditarPago(item)}
                           >
                             Editar
                           </Button>

@@ -99,11 +99,12 @@ export const InformacionPropietario = props => {
   return (
     <>
       <Modal
+        isCentered
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={showInfo}
         onClose={onClose}
-        size={'xl'}
+        size={'4xl'}
       >
         <ModalOverlay />
         <ModalContent>
@@ -111,20 +112,20 @@ export const InformacionPropietario = props => {
           <ModalCloseButton />
           <ModalBody>
             <div className="row">
-              <div className="col-sm-4">
+              <div className="col-sm-4 bg-light rounded py-2">
                 {state.imagen_propietario ? (
                   <img
                     src={`http://localhost:4000/${state.imagen_propietario}`}
                     alt={'Imagen referencial'}
-                    style={{ maxHeight: '200px', maxWidth: '300px' }}
-                    className="d-block mx-auto w-100 h-100"
+                    style={{ height: '300px', width: '300px' }}
+                    className="d-block mx-auto my-auto"
                   />
                 ) : (
                   <img
                     src={user}
                     alt={'Imagen referencial'}
                     style={{ height: '300px', width: '300px' }}
-                    className="d-block mx-auto w-100 h-100"
+                    className="d-block mx-auto my-auto"
                   />
                 )}
                 <div className="w-100 text-center mt-3">
@@ -156,7 +157,7 @@ export const InformacionPropietario = props => {
                   </Button>
                 </div>
               </div>
-              <div className="col-sm-8">
+              <div className="col-sm-8 px-5">
                 <FormControl isRequired>
                   <FormLabel htmlFor="nombre">Nombres</FormLabel>
                   <InputGroup>

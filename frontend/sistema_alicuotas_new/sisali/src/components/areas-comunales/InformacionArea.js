@@ -99,11 +99,12 @@ export const InformacionArea = (props) => {
   return (
     <>
       <Modal
+        isCentered
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={showInfo}
         onClose={onClose}
-        size={'xl'}
+        size={'4xl'}
       >
         <ModalOverlay />
         <ModalContent>
@@ -111,23 +112,23 @@ export const InformacionArea = (props) => {
           <ModalCloseButton />
           <ModalBody>
             <div className="row">
-              <div className="col-sm-4">
+              <div className="col-sm-5 bg-light py-4 rounded">
                 {state.imagen_area ? (
                   <img
                     src={`http://localhost:4000/${state.imagen_area}`}
                     alt={'Imagen referencial'}
-                    style={{ maxHeight: '200px', maxWidth: '300px' }}
-                    className="d-block mx-auto w-100 h-100"
+                    style={{ height: '250px', width: '300px' }}
+                    className="d-block mx-auto my-auto"
                   />
                 ) : (
                   <img
                     src={user}
                     alt={'Imagen referencial'}
                     style={{ height: '300px', width: '300px' }}
-                    className="d-block mx-auto w-100 h-100"
+                    className="d-block mx-auto my-auto"
                   />
                 )}
-                <div className="w-100 text-center mt-3">
+                <div className="w-100 text-center mt-3 px-4">
                   <Button
                     onClick={openModalInputFile}
                     colorScheme="blue"
@@ -145,7 +146,7 @@ export const InformacionArea = (props) => {
                   </Button>
                 </div>
               </div>
-              <div className="col-sm-8">
+              <div className="col-sm-7 px-5">
                 <FormControl isRequired>
                   <FormLabel htmlFor="nombre">Nombre</FormLabel>
                   <InputGroup>
@@ -183,7 +184,6 @@ export const InformacionArea = (props) => {
                     />
                   </InputGroup>                  
                 </FormControl>
-
                 <div className="mt-3 w-100 text-center">
                   <Button onClick={onUpdate} colorScheme="purple">
                     <EditIcon color="gray.300" className="me-1" /> Actualizar

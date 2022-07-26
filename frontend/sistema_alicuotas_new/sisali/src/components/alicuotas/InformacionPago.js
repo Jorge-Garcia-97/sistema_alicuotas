@@ -31,9 +31,11 @@ import { AiFillPrinter } from 'react-icons/ai';
 import { CalendarIcon } from '@chakra-ui/icons';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import user from '../../img/usuario.png';
 
 export const InformacionPago = props => {
-  const { isOpen, setIsOpen, data, data_multas, data_cuotas } = props;
+  const { isOpen, setIsOpen, data, data_multas, data_cuotas, dataImagen } =
+    props;
   const [state, setState] = useState({
     forma_pago: '',
     concepto_comprobante: '',
@@ -61,9 +63,10 @@ export const InformacionPago = props => {
   });
 
   useEffect(() => {
-    console.log(data);
-    if (data) {
+    console.log(data, dataImagen);
+    if (data && dataImagen) {
       setState({
+        data_imagen: dataImagen,
         forma_pago: data.forma_pago,
         concepto_comprobante: data.concepto_comprobante,
         codigo_comprobante: data.codigo_comprobante,
@@ -337,390 +340,432 @@ export const InformacionPago = props => {
           <ModalHeader bgColor={'blackAlpha.50'}>Revisar Pago</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <h1 className="fw-bold mb-2">Información General</h1>
-            <Divider />
-            <div className="d-flex px-3 mt-2">
-              <FormControl className="me-1">
-                <FormLabel htmlFor="mes">Correspondiente a: </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<CalendarIcon color="gray.500" />}
+            <div className="d-flex">
+              <div className='py-2'>
+                {state.data_imagen ? (
+                  <img
+                    src={`http://localhost:4000/${state.data_imagen}`}
+                    alt={'Imagen referencial'}
+                    style={{ height: '300px', width: '300px' }}
+                    className="d-block mx-auto"
                   />
-                  <Input
-                    id="mes"
-                    name="mes"
-                    type="text"
-                    value={state.mes_alicuota}
-                    readOnly
-                    variant="flushed"
+                ) : (
+                  <img
+                    src={user}
+                    alt={'Imagen referencial'}
+                    style={{ height: '200px', width: '200px' }}
+                    className="d-block mx-auto"
                   />
-                </InputGroup>
-              </FormControl>
-              <FormControl className="me-1 ms-1">
-                <FormLabel htmlFor="date">Fecha máxima de pago: </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<CalendarIcon color="gray.500" />}
-                  />
-                  <Input
-                    id="date"
-                    name="date"
-                    value={moment(state.fecha_maxima_alicuota).format(
-                      'YYYY-MM-DD'
-                    )}
-                    readOnly
-                    type="text"
-                    variant="flushed"
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl className="ms-1 me-1">
-                <FormLabel htmlFor="fecha_pago">Fecha de pago: </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<CalendarIcon color="gray.500" />}
-                  />
-                  <Input
-                    id="fecha_pago"
-                    name="fecha_pago"
-                    value={moment(state.fecha_comprobante).format('YYYY-MM-DD')}
-                    readOnly
-                    type="text"
-                    variant="flushed"
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl className="ms-1">
-                <FormLabel htmlFor="valor">Valor Mensualidad: </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<Icon as={BiDollarCircle} color="gray.500" />}
-                  />
-                  <Input
-                    id="valor"
-                    name="valor"
-                    type="text"
-                    value={state.valor_alicuota}
-                    readOnly
-                    variant="flushed"
-                  />
-                </InputGroup>
-              </FormControl>
-            </div>
-            <div className="d-flex px-3 mt-2">
-              <FormControl className="me-1">
-                <FormLabel htmlFor="nombre">Nombres y apellidos: </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<Icon as={BiUserCircle} color="gray.500" />}
-                  />
-                  <Input
-                    id="nombre"
-                    name="nombre"
-                    type="text"
-                    value={
-                      state.nombre_propietario +
-                      ' ' +
-                      state.apellido_propietario
-                    }
-                    readOnly
-                    variant="flushed"
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl className="ms-1 me-1">
-                <FormLabel htmlFor="telefono">Teléfono: </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<Icon as={BsPhone} color="gray.500" />}
-                  />
-                  <Input
-                    id="telefono"
-                    name="telefono"
-                    type="text"
-                    value={state.celular_propietario}
-                    readOnly
-                    variant="flushed"
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl className="ms-1">
-                <FormLabel htmlFor="correo">Correo: </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<Icon as={BsEnvelope} color="gray.500" />}
-                  />
-                  <Input
-                    id="correo"
-                    name="correo"
-                    type="text"
-                    value={state.correo_propietario}
-                    readOnly
-                    variant="flushed"
-                  />
-                </InputGroup>
-              </FormControl>
-            </div>
-            <div className="d-flex mt-3 w-100">
-              <div className="me-1 w-50">
-                <div className="d-flex justify-content-between">
-                  <h1 className="fw-bold mt-3 mb-2">Detalle de Multas</h1>
-                </div>
+                )}
+              </div>
+              <div className='mx-3 mt-2 mb-1 px-3 py-2 bg-light'>
+                <h1 className="fw-bold mb-2">Información General</h1>
                 <Divider />
-                <div>
-                  {multas.length > 0 ? (
-                    <>
-                      <TableContainer>
-                        <Table variant="simple" size="sm">
-                          <Thead>
-                            <Tr>
-                              <Th>Fecha</Th>
-                              <Th>Motivo</Th>
-                              <Th isNumeric>Valor</Th>
-                              <Th>Estado</Th>
-                            </Tr>
-                          </Thead>
-                          <Tbody>
-                            {multas.map((multa, i) => (
-                              <Tr key={i}>
-                                <Td>
-                                  {moment(multa.fecha_multa).format(
-                                    'YYYY-MM-DD'
-                                  )}
-                                </Td>
-                                <Td>{multa.motivo_multa}</Td>
-                                <Td isNumeric>{multa.valor_multa}</Td>
-                                <Td>{multa.estado_multa}</Td>
-                              </Tr>
-                            ))}
-                          </Tbody>
-                        </Table>
-                      </TableContainer>
-                    </>
-                  ) : (
-                    <>
-                      <p>No se registran cuotas extraordinarias</p>
-                    </>
-                  )}
+                <div className="d-flex px-3">
+                  <FormControl className="me-1">
+                    <FormLabel htmlFor="mes">Correspondiente a: </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<CalendarIcon color="gray.500" />}
+                      />
+                      <Input
+                        id="mes"
+                        name="mes"
+                        type="text"
+                        value={state.mes_alicuota}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormControl className="me-1 ms-1">
+                    <FormLabel htmlFor="date">Fecha máxima de pago: </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<CalendarIcon color="gray.500" />}
+                      />
+                      <Input
+                        id="date"
+                        name="date"
+                        value={moment(state.fecha_maxima_alicuota).format(
+                          'YYYY-MM-DD'
+                        )}
+                        readOnly
+                        type="text"
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormControl className="ms-1 me-1">
+                    <FormLabel htmlFor="fecha_pago">Fecha de pago: </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<CalendarIcon color="gray.500" />}
+                      />
+                      <Input
+                        id="fecha_pago"
+                        name="fecha_pago"
+                        value={moment(state.fecha_comprobante).format(
+                          'YYYY-MM-DD'
+                        )}
+                        readOnly
+                        type="text"
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormControl className="ms-1">
+                    <FormLabel htmlFor="valor">Valor Mensualidad: </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<Icon as={BiDollarCircle} color="gray.500" />}
+                      />
+                      <Input
+                        id="valor"
+                        name="valor"
+                        type="text"
+                        value={state.valor_alicuota}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
                 </div>
-              </div>
-              <div className="ms-1 w-50">
-                <div className="d-flex justify-content-between">
-                  <h1 className="fw-bold mt-3 mb-2">Cuota Extraordinaria</h1>
+                <div className="d-flex px-3 mt-1">
+                  <FormControl className="me-1">
+                    <FormLabel htmlFor="nombre">
+                      Nombres y apellidos:{' '}
+                    </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<Icon as={BiUserCircle} color="gray.500" />}
+                      />
+                      <Input
+                        id="nombre"
+                        name="nombre"
+                        type="text"
+                        value={
+                          state.nombre_propietario +
+                          ' ' +
+                          state.apellido_propietario
+                        }
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormControl className="ms-1 me-1">
+                    <FormLabel htmlFor="telefono">Teléfono: </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<Icon as={BsPhone} color="gray.500" />}
+                      />
+                      <Input
+                        id="telefono"
+                        name="telefono"
+                        type="text"
+                        value={state.celular_propietario}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormControl className="ms-1">
+                    <FormLabel htmlFor="correo">Correo: </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<Icon as={BsEnvelope} color="gray.500" />}
+                      />
+                      <Input
+                        id="correo"
+                        name="correo"
+                        type="text"
+                        value={state.correo_propietario}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
                 </div>
+                <div className="d-flex mt-1 w-100">
+                  <div className="me-1 w-50">
+                    <div className="d-flex justify-content-between">
+                      <h1 className="fw-bold mt-1 mb-2">Detalle de Multas</h1>
+                    </div>
+                    <Divider />
+                    <div>
+                      {multas.length > 0 ? (
+                        <>
+                          <TableContainer>
+                            <Table variant="simple" size="sm">
+                              <Thead>
+                                <Tr>
+                                  <Th>Fecha</Th>
+                                  <Th>Motivo</Th>
+                                  <Th isNumeric>Valor</Th>
+                                  <Th>Estado</Th>
+                                </Tr>
+                              </Thead>
+                              <Tbody>
+                                {multas.map((multa, i) => (
+                                  <Tr key={i}>
+                                    <Td>
+                                      {moment(multa.fecha_multa).format(
+                                        'YYYY-MM-DD'
+                                      )}
+                                    </Td>
+                                    <Td>{multa.motivo_multa}</Td>
+                                    <Td isNumeric>{multa.valor_multa}</Td>
+                                    <Td>{multa.estado_multa}</Td>
+                                  </Tr>
+                                ))}
+                              </Tbody>
+                            </Table>
+                          </TableContainer>
+                        </>
+                      ) : (
+                        <>
+                          <p>No se registran cuotas extraordinarias</p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div className="ms-1 w-50">
+                    <div className="d-flex justify-content-between">
+                      <h1 className="fw-bold mt-1 mb-2">
+                        Cuota Extraordinaria
+                      </h1>
+                    </div>
+                    <Divider />
+                    <div>
+                      {cuotas.length > 0 ? (
+                        <>
+                          <TableContainer>
+                            <Table variant="simple" size="sm">
+                              <Thead>
+                                <Tr>
+                                  <Th>Detalle</Th>
+                                  <Th isNumeric>Valor</Th>
+                                  <Th>Estado</Th>
+                                </Tr>
+                              </Thead>
+                              <Tbody>
+                                {cuotas.map((c, i) => (
+                                  <Tr key={i}>
+                                    <Td>{c.detalle_cuota}</Td>
+                                    <Td isNumeric>{c.valor_cuota}</Td>
+                                    <Td>{c.estado_cuota}</Td>
+                                  </Tr>
+                                ))}
+                              </Tbody>
+                            </Table>
+                          </TableContainer>
+                        </>
+                      ) : (
+                        <>
+                          <p>No se registran cuotas extraordinarias</p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <h1 className="fw-bold mt-1 mb-2">Información del Pago</h1>
                 <Divider />
-                <div>
-                  {cuotas.length > 0 ? (
-                    <>
-                      <TableContainer>
-                        <Table variant="simple" size="sm">
-                          <Thead>
-                            <Tr>
-                              <Th>Detalle</Th>
-                              <Th isNumeric>Valor</Th>
-                              <Th>Estado</Th>
-                            </Tr>
-                          </Thead>
-                          <Tbody>
-                            {cuotas.map((c, i) => (
-                              <Tr key={i}>
-                                <Td>{c.detalle_cuota}</Td>
-                                <Td isNumeric>{c.valor_cuota}</Td>
-                                <Td>{c.estado_cuota}</Td>
-                              </Tr>
-                            ))}
-                          </Tbody>
-                        </Table>
-                      </TableContainer>
-                    </>
-                  ) : (
-                    <>
-                      <p>No se registran cuotas extraordinarias</p>
-                    </>
-                  )}
+                <div className="d-flex px-3 mt-1">
+                  <FormControl className="me-1">
+                    <FormLabel htmlFor="concepto">
+                      Concepto del Pago:{' '}
+                    </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={
+                          <Icon as={GrCircleInformation} color="gray.500" />
+                        }
+                      />
+                      <Input
+                        id="concepto"
+                        name="concepto"
+                        type="text"
+                        value={state.concepto_comprobante}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormControl className="me-1">
+                    <FormLabel htmlFor="metodo_pago">Forma de pago: </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={
+                          <Icon as={GrCircleInformation} color="gray.500" />
+                        }
+                      />
+                      <Input
+                        id="metodo_pago"
+                        name="metodo_pago"
+                        type="text"
+                        value={state.forma_pago}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormControl className="me-1">
+                    <FormLabel htmlFor="valor_pagado">
+                      Total cancelado:{' '}
+                    </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<Icon as={BiDollarCircle} color="gray.500" />}
+                      />
+                      <Input
+                        id="valor_pagado"
+                        name="valor_pagado"
+                        type="number"
+                        value={totales.valor_pagado}
+                        readOnly
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                </div>
+                <div className="d-flex px-3 mt-1">
+                  <div className="flex-grow-1"></div>
+                  <div className="">
+                    <FormControl>
+                      <div className="d-flex justify-content-end">
+                        <FormLabel className="mt-2" htmlFor="valor_mensual">
+                          Total por mensualidad:{' '}
+                        </FormLabel>
+                        <InputGroup className="w-25">
+                          <InputLeftElement
+                            pointerEvents="none"
+                            children={
+                              <Icon as={BiDollarCircle} color="gray.500" />
+                            }
+                          />
+                          <Input
+                            id="valor_mensual"
+                            name="valor_mensual"
+                            type="number"
+                            value={totales.valor_mensual}
+                            readOnly
+                            variant="flushed"
+                          />
+                        </InputGroup>
+                      </div>
+                    </FormControl>
+                    <FormControl>
+                      <div className="d-flex justify-content-end">
+                        <FormLabel className="mt-2" htmlFor="valor_multas">
+                          Total por multas:{' '}
+                        </FormLabel>
+                        <InputGroup className="w-25">
+                          <InputLeftElement
+                            pointerEvents="none"
+                            children={
+                              <Icon as={BiDollarCircle} color="gray.500" />
+                            }
+                          />
+                          <Input
+                            id="valor_multas"
+                            name="valor_multas"
+                            type="number"
+                            value={totales.valor_multas}
+                            readOnly
+                            variant="flushed"
+                          />
+                        </InputGroup>
+                      </div>
+                    </FormControl>
+                    <FormControl>
+                      <div className="d-flex justify-content-end">
+                        <FormLabel className="mt-2" htmlFor="valor_cuotas">
+                          Total por cuotas ext.:{' '}
+                        </FormLabel>
+                        <InputGroup className="w-25">
+                          <InputLeftElement
+                            pointerEvents="none"
+                            children={
+                              <Icon as={BiDollarCircle} color="gray.500" />
+                            }
+                          />
+                          <Input
+                            id="valor_cuotas"
+                            name="valor_cuotas"
+                            type="number"
+                            value={totales.valor_cuotas}
+                            readOnly
+                            variant="flushed"
+                          />
+                        </InputGroup>
+                      </div>
+                    </FormControl>
+                    <FormControl>
+                      <div className="d-flex justify-content-end">
+                        <FormLabel className="mt-2" htmlFor="valor_pendiente">
+                          Saldo pendiente:{' '}
+                        </FormLabel>
+                        <InputGroup className="w-25">
+                          <InputLeftElement
+                            pointerEvents="none"
+                            children={
+                              <Icon as={BiDollarCircle} color="gray.500" />
+                            }
+                          />
+                          <Input
+                            id="valor_pendiente"
+                            name="valor_pendiente"
+                            type="number"
+                            value={totales.valor_pendiente}
+                            readOnly
+                            variant="flushed"
+                          />
+                        </InputGroup>
+                      </div>
+                    </FormControl>
+                    <FormControl>
+                      <div className="d-flex justify-content-end">
+                        <FormLabel className="mt-2" htmlFor="valor_total">
+                          Total:{' '}
+                        </FormLabel>
+                        <InputGroup className="w-25">
+                          <InputLeftElement
+                            pointerEvents="none"
+                            children={
+                              <Icon as={BiDollarCircle} color="gray.500" />
+                            }
+                          />
+                          <Input
+                            id="valor_total"
+                            name="valor_total"
+                            type="number"
+                            value={totales.valor_total}
+                            readOnly
+                            variant="flushed"
+                          />
+                        </InputGroup>
+                      </div>
+                    </FormControl>
+                  </div>
+                </div>
+                <div className="w-100 text-center">
+                  <Button colorScheme="telegram" onClick={print}>
+                    Imprimir Reporte{' '}
+                    <Icon className="ms-1" as={AiFillPrinter} color="white" />
+                  </Button>
                 </div>
               </div>
-            </div>
-            <h1 className="fw-bold mt-4 mb-2">Información del Pago</h1>
-            <Divider />
-            <div className="d-flex px-3 mt-2">
-              <FormControl className="me-1">
-                <FormLabel htmlFor="concepto">Concepto del Pago: </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={
-                      <Icon as={GrCircleInformation} color="gray.500" />
-                    }
-                  />
-                  <Input
-                    id="concepto"
-                    name="concepto"
-                    type="text"
-                    value={state.concepto_comprobante}
-                    readOnly
-                    variant="flushed"
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl className="me-1">
-                <FormLabel htmlFor="metodo_pago">Forma de pago: </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={
-                      <Icon as={GrCircleInformation} color="gray.500" />
-                    }
-                  />
-                  <Input
-                    id="metodo_pago"
-                    name="metodo_pago"
-                    type="text"
-                    value={state.forma_pago}
-                    readOnly
-                    variant="flushed"
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl className="me-1">
-                <FormLabel htmlFor="valor_pagado">Total cancelado: </FormLabel>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<Icon as={BiDollarCircle} color="gray.500" />}
-                  />
-                  <Input
-                    id="valor_pagado"
-                    name="valor_pagado"
-                    type="number"
-                    value={totales.valor_pagado}
-                    readOnly
-                    variant="flushed"
-                  />
-                </InputGroup>
-              </FormControl>
-            </div>
-            <div className="d-flex px-3 mt-3">
-              <div className="flex-grow-1"></div>
-              <div className="">
-                <FormControl>
-                  <div className="d-flex justify-content-end">
-                    <FormLabel className="mt-2" htmlFor="valor_mensual">
-                      Total por mensualidad:{' '}
-                    </FormLabel>
-                    <InputGroup className="w-25">
-                      <InputLeftElement
-                        pointerEvents="none"
-                        children={<Icon as={BiDollarCircle} color="gray.500" />}
-                      />
-                      <Input
-                        id="valor_mensual"
-                        name="valor_mensual"
-                        type="number"
-                        value={totales.valor_mensual}
-                        readOnly
-                        variant="flushed"
-                      />
-                    </InputGroup>
-                  </div>
-                </FormControl>
-                <FormControl>
-                  <div className="d-flex justify-content-end">
-                    <FormLabel className="mt-2" htmlFor="valor_multas">
-                      Total por multas:{' '}
-                    </FormLabel>
-                    <InputGroup className="w-25">
-                      <InputLeftElement
-                        pointerEvents="none"
-                        children={<Icon as={BiDollarCircle} color="gray.500" />}
-                      />
-                      <Input
-                        id="valor_multas"
-                        name="valor_multas"
-                        type="number"
-                        value={totales.valor_multas}
-                        readOnly
-                        variant="flushed"
-                      />
-                    </InputGroup>
-                  </div>
-                </FormControl>
-                <FormControl>
-                  <div className="d-flex justify-content-end">
-                    <FormLabel className="mt-2" htmlFor="valor_cuotas">
-                      Total por cuotas ext.:{' '}
-                    </FormLabel>
-                    <InputGroup className="w-25">
-                      <InputLeftElement
-                        pointerEvents="none"
-                        children={<Icon as={BiDollarCircle} color="gray.500" />}
-                      />
-                      <Input
-                        id="valor_cuotas"
-                        name="valor_cuotas"
-                        type="number"
-                        value={totales.valor_cuotas}
-                        readOnly
-                        variant="flushed"
-                      />
-                    </InputGroup>
-                  </div>
-                </FormControl>
-                <FormControl>
-                  <div className="d-flex justify-content-end">
-                    <FormLabel className="mt-2" htmlFor="valor_pendiente">
-                      Saldo pendiente:{' '}
-                    </FormLabel>
-                    <InputGroup className="w-25">
-                      <InputLeftElement
-                        pointerEvents="none"
-                        children={<Icon as={BiDollarCircle} color="gray.500" />}
-                      />
-                      <Input
-                        id="valor_pendiente"
-                        name="valor_pendiente"
-                        type="number"
-                        value={totales.valor_pendiente}
-                        readOnly
-                        variant="flushed"
-                      />
-                    </InputGroup>
-                  </div>
-                </FormControl>
-                <FormControl>
-                  <div className="d-flex justify-content-end">
-                    <FormLabel className="mt-2" htmlFor="valor_total">
-                      Total:{' '}
-                    </FormLabel>
-                    <InputGroup className="w-25">
-                      <InputLeftElement
-                        pointerEvents="none"
-                        children={<Icon as={BiDollarCircle} color="gray.500" />}
-                      />
-                      <Input
-                        id="valor_total"
-                        name="valor_total"
-                        type="number"
-                        value={totales.valor_total}
-                        readOnly
-                        variant="flushed"
-                      />
-                    </InputGroup>
-                  </div>
-                </FormControl>
-              </div>
-            </div>
-            <div className='w-100 text-center'>
-              <Button colorScheme="telegram" onClick={print}>
-                Imprimir Reporte <Icon className='ms-1' as={AiFillPrinter} color="white" />
-              </Button>
             </div>
           </ModalBody>
           <ModalFooter mt={3} bgColor={'blackAlpha.50'}>
@@ -733,4 +778,3 @@ export const InformacionPago = props => {
     </>
   );
 };
-

@@ -27,6 +27,7 @@ import Swal from 'sweetalert2';
 import { CalendarIcon } from '@chakra-ui/icons';
 import { savePagos } from '../../services/Post';
 import moment from 'moment';
+import { get } from '../../services/Get';
 
 export const RegistrarAlicuota = props => {
   const { stateChanger, isOpen, setIsOpen, propiedades } = props;
@@ -153,6 +154,39 @@ export const RegistrarAlicuota = props => {
     setChecked(tmp);
   };
 
+  const handleChangeMonth = async(event) => {
+    const response = await get(`pagoalicuota/mes/${event.target.value}`);
+    const data = [...dataProp];
+    let tmp = [];
+    let aux = [];  
+    if (response.length > 0) {                
+      data.forEach(d => {
+        response.forEach(r => {
+          if(d.id_propiedad === r.id_propiedad) {            
+            console.log("ya existe registro en este mes");
+          }else{
+            if (!tmp.includes(d)) {
+              tmp.push(d);
+            }            
+          }
+        })        
+      });
+      console.log(tmp);
+      setDataProp(tmp);
+      for (let i = 0; i < tmp.length; i++) {
+        aux.push(true);
+      }
+      setChecked(aux);
+      setInputs({ ...inputs, mes: event.target.value });
+    } else {
+      setDataProp(propiedades);
+      for (let i = 0; i < propiedades.length; i++) {
+        tmp.push(true);
+      }
+      setChecked(tmp);
+    }
+  }
+
   return (
     <>
       <Modal
@@ -180,9 +214,7 @@ export const RegistrarAlicuota = props => {
                     id="mes"
                     name="mes"
                     value={inputs.mes}
-                    onChange={e =>
-                      setInputs({ ...inputs, mes: e.target.value })
-                    }
+                    onChange={e => handleChangeMonth(e) }
                     variant="flushed"
                     className="ps-2"
                   >

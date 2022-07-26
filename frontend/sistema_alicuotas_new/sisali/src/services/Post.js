@@ -454,8 +454,7 @@ export const editPagos = async (data, id) => {
       body: JSON.stringify({
         mes_alicuota: data.mes_alicuota,
         valor_alicuota: data.valor_alicuota,
-        valor_pendiente_alicuota: data.valor_pendiente_alicuota,
-        fecha_maxima_alicuota: data.dateMax,
+        fecha_maxima_alicuota: data.fecha_maxima_alicuota,
       }),
     });
     if (response.status === 200) {
