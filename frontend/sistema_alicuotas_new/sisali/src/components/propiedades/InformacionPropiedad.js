@@ -8,30 +8,25 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  Select,
   FormControl,
   FormLabel,
   Input,
   InputLeftElement,
   InputGroup,
 } from '@chakra-ui/react';
-import {
-  DeleteIcon,
-  EditIcon,
-} from '@chakra-ui/icons';
-import { editPropiedad} from '../../services/Post';
-import Swal from 'sweetalert2';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { editPropiedad } from '../../services/Post';
 import { EliminarPropiedad } from './EliminarPropiedad';
-//import { ModalFileInput } from './ModalFileInput';
-//import { EliminarPropietario } from './EliminarPropietario';
+import { createStandaloneToast } from '@chakra-ui/toast';
+import { validarNumeros } from '../propietarios/validaciones';
 
-export const InformacionPropiedad = (props) => {
-
-  const { propiedad, propietarios, showInfo, setShowInfo, stateChanger } = props;
+export const InformacionPropiedad = props => {
+  const { propiedad, propietarios, showInfo, setShowInfo, stateChanger } =
+    props;
   const [state, setState] = useState([]);
   const [statePropietarios, setStatePropietarios] = useState([]);
-  const [showInputFile, setShowInputFile] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
     setState(propiedad);
@@ -42,40 +37,41 @@ export const InformacionPropiedad = (props) => {
     };
   }, [showInfo]);
 
-
   const onUpdate = async () => {
-    console.log(state);
-    const response = await editPropiedad(state, state.id_propiedad);
-    if (response) {
-      Toast.fire({
-        icon: 'success',
-        title: 'Actualización exitoso',
-      });
-      stateChanger(true);
-      onClose();
+    if (validarNumeros(state.numero_casa)) {
+      const response = await editPropiedad(state, state.id_propiedad);
+      if (response) {
+        toast({
+          title: 'Registro realizado con éxito',
+          description: 'Se actualizó la información de la propiedad.',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
+        });
+        stateChanger(true);
+        onClose();
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al registrar la propiedad.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
+        });
+      }
     } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Algo ha salido mal',
+      toast({
+        title: 'Cuidado',
+        description: 'Se deben ingresar datos correctos en los campos solicitados.',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+        position: 'top-right',
       });
     }
   };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   const onClose = () => {
     setShowInfo(false);
@@ -83,10 +79,6 @@ export const InformacionPropiedad = (props) => {
 
   const onDelete = () => {
     setShowDeleteModal(true);
-  };
-
-  const openModalInputFile = () => {
-    setShowInputFile(true);
   };
 
   const initialRef = useRef(null);
@@ -100,10 +92,9 @@ export const InformacionPropiedad = (props) => {
     setState(_tmp);
   };
 
-
   return (
     <>
-    <Modal
+      <Modal
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={showInfo}
@@ -112,20 +103,18 @@ export const InformacionPropiedad = (props) => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Información del Propietario</ModalHeader>
+          <ModalHeader>Información de la Propiedad</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div className="row">
               <div className="col-sm-4">
-                
                 <div className="w-100 text-center mt-3">
                   <Button
                     onClick={onDelete}
                     colorScheme="red"
                     className="mt-2 w-100"
                   >
-                    <DeleteIcon color="gray.300" className="me-1" />{' '}
-                    Eliminar
+                    <DeleteIcon color="gray.300" className="me-1" /> Eliminar
                   </Button>
                 </div>
               </div>
@@ -181,7 +170,6 @@ export const InformacionPropiedad = (props) => {
             <Button onClick={onClose}>Cerrar</Button>
           </ModalFooter>
 
-
           <EliminarPropiedad
             id_propiedad={state.id_propiedad}
             stateChanger={stateChanger}
@@ -191,7 +179,7 @@ export const InformacionPropiedad = (props) => {
           />
         </ModalContent>
       </Modal>
-    
+      <ToastContainer />
     </>
-  )
-}
+  );
+};

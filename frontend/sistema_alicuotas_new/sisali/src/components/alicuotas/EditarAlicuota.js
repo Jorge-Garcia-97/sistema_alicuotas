@@ -20,13 +20,14 @@ import { CalendarIcon } from '@chakra-ui/icons';
 import moment from 'moment';
 import { BiDollarCircle } from 'react-icons/bi';
 import { editPagos } from '../../services/Post';
-import Swal from 'sweetalert2';
+import { createStandaloneToast } from '@chakra-ui/toast';
 
 export const EditarAlicuota = props => {
   const { stateChanger, isOpen, setIsOpen, data } = props;
   const [state, setState] = useState({});
   const initialRef = useRef(null);
   const finalRef = useRef(null);
+  const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
     if (data) {
@@ -54,41 +55,37 @@ export const EditarAlicuota = props => {
     ) {
       const response_update = await editPagos(to_send, to_send.id_alicuota);
       if (response_update) {
-        Toast.fire({
-          icon: 'success',
-          title: 'Registro exitoso',
+        toast({
+          title: 'Registro realizado con éxito',
+          description: 'Se actualizó el registro.',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+          position: "top-right"
         });
         stateChanger(true);
         setIsOpen(false);
       } else {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al actualizar la información.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: "top-right"
         });
       }
     } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Debes ingresar datos en todos los campos',
+      toast({
+        title: 'Cuidado',
+        description: 'Se deben ingresar todos los datos solicitados.',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+        position: "top-right"
       });
     }
   };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   const onClose = () => {
     setIsOpen(false);
@@ -199,6 +196,7 @@ export const EditarAlicuota = props => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <ToastContainer />
     </>
   );
 };

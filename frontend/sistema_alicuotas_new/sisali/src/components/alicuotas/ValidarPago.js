@@ -43,6 +43,7 @@ import {
   saveMultas,
 } from '../../services/Post';
 import { AiFillDelete } from 'react-icons/ai';
+import { createStandaloneToast } from '@chakra-ui/toast';
 
 export const ValidarPago = props => {
   const { stateChanger, isOpenValidarPago, setIsOpenValidarPago, data } = props;
@@ -77,6 +78,7 @@ export const ValidarPago = props => {
     valor_mensual: 0,
     valor_total: 0,
   });
+  const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
     if (data) {
@@ -252,9 +254,13 @@ export const ValidarPago = props => {
             registro_cuotas.includes(false) ||
             registro_cuotas.includes(false)
           ) {
-            Toast.fire({
-              icon: 'error',
-              title: 'Algo ha salido mal',
+            toast({
+              title: 'Error',
+              description: 'Se encontró un error.',
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+              position: "top-right"
             });
           } else {
             if (carga_imagen) {
@@ -275,28 +281,44 @@ export const ValidarPago = props => {
                 stateChanger(true);
               }
             } else {
-              Toast.fire({
-                icon: 'error',
-                title: 'Algo ha salido mal al cargar la imagen de evidencia',
+              toast({
+                title: 'Error',
+                description: 'Se encontró un error al cargar la imagen.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: "top-right"
               });
             }
           }
         } else {
-          Toast.fire({
-            icon: 'error',
-            title: 'Algo ha salido mal',
+          toast({
+            title: 'Error',
+            description: 'Se encontró un error al registrar el valor del pago.',
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+            position: "top-right"
           });
         }
       } else {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al registrar el pago.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: "top-right"
         });
       }
     } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Necesitas llenar todos los datos',
+      toast({
+        title: 'Cuidado',
+        description: 'Se deben ingresar todos los datos solicitados.',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+        position: "top-right"
       });
     }
   };
@@ -331,23 +353,7 @@ export const ValidarPago = props => {
     const temp = [...multas];
     temp.splice(index, count);
     setMultas(temp);
-  };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });  
+  }; 
 
   const openRegistroMulta = () => {
     setIsOpen(true);
@@ -858,6 +864,7 @@ export const ValidarPago = props => {
           </ModalContent>
         </Modal>
       </Modal>
+      <ToastContainer />
     </>
   );
 };

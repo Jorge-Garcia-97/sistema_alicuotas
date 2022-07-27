@@ -3,9 +3,9 @@ import { get } from '../../services/Get';
 import { Spinner } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
 import { RegistroPropietario } from './RegistroPropietario';
-import Swal from 'sweetalert2';
 import { CardsPropietarios } from './CardsPropietarios';
 import { InformacionPropietario } from './InformacionPropietario';
+import { createStandaloneToast } from '@chakra-ui/toast'
 
 export const MainPropietario = () => {
   const [propietarios, setPropietarios] = useState({
@@ -15,9 +15,7 @@ export const MainPropietario = () => {
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [propietario, setPropietario] = useState({});
-  // const [propietario, setPropietario] = useState({
-  //   propietario: [],
-  // });
+  const { ToastContainer, toast } = createStandaloneToast();
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
@@ -32,10 +30,14 @@ export const MainPropietario = () => {
         setCargando(false);
         setRefresh(false);
       } catch (error) {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
-        });
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al cargar la información.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: "top-right"
+        })
       }
     }
     
@@ -45,22 +47,6 @@ export const MainPropietario = () => {
   const openModal = () => {
     setIsOpen(true);
   };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: true,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   return (
     <>
@@ -127,6 +113,7 @@ export const MainPropietario = () => {
           </div>
         </div>
       )}
-    </>
+      <ToastContainer />
+    </>    
   );
 };

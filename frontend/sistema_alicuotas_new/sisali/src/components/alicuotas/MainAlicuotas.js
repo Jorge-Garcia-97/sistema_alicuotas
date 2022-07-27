@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner, Button } from '@chakra-ui/react';
-import Swal from 'sweetalert2';
+import { createStandaloneToast } from '@chakra-ui/toast';
 import { get } from '../../services/Get';
 import { InformacionAlicuotas } from './InformacionAlicuotas';
 import { RegistrarAlicuota } from './RegistrarAlicuota';
@@ -23,6 +23,7 @@ export const MainAlicuotas = () => {
   const [dataImagen, setDataImagen] = useState();
   const [data_multas, setData_Multas] = useState();
   const [data_cuotas, setData_Cuotas] = useState();
+  const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
     setCargando(true);
@@ -38,9 +39,13 @@ export const MainAlicuotas = () => {
         setCargando(false);
         setRefresh(false);
       } catch (error) {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al cargar la información.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: "top-right"
         });
       }
     }
@@ -51,22 +56,6 @@ export const MainAlicuotas = () => {
   const openModal = () => {
     setIsOpen(true);
   };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: true,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   return (
     <>
@@ -145,6 +134,7 @@ export const MainAlicuotas = () => {
           </div>
         </div>
       )}
+      <ToastContainer />
     </>
   );
 };

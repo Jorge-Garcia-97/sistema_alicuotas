@@ -15,92 +15,108 @@ import {
   InputLeftElement,
   InputGroup,
 } from '@chakra-ui/react';
+import { savePropiedad } from '../../services/Post';
+import { EditIcon } from '@chakra-ui/icons';
+import { createStandaloneToast } from '@chakra-ui/toast';
+import { validarNumeros } from '../propietarios/validaciones';
+import { get } from '../../services/Get';
 
-import { savePropiedad} from '../../services/Post';
-import { EditIcon, EmailIcon, PhoneIcon } from '@chakra-ui/icons';
-import Swal from 'sweetalert2';
-//import './style.css';
+export const RegistroPropiedades = props => {
+  const { stateChanger, isOpen, setIsOpen, propietarios } = props;
+  const [inputs, setInputs] = useState({
+    numero_casa: '',
+    direccion_propiedad: '',
+    propietario_id_propietario: '',
+  });
+  const { ToastContainer, toast } = createStandaloneToast();
+  const initialRef = useRef(null);
+  const finalRef = useRef(null);
 
-export const RegistroPropiedades = (props) => {
-
-    const { stateChanger, isOpen, setIsOpen, propietarios } = props;
-    const [inputs, setInputs] = useState({
-        numero_casa: '',
-        direccion_propiedad: '',
-        propietario_id_propietario: '',
-      });
-      const [file, setfile] = useState(null);
-    
-      const initialRef = useRef(null);
-      const finalRef = useRef(null);
-
-      const guardarRegistro = async () => {
-        let data = {...inputs};
-        if (data.numero_casa_propiedad !== "" && data.direccion_propiedad !== "")
-        {
+  const guardarRegistro = async () => {
+    let data = { ...inputs };
+    if (data.numero_casa_propiedad !== '' && data.direccion_propiedad !== '') {
+      if (validarNumeros(data.numero_casa)) {
+        const casa_temp = await get(`propiedades/casa/${data.numero_casa}`);
+        if (casa_temp.length == 0) {
           const resp = await savePropiedad(data);
-
           if (resp) {
-            Toast.fire({
-              icon: 'success',
-              title: 'Registro exitoso'
-            })
+            toast({
+              title: 'Registro realizado con éxito',
+              description: 'Se registró la propiedad.',
+              status: 'success',
+              duration: 9000,
+              isClosable: true,
+              position: 'top-right',
+            });
             setIsOpen(false);
             stateChanger(true);
-          }else{
-            Toast.fire({
-              icon: 'error',
-              title: 'Algo ha salido mal'
-            })
+          } else {
+            toast({
+              title: 'Error',
+              description: 'Se encontró un error al crear la propiedad.',
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+              position: 'top-right',
+            });
           }
         } else {
-          Toast.fire({
-            icon: 'error',
-            title: 'Algo ha salido mal'
-          })
+          toast({
+            title: 'Error',
+            description: 'Ya existe una propiedad con el número ingresado.',
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+            position: 'top-right',
+          });
         }
-      };
-
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener('mouseenter', Swal.stopTimer)
-          toast.addEventListener('mouseleave', Swal.resumeTimer)
-        },
-        customClass: {
-          container: 'container-popup',
-          popup: 'popup'
-        }
+      } else {
+        toast({
+          title: 'Cuidado',
+          description:
+            'Se deben ingresar datos correctos en los campos solicitados.',
+          status: 'warning',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
+        });
+      }
+    } else {
+      toast({
+        title: 'Cuidado',
+        description: 'Se deben ingresar todos los datos solicitados.',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+        position: 'top-right',
       });
+    }
+  };
 
-      const onClose = () => {
-        setIsOpen(false);
-      };
+  const onClose = () => {
+    setIsOpen(false);
+  };
 
-      const handleInputChange = e => {
-        let tmpName = e.target.name;
-        let tmpValue = e.target && e.target.value;
-        let _tmp = { ...inputs };
-        _tmp[`${tmpName}`] = tmpValue;
-        setInputs(_tmp);
-      };
+  const handleInputChange = e => {
+    let tmpName = e.target.name;
+    let tmpValue = e.target && e.target.value;
+    let _tmp = { ...inputs };
+    _tmp[`${tmpName}`] = tmpValue;
+    setInputs(_tmp);
+  };
 
   return (
     <>
-    <Modal
+      <Modal
         isCentered
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isOpen}
         onClose={onClose}
         size={'xl'}
-        motionPreset='slideInBottom'
+        motionPreset="slideInBottom"
       >
-      <ModalOverlay />
+        <ModalOverlay />
         <ModalContent>
           <ModalHeader>Registro de nueva propiedad</ModalHeader>
           <ModalCloseButton />
@@ -148,38 +164,44 @@ export const RegistroPropiedades = (props) => {
                     />
                   </InputGroup>
                 </FormControl>
-            
               </ModalBody>
             </div>
           </div>
           <div className="container px-4">
-                <FormControl mt={4} isRequired>
-                  <FormLabel htmlFor="propietario_id_propietario">Propietario</FormLabel>
-                  <InputGroup>
-                    <Select
-                      placeholder="Selecciona una opción"
-                      id="propietario_id_propietario"
-                      value={inputs.propietario_id_propietario}
-                      name="propietario_id_propietario"
-                      onChange={handleInputChange}
-                      variant="flushed"
-                    >
-                        {propietarios.map((item, i) => (
-                            <option key={i} value={item.id_propietario}> {item.nombre_propietario + " " + item.apellido_propietario} </option>   
-                        ))}   
-                    </Select>
-                  </InputGroup>
-                </FormControl>  
-
+            <FormControl mt={4} isRequired>
+              <FormLabel htmlFor="propietario_id_propietario">
+                Propietario
+              </FormLabel>
+              <InputGroup>
+                <Select
+                  placeholder="Selecciona una opción"
+                  id="propietario_id_propietario"
+                  value={inputs.propietario_id_propietario}
+                  name="propietario_id_propietario"
+                  onChange={handleInputChange}
+                  variant="flushed"
+                >
+                  {propietarios.map((item, i) => (
+                    <option key={i} value={item.id_propietario}>
+                      {' '}
+                      {item.nombre_propietario +
+                        ' ' +
+                        item.apellido_propietario}{' '}
+                    </option>
+                  ))}
+                </Select>
+              </InputGroup>
+            </FormControl>
           </div>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={guardarRegistro}>
               Guardar
             </Button>
             <Button onClick={onClose}>Cancelar</Button>
-          </ModalFooter>          
+          </ModalFooter>
         </ModalContent>
       </Modal>
+      <ToastContainer />
     </>
-  )
-}
+  );
+};
