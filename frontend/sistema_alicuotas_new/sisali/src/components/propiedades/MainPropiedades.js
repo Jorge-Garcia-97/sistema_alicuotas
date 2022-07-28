@@ -15,7 +15,6 @@ export const MainPropiedades = () => {
   const [propietarios, setPropietarios] = useState({
     propietarios: [],
   });
-
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -100,7 +99,7 @@ export const MainPropiedades = () => {
               </>
             ) : (
               <>
-                <h1>ESTOY EN MAIN PROPIEDADES No hay datos a mostrar</h1>
+                <h1>No hay datos a mostrar</h1>
               </>
             )}
 
@@ -113,7 +112,6 @@ export const MainPropiedades = () => {
 
             <InformacionPropiedad
               propiedad={propiedad}
-              propietarios={propietarios}
               showInfo={showInfo}
               setShowInfo={setShowInfo}
               stateChanger={setRefresh}

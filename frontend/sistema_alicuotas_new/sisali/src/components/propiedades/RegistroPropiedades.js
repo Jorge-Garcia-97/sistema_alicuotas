@@ -36,24 +36,38 @@ export const RegistroPropiedades = props => {
     let data = { ...inputs };
     if (data.numero_casa_propiedad !== '' && data.direccion_propiedad !== '') {
       if (validarNumeros(data.numero_casa)) {
-        const casa_temp = await get(`propiedades/casa/${data.numero_casa}`);
-        if (casa_temp.length == 0) {
-          const resp = await savePropiedad(data);
-          if (resp) {
-            toast({
-              title: 'Registro realizado con éxito',
-              description: 'Se registró la propiedad.',
-              status: 'success',
-              duration: 9000,
-              isClosable: true,
-              position: 'top-right',
-            });
-            setIsOpen(false);
-            stateChanger(true);
+        if (
+          parseInt(data.numero_casa) > 0 &&
+          parseInt(data.numero_casa) <= 76
+        ) {
+          const casa_temp = await get(`propiedades/casa/${data.numero_casa}`);
+          if (casa_temp.length == 0) {
+            const resp = await savePropiedad(data);
+            if (resp) {
+              toast({
+                title: 'Registro realizado con éxito',
+                description: 'Se registró la propiedad.',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right',
+              });
+              setIsOpen(false);
+              stateChanger(true);
+            } else {
+              toast({
+                title: 'Error',
+                description: 'Se encontró un error al crear la propiedad.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right',
+              });
+            }
           } else {
             toast({
               title: 'Error',
-              description: 'Se encontró un error al crear la propiedad.',
+              description: 'Ya existe una propiedad con el número ingresado.',
               status: 'error',
               duration: 9000,
               isClosable: true,
@@ -62,9 +76,9 @@ export const RegistroPropiedades = props => {
           }
         } else {
           toast({
-            title: 'Error',
-            description: 'Ya existe una propiedad con el número ingresado.',
-            status: 'error',
+            title: 'Cuidado',
+            description: 'El número de casa debe estar entre 1 y 75.',
+            status: 'warning',
             duration: 9000,
             isClosable: true,
             position: 'top-right',

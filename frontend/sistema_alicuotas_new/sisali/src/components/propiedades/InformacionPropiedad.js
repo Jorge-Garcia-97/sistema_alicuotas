@@ -19,6 +19,7 @@ import { editPropiedad } from '../../services/Post';
 import { EliminarPropiedad } from './EliminarPropiedad';
 import { createStandaloneToast } from '@chakra-ui/toast';
 import { validarNumeros } from '../propietarios/validaciones';
+import casa from '../../img/casa2.jpg';
 
 export const InformacionPropiedad = props => {
   const { propiedad, propietarios, showInfo, setShowInfo, stateChanger } =
@@ -31,7 +32,7 @@ export const InformacionPropiedad = props => {
   useEffect(() => {
     setState(propiedad);
     setStatePropietarios(propietarios);
-    console.log(state);
+    console.log(propietarios);
     return () => {
       setState([]);
     };
@@ -64,7 +65,8 @@ export const InformacionPropiedad = props => {
     } else {
       toast({
         title: 'Cuidado',
-        description: 'Se deben ingresar datos correctos en los campos solicitados.',
+        description:
+          'Se deben ingresar datos correctos en los campos solicitados.',
         status: 'warning',
         duration: 9000,
         isClosable: true,
@@ -100,26 +102,45 @@ export const InformacionPropiedad = props => {
         isOpen={showInfo}
         onClose={onClose}
         size={'xl'}
+        isCentered
       >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Información de la Propiedad</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <div className="row">
-              <div className="col-sm-4">
-                <div className="w-100 text-center mt-3">
-                  <Button
-                    onClick={onDelete}
-                    colorScheme="red"
-                    className="mt-2 w-100"
-                  >
-                    <DeleteIcon color="gray.300" className="me-1" /> Eliminar
-                  </Button>
-                </div>
+            <div className="px-4">
+              <div>
+              <img
+                  src={casa}
+                  alt={'Imagen referencial'}
+                  style={{ height: '200px', width: '400px' }}
+                  className="d-block mx-auto mb-2"
+                />
               </div>
-              <div className="col-sm-8">
-                <FormControl isRequired>
+              <div>
+                <FormControl>
+                  <FormLabel htmlFor="propietario">Propietario</FormLabel>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents="none"
+                      children={<EditIcon color="gray.300" />}
+                    />
+                    <Input
+                      id="propietario"
+                      name="propietario"
+                      type="text"
+                      value={
+                        state.nombre_propietario +
+                        ' ' +
+                        state.apellido_propietario
+                      }
+                      isReadOnly
+                      variant="flushed"
+                    />
+                  </InputGroup>
+                </FormControl>
+                <FormControl isRequired mt={3}>
                   <FormLabel htmlFor="numero_casa">Número de Casa</FormLabel>
                   <InputGroup>
                     <InputLeftElement
@@ -137,7 +158,9 @@ export const InformacionPropiedad = props => {
                       variant="flushed"
                     />
                   </InputGroup>
-                  <FormLabel htmlFor="direccion_propiedad" mt={3}>
+                </FormControl>
+                <FormControl isRequired mt={3}>
+                  <FormLabel htmlFor="direccion_propiedad">
                     Dirección de Propiedad
                   </FormLabel>
                   <InputGroup>
@@ -156,14 +179,16 @@ export const InformacionPropiedad = props => {
                     />
                   </InputGroup>
                 </FormControl>
-
-                <div className="mt-3 w-100 text-center">
-                  <Button onClick={onUpdate} colorScheme="purple">
-                    <EditIcon color="gray.300" className="me-1" /> Actualizar
-                    Información
-                  </Button>
-                </div>
               </div>
+            </div>
+            <div className="mt-4 w-100 text-center">
+              <Button onClick={onDelete} colorScheme="red" className="me-2">
+                <DeleteIcon color="gray.300" className="me-1" /> Eliminar
+              </Button>
+              <Button onClick={onUpdate} colorScheme="purple" className="ms-2">
+                <EditIcon color="gray.300" className="me-1" /> Actualizar
+                Información
+              </Button>
             </div>
           </ModalBody>
           <ModalFooter>

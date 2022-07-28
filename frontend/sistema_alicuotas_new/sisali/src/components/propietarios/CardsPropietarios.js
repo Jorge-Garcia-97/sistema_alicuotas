@@ -8,8 +8,10 @@ export const CardsPropietarios = props => {
 
   useEffect(() => {
     setState(propietarios);
-    console.log(showInfo)
-  }, []);
+    return () => {
+      setPropietario([]);
+    }
+  }, [showInfo]);
 
   const handleData = (rowdata) => {
     // setPropietario({
@@ -31,14 +33,14 @@ export const CardsPropietarios = props => {
                     <img
                       src={`http://localhost:4000/${item.imagen_propietario}`}
                       alt={'Imagen referencial'}
-                      style={{ maxHeight: '200px', maxWidth: '300px' }}
-                      className="d-block mx-auto w-100 h-100"
+                      style={{ height: '200px', width: '100%' }}
+                      className="d-block mx-auto"
                     />
                   ) : (
                     <img
                       src={user}
                       alt={'Imagen referencial'}
-                      style={{ height: '300px', width: '300px' }}
+                      style={{ height: '300px', width: '100%' }}
                       className="d-block mx-auto w-100 h-100"
                     />
                   )}

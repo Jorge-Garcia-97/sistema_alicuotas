@@ -99,7 +99,7 @@ export const RegistrarAlicuota = props => {
           status: 'error',
           duration: 9000,
           isClosable: true,
-          position: "top-right"
+          position: 'top-right',
         });
       } else {
         toast({
@@ -108,7 +108,7 @@ export const RegistrarAlicuota = props => {
           status: 'success',
           duration: 9000,
           isClosable: true,
-          position: "top-right"
+          position: 'top-right',
         });
         setIsOpen(false);
         stateChanger(true);
@@ -120,7 +120,7 @@ export const RegistrarAlicuota = props => {
         status: 'warning',
         duration: 9000,
         isClosable: true,
-        position: "top-right"
+        position: 'top-right',
       });
     }
   };
@@ -151,30 +151,34 @@ export const RegistrarAlicuota = props => {
     setChecked(tmp);
   };
 
-  const handleChangeMonth = async(event) => {
+  const handleChangeMonth = async event => {
+    setInputs({ ...inputs, mes: event.target.value });
     const response = await get(`pagoalicuota/mes/${event.target.value}`);
     const data = [...dataProp];
     let tmp = [];
-    let aux = [];  
-    if (response.length > 0) {                
-      data.forEach(d => {
-        response.forEach(r => {
-          if(d.id_propiedad === r.id_propiedad) {            
-            console.log("ya existe registro en este mes");
-          }else{
-            if (!tmp.includes(d)) {
-              tmp.push(d);
-            }            
-          }
-        })        
-      });
-      console.log(tmp);
-      setDataProp(tmp);
-      for (let i = 0; i < tmp.length; i++) {
-        aux.push(true);
+    let aux = [];
+    if (data.length > 0) {
+      if (response.length > 0) {
+        var data_temp = [];
+        response.forEach(res => {
+          data_temp.push(res.id_propiedad);
+        });
+        data_temp.forEach(d => {
+          var index_to_delete = data.findIndex(item => item.id_propiedad === d);
+          data.splice(index_to_delete, 1);
+        });
+        setDataProp(data);
+        for (let i = 0; i < data.length; i++) {
+          aux.push(true);
+        }
+        setChecked(aux);
+      } else {
+        setDataProp(propiedades);
+        for (let i = 0; i < propiedades.length; i++) {
+          tmp.push(true);
+        }
+        setChecked(tmp);
       }
-      setChecked(aux);
-      setInputs({ ...inputs, mes: event.target.value });
     } else {
       setDataProp(propiedades);
       for (let i = 0; i < propiedades.length; i++) {
@@ -182,7 +186,7 @@ export const RegistrarAlicuota = props => {
       }
       setChecked(tmp);
     }
-  }
+  };
 
   return (
     <>
@@ -211,7 +215,7 @@ export const RegistrarAlicuota = props => {
                     id="mes"
                     name="mes"
                     value={inputs.mes}
-                    onChange={e => handleChangeMonth(e) }
+                    onChange={e => handleChangeMonth(e)}
                     variant="flushed"
                     className="ps-2"
                   >

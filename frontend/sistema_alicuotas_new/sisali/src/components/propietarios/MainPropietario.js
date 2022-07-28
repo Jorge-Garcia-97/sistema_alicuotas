@@ -42,6 +42,9 @@ export const MainPropietario = () => {
     }
     
     cargarData();
+    return () => {
+      setPropietarios([]);
+    }
   }, [refresh]);  
 
   const openModal = () => {
