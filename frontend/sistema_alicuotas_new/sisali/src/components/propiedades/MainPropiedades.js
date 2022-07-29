@@ -1,13 +1,11 @@
 import { get } from '../../services/Get';
 import { Spinner } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
-//import { RegistroPropietario } from './RegistroPropietario';
-import Swal from 'sweetalert2';
 import React, { useEffect, useState } from 'react';
 import { CardPropiedades } from './CardPropiedades';
 import { RegistroPropiedades } from './RegistroPropiedades';
 import { InformacionPropiedad } from './InformacionPropiedad';
-//import { InformacionPropietario } from './InformacionPropietario';
+import { createStandaloneToast } from '@chakra-ui/toast'
 
 export const MainPropiedades = () => {
 
@@ -17,16 +15,12 @@ export const MainPropiedades = () => {
   const [propietarios, setPropietarios] = useState({
     propietarios: [],
   });
-
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [propiedad, setPropiedad] = useState({});
-  // const [propietario, setPropietario] = useState({
-  //   propietario: [],
-  // });
   const [showInfo, setShowInfo] = useState(false);
-
+  const { ToastContainer, toast } = createStandaloneToast(); 
   useEffect(() => {
     setCargando(true);
     cargarData();
@@ -45,32 +39,20 @@ export const MainPropiedades = () => {
       setCargando(false);
       setRefresh(false);
     } catch (error) {
-      Toast.fire({
-        icon: 'error',
-        title: 'Algo ha salido mal',
-      });
+      toast({
+        title: 'Error',
+        description: 'Se encontró un error al cargar la información.',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+        position: "top-right"
+      })
     }
   }
 
   const openModal = () => {
     setIsOpen(true);
   };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: true,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   return (
     <>
@@ -117,7 +99,7 @@ export const MainPropiedades = () => {
               </>
             ) : (
               <>
-                <h1>ESTOY EN MAIN PROPIEDADES No hay datos a mostrar</h1>
+                <h1>No hay datos a mostrar</h1>
               </>
             )}
 
@@ -130,7 +112,6 @@ export const MainPropiedades = () => {
 
             <InformacionPropiedad
               propiedad={propiedad}
-              propietarios={propietarios}
               showInfo={showInfo}
               setShowInfo={setShowInfo}
               stateChanger={setRefresh}
@@ -138,6 +119,7 @@ export const MainPropiedades = () => {
           </div>
         </div>
       )}
+      <ToastContainer />
     </>
   );
 };

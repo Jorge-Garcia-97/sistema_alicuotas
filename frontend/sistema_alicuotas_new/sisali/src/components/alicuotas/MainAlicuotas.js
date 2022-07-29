@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner, Button } from '@chakra-ui/react';
-import Swal from 'sweetalert2';
+import { createStandaloneToast } from '@chakra-ui/toast';
 import { get } from '../../services/Get';
 import { InformacionAlicuotas } from './InformacionAlicuotas';
 import { RegistrarAlicuota } from './RegistrarAlicuota';
 import { ValidarPago } from './ValidarPago';
+import { InformacionPago } from './InformacionPago';
+import { EditarAlicuota } from './EditarAlicuota';
 
 export const MainAlicuotas = () => {
   const [state, setState] = useState({
@@ -15,7 +17,13 @@ export const MainAlicuotas = () => {
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenValidarPago, setIsOpenValidarPago] = useState(false);
+  const [isOpenInformacionPago, setIsOpenInformacionPago] = useState(false);
+  const [isOpenEditarPago, setIsOpenEditarPago] = useState(false);
   const [data, setData] = useState();
+  const [dataImagen, setDataImagen] = useState();
+  const [data_multas, setData_Multas] = useState();
+  const [data_cuotas, setData_Cuotas] = useState();
+  const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
     setCargando(true);
@@ -31,9 +39,13 @@ export const MainAlicuotas = () => {
         setCargando(false);
         setRefresh(false);
       } catch (error) {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al cargar la información.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: "top-right"
         });
       }
     }
@@ -44,22 +56,6 @@ export const MainAlicuotas = () => {
   const openModal = () => {
     setIsOpen(true);
   };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: true,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   return (
     <>
@@ -94,11 +90,16 @@ export const MainAlicuotas = () => {
               <i className="fa fa-plus-circle ms-1" />
             </Button>
           </div>
-          <div className="container-fluid border shadow-sm">            
+          <div className="container-fluid border shadow-sm">
             <InformacionAlicuotas
               {...state}
               setData={setData}
+              setDataImagen={setDataImagen}
+              setData_Cuotas={setData_Cuotas}
+              setData_Multas={setData_Multas}
               setIsOpenValidarPago={setIsOpenValidarPago}
+              setIsOpenInformacionPago={setIsOpenInformacionPago}
+              setIsOpenEditarPago={setIsOpenEditarPago}
             />
 
             <RegistrarAlicuota
@@ -114,9 +115,26 @@ export const MainAlicuotas = () => {
               isOpenValidarPago={isOpenValidarPago}
               setIsOpenValidarPago={setIsOpenValidarPago}
             />
+
+            <EditarAlicuota
+              data={data}
+              stateChanger={setRefresh}
+              isOpen={isOpenEditarPago}
+              setIsOpen={setIsOpenEditarPago}
+            />
+
+            <InformacionPago
+              data={data}
+              dataImagen={dataImagen}
+              data_cuotas={data_cuotas}
+              data_multas={data_multas}
+              isOpen={isOpenInformacionPago}
+              setIsOpen={setIsOpenInformacionPago}
+            />
           </div>
         </div>
       )}
+      <ToastContainer />
     </>
   );
 };

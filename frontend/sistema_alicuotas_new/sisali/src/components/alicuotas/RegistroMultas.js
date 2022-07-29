@@ -15,64 +15,40 @@ import {
   InputGroup,
   Icon,
 } from '@chakra-ui/react';
-import Swal from 'sweetalert2';
 import { CalendarIcon } from '@chakra-ui/icons';
 import { GrCircleInformation } from 'react-icons/gr';
 import { AiOutlineDollarCircle } from 'react-icons/ai';
-import { saveMultas } from '../../services/Post';
 
 export const RegistroMultas = props => {
-  const { isOpen, setIsOpen, setMultas } = props;
+  const { isOpen, setIsOpen, setMultas, multas } = props;
   const [inputs, setInputs] = useState({
     fecha_multa: '',
     motivo_multa: '',
     valor_multa: '',
-    // estado_multa: '',
+    estado_multa: '',
   });
 
   const initialRef = useRef(null);
   const finalRef = useRef(null);
 
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
-
   const actionGuardar = async () => {
     const inputs_data = { ...inputs };
-    if (inputs_data.fecha_multa != " " && inputs_data.motivo_multa != " " && inputs_data.valor_multa != "") {
-      const response = await saveMultas(inputs_data);
-      if (response.id > 0) {
-        Toast.fire({
-          icon: 'success',
-          title: 'Registro exitoso',
-        });                       
-        setMultas({
-            id_multas: response.id,
-            fecha_multa: inputs_data.fecha_multa,
-            motivo_multa: inputs_data.motivo_multa,
-            valor_multa: inputs_data.valor_multa,
-            estado_multa: "PENDIENTE"
-        });
-        // stateChanger(true);
-        setIsOpen(false);
-      } else {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
-        });
+    const temp = [...multas];
+    if (
+      inputs_data.fecha_multa !== '' &&
+      inputs_data.motivo_multa !== '' &&
+      inputs_data.valor_multa !== ''
+    ) {
+      let multa = {
+        fecha_multa: inputs_data.fecha_multa,
+        motivo_multa: inputs_data.motivo_multa,
+        valor_multa: inputs_data.valor_multa,
+        estado_multa: 'PENDIENTE',
       }
+      temp.push(multa);
+      setMultas(temp);
+      setIsOpen(false);
+      setInputs({});
     }
   };
 
@@ -121,7 +97,9 @@ export const RegistroMultas = props => {
                 </InputGroup>
               </FormControl>
               <FormControl isRequired mt={3}>
-                <FormLabel htmlFor="motivo_multa">Motivo de la multa: </FormLabel>
+                <FormLabel htmlFor="motivo_multa">
+                  Motivo de la multa:{' '}
+                </FormLabel>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
@@ -133,8 +111,8 @@ export const RegistroMultas = props => {
                     type="text"
                     value={inputs.motivo_multa}
                     onChange={e =>
-                        setInputs({ ...inputs, motivo_multa: e.target.value })
-                      }
+                      setInputs({ ...inputs, motivo_multa: e.target.value })
+                    }
                     variant="flushed"
                   />
                 </InputGroup>
@@ -144,7 +122,9 @@ export const RegistroMultas = props => {
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
-                    children={<Icon as={AiOutlineDollarCircle} color="gray.900" />}
+                    children={
+                      <Icon as={AiOutlineDollarCircle} color="gray.900" />
+                    }
                   />
                   <Input
                     id="valor_multa"
@@ -152,8 +132,8 @@ export const RegistroMultas = props => {
                     type="number"
                     value={inputs.valor_multa}
                     onChange={e =>
-                        setInputs({ ...inputs, valor_multa: e.target.value })
-                      }
+                      setInputs({ ...inputs, valor_multa: e.target.value })
+                    }
                     variant="flushed"
                   />
                 </InputGroup>

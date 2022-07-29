@@ -14,10 +14,20 @@ import {
   Select,
 } from '@chakra-ui/react';
 import moment from 'moment';
-import { CheckCircleIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { CheckCircleIcon, EditIcon } from '@chakra-ui/icons';
+import { get } from '../../services/Get';
 
 export const InformacionAlicuotas = props => {
-  const { alicuotas, setIsOpenValidarPago, setData } = props;
+  const {
+    alicuotas,
+    setIsOpenValidarPago,
+    setData,
+    setData_Cuotas,
+    setData_Multas,
+    setIsOpenInformacionPago,
+    setIsOpenEditarPago,
+    setDataImagen
+  } = props;
   const [state, setState] = useState([]);
   const [filtroMes, setFiltroMes] = useState();
   const [filtroPropietario, setFiltroPropietario] = useState();
@@ -85,10 +95,77 @@ export const InformacionAlicuotas = props => {
     setFiltroEstado(estado);
   };
 
-  const openValidarPago = (item) => {
+  const openValidarPago = item => {
     setData(item);
     setIsOpenValidarPago(true);
-  }
+  };
+
+  const openInformacionPago = async item => {
+    try {
+      const data_detalles = await get(
+        `detalle_comprobante/alicuota/${item.id_pago_alicuota}`
+      );
+      if (data_detalles) {
+        let to_send = {
+          forma_pago: data_detalles[0].forma_pago,
+          concepto_comprobante: data_detalles[0].concepto_comprobante,
+          codigo_comprobante: data_detalles[0].codigo_comprobante,
+          fecha_comprobante: data_detalles[0].fecha_comprobante,
+          mes_alicuota: data_detalles[0].mes_alicuota,
+          fecha_maxima_alicuota: data_detalles[0].fecha_maxima_alicuota,
+          valor_alicuota: data_detalles[0].valor_alicuota,
+          valor_pendiente_alicuota: data_detalles[0].valor_pendiente_alicuota,
+          numero_casa: data_detalles[0].numero_casa,
+          nombre_propietario: data_detalles[0].nombre_propietario,
+          apellido_propietario: data_detalles[0].apellido_propietario,
+          celular_propietario: data_detalles[0].celular_propietario,
+          correo_propietario: data_detalles[0].correo_propietario,
+        };
+        setData(to_send);
+        const data_cuotas = await get(
+          `cuota_extra/detalle/${data_detalles[0].id_detalle_comprobante}`
+        );
+        const data_multas = await get(
+          `multa/detalle/${data_detalles[0].id_detalle_comprobante}`
+        );        
+        if (data_multas.length > 0) {
+          const multas_to_send = [];
+          data_multas.map(multa => {
+            let data_multa_temp = {
+              fecha_multa: multa.fecha_multa,
+              motivo_multa: multa.motivo_multa,
+              valor_multa: multa.valor_multa,
+              estado_multa: multa.estado_multa,
+            };
+            multas_to_send.push(data_multa_temp);
+          });
+          setData_Multas(multas_to_send);
+        }
+        if (data_cuotas.length > 0) {
+          const cuotas_to_send = [];
+          data_cuotas.map(cuota => {
+            let data_cuota_temp = {
+              detalle_cuota: cuota.detalle_cuota,
+              valor_cuota: cuota.valor_cuota,
+              estado_cuota: cuota.estado_cuota,
+            };
+            cuotas_to_send.push(data_cuota_temp);
+          });
+          setData_Cuotas(cuotas_to_send);
+        }
+        const response_imagen = await get(`imagen_evidencia/imagen/${data_detalles[0].id_detalle_comprobante}`);
+        setDataImagen(response_imagen.name);
+        setIsOpenInformacionPago(true);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const openEditarPago = async (item) => {
+    setData(item);
+    setIsOpenEditarPago(true);    
+  };
 
   return (
     <>
@@ -227,20 +304,20 @@ export const InformacionAlicuotas = props => {
                             colorScheme={'yellow'}
                             ml={2}
                             rightIcon={<EditIcon />}
+                            onClick={() => openEditarPago(item)}
                           >
                             Editar
                           </Button>
-                          <Button
-                            size="sm"
-                            colorScheme={'red'}
-                            ml={2}
-                            rightIcon={<DeleteIcon />}
-                          >
-                            Borrar
-                          </Button>
                         </>
                       ) : (
-                        <span>Sin acciones</span>
+                        <Button
+                          size="sm"
+                          colorScheme={'telegram'}
+                          onClick={() => openInformacionPago(item)}
+                          rightIcon={<CheckCircleIcon />}
+                        >
+                          Revisar Pago
+                        </Button>
                       )}
                     </Td>
                   </Tr>

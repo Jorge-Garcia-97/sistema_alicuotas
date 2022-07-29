@@ -33,7 +33,17 @@ import { BsPhone, BsEnvelope } from 'react-icons/bs';
 import { GrCircleInformation } from 'react-icons/gr';
 import { RegistroMultas } from './RegistroMultas';
 import { RegistroCuotaExt } from './RegistroCuotaExt';
-import { editEstadoPagos, editValorPendientePago, saveComprobante, saveDetalleComprobante, saveImagenEvidencia } from '../../services/Post';
+import {
+  editEstadoPagos,
+  editValorPendientePago,
+  saveComprobante,
+  saveCuotaExtra,
+  saveDetalleComprobante,
+  saveImagenEvidencia,
+  saveMultas,
+} from '../../services/Post';
+import { AiFillDelete } from 'react-icons/ai';
+import { createStandaloneToast } from '@chakra-ui/toast';
 
 export const ValidarPago = props => {
   const { stateChanger, isOpenValidarPago, setIsOpenValidarPago, data } = props;
@@ -58,28 +68,17 @@ export const ValidarPago = props => {
     valor_pendiente: 0,
     concepto: '',
   });
-  const [multas, setMultas] = useState({
-    id_multas: 0,
-    fecha_multa: '',
-    motivo_multa: '',
-    valor_multa: 0,
-    estado_multa: '',
-  });
-  const [cuota, setCuota] = useState({
-    id_cuota: 0,
-    detalle_cuota: '',
-    valor_cuota: 0,
-    estado_cuota: '',
-  });
+  const [multas, setMultas] = useState([]);
+  const [cuota, setCuota] = useState([]);
   const [totales, setTotales] = useState({
     valor_pagado: 0,
     valor_pendiente: 0,
     valor_multas: 0,
-    valor_multa_fecha: 0,
     valor_cuotas: 0,
     valor_mensual: 0,
     valor_total: 0,
   });
+  const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
     if (data) {
@@ -102,155 +101,225 @@ export const ValidarPago = props => {
       });
     }
     return () => {
-      setInputs({
-        date: '',
-        mes: '',
-        fecha_pago: '',
-        propietario: '',
-        valor: '',
-        propiedad: '',
-        numero_casa: '',
-        codigo: '',
-        id_pago_alicuota: '',
-        telefono: '',
-        correo: '',
-        metodo_pago: '',
-        valor_pagado: 0,
-        valor_pendiente: 0,
-        concepto: '',
-      });
-      setMultas({
-        id_multas: 0,
-        fecha_multa: '',
-        motivo_multa: '',
-        valor_multa: 0,
-        estado_multa: '',
-      });
-      setCuota({
-        id_cuota: 0,
-        detalle_cuota: '',
-        valor_cuota: 0,
-        estado_cuota: '',
-      });
-      setTotales({
-        valor_pagado: 0,
-        valor_pendiente: 0,
-        valor_multas: 0,
-        valor_multa_fecha: 0,
-        valor_cuotas: 0,
-        valor_mensual: 0,
-        valor_total: 0,
-      });
+      setInputs({});
+      setCuota([]);
     };
   }, [isOpenValidarPago]);
 
   useEffect(() => {
-    let multa_fecha = 0;
-    let exceso = moment(inputs.fecha_pago).diff(inputs.date, 'days');
-    if (exceso > 1 && exceso < 29) {
-      multa_fecha = 6;
+    if (data) {
+      var temp = [];
+      let multa_fecha = 0;
+      let exceso = moment(new Date()).diff(data.fecha_maxima_alicuota, 'days');
+      if (exceso > 1 && exceso < 29) {
+        multa_fecha = 6;
+        let multa = {
+          fecha_multa: moment(new Date()).format('YYYY-MM-DD'),
+          motivo_multa: 'Retraso pago de alicuota',
+          valor_multa: multa_fecha,
+          estado_multa: 'PENDIENTE',
+        };
+        temp.push(multa);
+        setMultas(temp);
+      }
+      if (exceso >= 30 && exceso < 90) {
+        multa_fecha = 12;
+        let multa = {
+          fecha_multa: moment(new Date()).format('YYYY-MM-DD'),
+          motivo_multa: 'Retraso pago de alicuota',
+          valor_multa: multa_fecha,
+          estado_multa: 'PENDIENTE',
+        };
+        temp.push(multa);
+        setMultas(temp);
+      }
+      if (exceso >= 90) {
+        multa_fecha = 30;
+        let multa = {
+          fecha_multa: moment(new Date()).format('YYYY-MM-DD'),
+          motivo_multa: 'Retraso pago de alicuota',
+          valor_multa: multa_fecha,
+          estado_multa: 'PENDIENTE',
+        };
+        temp.push(multa);
+        setMultas(temp);
+      }
     }
-    if (exceso >= 30 && exceso < 90) {
-      multa_fecha = 12;
-    }
-    if (exceso >= 90) {
-      multa_fecha = 30;
-    }
+    return () => {
+      setMultas([]);
+    };
+  }, [isOpenValidarPago]);
+
+  useEffect(() => {
+    var multas_array = [...multas];
+    var cuotas_array = [...cuota];
+    var temp_valor_multas = 0;
+    multas_array.map(multa => {
+      temp_valor_multas += parseFloat(multa.valor_multa);
+    });
+    var temp_valor_cuotas = 0;
+    cuotas_array.map(c => {
+      temp_valor_cuotas += parseFloat(c.valor_cuota);
+    });
     setTotales({
       valor_pagado: parseFloat(inputs.valor_pagado),
       valor_pendiente:
-        parseFloat(multas.valor_multa) +
-          multa_fecha +
+        parseFloat(temp_valor_multas) +
           parseFloat(inputs.valor) +
-          parseFloat(cuota.valor_cuota) -
+          parseFloat(temp_valor_cuotas) -
           parseFloat(inputs.valor_pagado) >
         0
-          ? parseFloat(multas.valor_multa) +
-            multa_fecha +
+          ? parseFloat(temp_valor_multas) +
             parseFloat(inputs.valor) +
-            parseFloat(cuota.valor_cuota) -
+            parseFloat(temp_valor_cuotas) -
             parseFloat(inputs.valor_pagado)
           : 0,
-      valor_multas: parseFloat(multas.valor_multa),
-      valor_multa_fecha: multa_fecha,
-      valor_cuotas: parseFloat(cuota.valor_cuota),
+      valor_multas: parseFloat(temp_valor_multas),
+      valor_cuotas: parseFloat(temp_valor_cuotas),
       valor_mensual: parseFloat(inputs.valor),
       valor_total:
-        parseFloat(multas.valor_multa) +
+        parseFloat(temp_valor_multas) +
         parseFloat(inputs.valor) +
-        parseFloat(cuota.valor_cuota) +
-        multa_fecha,
+        parseFloat(temp_valor_cuotas),
     });
-    multa_fecha = 0;
+    return () => {
+      setTotales({});
+    };
   }, [inputs, multas, cuota]);
 
   const guardarRegistro = async () => {
-    let inputs_to_send = {...inputs};
-    let multas_to_send = {...multas};
-    let cuota_to_send = {...cuota};
-    let totales_to_send = {...totales};
-    if (inputs_to_send.concepto !== "" && inputs_to_send.valor_pagado > 0 && inputs_to_send.metodo_pago !== "")  {
+    let inputs_to_send = { ...inputs };
+    let multas_to_send = [...multas];
+    let cuotas_to_send = [...cuota];
+    let totales_to_send = { ...totales };
+    // console.log(totales_to_send.valor_pendiente);
+    if (
+      inputs_to_send.concepto !== '' &&
+      inputs_to_send.valor_pagado > 0 &&
+      inputs_to_send.metodo_pago !== '' &&
+      file
+    ) {
       let comprobante_to_send = {
         codigo_comprobante: inputs_to_send.codigo,
         fecha_comprobante: inputs_to_send.fecha_pago,
-      };      
-      const resp = await saveComprobante(comprobante_to_send);
-      if (resp.id > 0) {
+      };
+      const comprobante = await saveComprobante(comprobante_to_send);
+      if (comprobante.id > 0) {
         let detalle_comprobante_to_send = {
           forma_pago: inputs_to_send.metodo_pago,
           concepto_comprobante: inputs_to_send.concepto,
           id_pago_alicuota: inputs_to_send.id_pago_alicuota,
-          id_comprobante: resp.id,
-          id_cuota_extraordinaria: cuota_to_send.id_cuota > 0 ? cuota_to_send.id_cuota : null,
-          id_multas: multas_to_send.id_multas > 0 ? multas_to_send.id_multas : null,
+          id_comprobante: comprobante.id,
         };
-        const response = await saveDetalleComprobante(detalle_comprobante_to_send);
-        if (response.id > 0) {
-          if (file) {
-            const formdata = new FormData();
-            formdata.append("image", file);
-            const carga = await saveImagenEvidencia(formdata, response.id);
-            document.getElementById("fileinput").value = null;
-            setfile(null);
-            if (carga) {              
+        const detalle_comprobante = await saveDetalleComprobante(
+          detalle_comprobante_to_send
+        );
+        if (detalle_comprobante.id > 0) {
+          const formdata = new FormData();
+          formdata.append('image', file);
+          const carga_imagen = await saveImagenEvidencia(
+            formdata,
+            detalle_comprobante.id
+          );
+          document.getElementById('fileinput').value = null;
+          setfile(null);
+          const registro_multas = [];
+          multas_to_send.map(async multa => {
+            let multa_temp = {
+              fecha_multa: multa.fecha_multa,
+              motivo_multa: multa.motivo_multa,
+              valor_multa: multa.valor_multa,
+              estado_multa: totales_to_send.valor_pendiente == 0 ? 'PAGADO' : 'PENDIENTE',
+              id_detalle_comprobante: detalle_comprobante.id,
+            };
+            const response = await saveMultas(multa_temp);
+            if (response) {
+              registro_multas.push(response);
+            }
+          });
+          const registro_cuotas = [];
+          cuotas_to_send.map(async cuota => {
+            let cuota_temp = {
+              detalle_cuota: cuota.detalle_cuota,
+              valor_cuota: cuota.valor_cuota,
+              estado_cuota: totales_to_send.valor_pendiente == 0 ? 'PAGADO' : 'PENDIENTE',
+              id_detalle_comprobante: detalle_comprobante.id,
+            };
+            const response = await saveCuotaExtra(cuota_temp);
+            if (response) {
+              registro_cuotas.push(response);
+            }
+          });
+          if (
+            registro_cuotas.includes(false) ||
+            registro_cuotas.includes(false)
+          ) {
+            toast({
+              title: 'Error',
+              description: 'Se encontró un error.',
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+              position: "top-right"
+            });
+          } else {
+            if (carga_imagen) {
               let data = {
-                estado_alicuota: "PAGADO",
+                estado_alicuota: 'PAGADO',
                 valor_pendiente_alicuota: totales_to_send.valor_pendiente,
-              }
-              const acutalizar_estado_pago = await editEstadoPagos(data, inputs_to_send.id_pago_alicuota);
-              const acutalizar_valor_pago = await editValorPendientePago(data, inputs_to_send.id_pago_alicuota);
-              if(acutalizar_estado_pago && acutalizar_valor_pago){
-                Toast.fire({
-                  icon: 'success',
-                  title: 'Registro exitoso'
-                });
+              };
+              const acutalizar_estado_pago = await editEstadoPagos(
+                data,
+                inputs_to_send.id_pago_alicuota
+              );
+              const acutalizar_valor_pago = await editValorPendientePago(
+                data,
+                inputs_to_send.id_pago_alicuota
+              );
+              if (acutalizar_estado_pago && acutalizar_valor_pago) {
                 setIsOpenValidarPago(false);
                 stateChanger(true);
-              }               
-            }else{
-              Toast.fire({
-                icon: 'error',
-                title: 'Algo ha salido mal'
-              })
+              }
+            } else {
+              toast({
+                title: 'Error',
+                description: 'Se encontró un error al cargar la imagen.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: "top-right"
+              });
             }
-          }        
+          }
         } else {
-          Toast.fire({
-            icon: 'error',
-            title: 'Algo ha salido mal'
-          })
+          toast({
+            title: 'Error',
+            description: 'Se encontró un error al registrar el valor del pago.',
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+            position: "top-right"
+          });
         }
       } else {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal'
-        })
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al registrar el pago.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: "top-right"
+        });
       }
     } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Necesitas llenar todos los datos'
-      })
+      toast({
+        title: 'Cuidado',
+        description: 'Se deben ingresar todos los datos solicitados.',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+        position: "top-right"
+      });
     }
   };
 
@@ -270,25 +339,21 @@ export const ValidarPago = props => {
     setIsOpenConfirmation(false);
   };
 
-  const selectedHandler = (e) => {
+  const selectedHandler = e => {
     setfile(e.target.files[0]);
   };
-  
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
+
+  const borrarCuotas = (index, count) => {
+    const temp = [...cuota];
+    temp.splice(index, count);
+    setCuota(temp);
+  };
+
+  const borrarMultas = (index, count) => {
+    const temp = [...multas];
+    temp.splice(index, count);
+    setMultas(temp);
+  }; 
 
   const openRegistroMulta = () => {
     setIsOpen(true);
@@ -346,13 +411,12 @@ export const ValidarPago = props => {
                     name="date"
                     value={moment(inputs.date).format('YYYY-MM-DD')}
                     readOnly
-                    className="form-control"
                     type="date"
                     variant="flushed"
                   />
                 </InputGroup>
               </FormControl>
-              <FormControl className="ms-1">
+              <FormControl className="ms-1 me-1">
                 <FormLabel htmlFor="fecha_pago">Fecha de pago: </FormLabel>
                 <InputGroup>
                   <InputLeftElement
@@ -364,8 +428,24 @@ export const ValidarPago = props => {
                     name="fecha_pago"
                     value={moment(inputs.fecha_pago).format('YYYY-MM-DD')}
                     readOnly
-                    className="form-control"
                     type="date"
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl className="ms-1">
+                <FormLabel htmlFor="valor">Valor Mensualidad: </FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<Icon as={BiDollarCircle} color="gray.500" />}
+                  />
+                  <Input
+                    id="valor"
+                    name="valor"
+                    type="text"
+                    value={inputs.valor}
+                    readOnly
                     variant="flushed"
                   />
                 </InputGroup>
@@ -428,22 +508,20 @@ export const ValidarPago = props => {
               <div className="me-1 w-50">
                 <div className="d-flex justify-content-between">
                   <h1 className="fw-bold mt-3 mb-2">Detalle de Multas</h1>
-                  {multas.id_multas == 0 && (
-                    <Button
-                      colorScheme="teal"
-                      className="px-3 mt-2 mb-1"
-                      variant="solid"
-                      size={'sm'}
-                      onClick={openRegistroMulta}
-                    >
-                      Agregar
-                      <i className="fa fa-plus-circle ms-1" />
-                    </Button>
-                  )}
+                  <Button
+                    colorScheme="teal"
+                    className="px-3 mt-2 mb-1"
+                    variant="solid"
+                    size={'sm'}
+                    onClick={openRegistroMulta}
+                  >
+                    Agregar
+                    <i className="fa fa-plus-circle ms-1" />
+                  </Button>
                 </div>
                 <Divider />
                 <div>
-                  {multas.id_multas > 0 ? (
+                  {multas.length > 0 ? (
                     <>
                       <TableContainer>
                         <Table variant="simple" size="sm">
@@ -456,10 +534,24 @@ export const ValidarPago = props => {
                             </Tr>
                           </Thead>
                           <Tbody>
-                            <Td>{multas.fecha_multa}</Td>
-                            <Td>{multas.motivo_multa}</Td>
-                            <Td isNumeric>{multas.valor_multa}</Td>
-                            <Td>{multas.estado_multa}</Td>
+                            {multas.map((multa, i) => (
+                              <Tr key={i}>
+                                <Td>{multa.fecha_multa}</Td>
+                                <Td>{multa.motivo_multa}</Td>
+                                <Td isNumeric>{multa.valor_multa}</Td>
+                                <Td>{multa.estado_multa}</Td>
+                                <Td>
+                                  <Button
+                                    colorScheme="red"
+                                    variant="solid"
+                                    size={'sm'}
+                                    onClick={() => borrarMultas(i, 1)}
+                                  >
+                                    <Icon as={AiFillDelete} color="white" />
+                                  </Button>
+                                </Td>
+                              </Tr>
+                            ))}
                           </Tbody>
                         </Table>
                       </TableContainer>
@@ -474,22 +566,20 @@ export const ValidarPago = props => {
               <div className="ms-1 w-50">
                 <div className="d-flex justify-content-between">
                   <h1 className="fw-bold mt-3 mb-2">Cuota Extraordinaria</h1>
-                  {cuota.id_cuota == 0 && (
-                    <Button
-                      colorScheme="teal"
-                      className="px-3 mt-2 mb-1"
-                      variant="solid"
-                      size={'sm'}
-                      onClick={openModalCuota}
-                    >
-                      Agregar
-                      <i className="fa fa-plus-circle ms-1" />
-                    </Button>
-                  )}
+                  <Button
+                    colorScheme="teal"
+                    className="px-3 mt-2 mb-1"
+                    variant="solid"
+                    size={'sm'}
+                    onClick={openModalCuota}
+                  >
+                    Agregar
+                    <i className="fa fa-plus-circle ms-1" />
+                  </Button>
                 </div>
                 <Divider />
                 <div>
-                  {cuota.id_cuota > 0 ? (
+                  {cuota.length > 0 ? (
                     <>
                       <TableContainer>
                         <Table variant="simple" size="sm">
@@ -501,9 +591,23 @@ export const ValidarPago = props => {
                             </Tr>
                           </Thead>
                           <Tbody>
-                            <Td>{cuota.detalle_cuota}</Td>
-                            <Td isNumeric>{cuota.valor_cuota}</Td>
-                            <Td>{cuota.estado_cuota}</Td>
+                            {cuota.map((c, i) => (
+                              <Tr key={i}>
+                                <Td>{c.detalle_cuota}</Td>
+                                <Td isNumeric>{c.valor_cuota}</Td>
+                                <Td>{c.estado_cuota}</Td>
+                                <Td>
+                                  <Button
+                                    colorScheme="red"
+                                    variant="solid"
+                                    size={'sm'}
+                                    onClick={() => borrarCuotas(i, 1)}
+                                  >
+                                    <Icon as={AiFillDelete} color="white" />
+                                  </Button>
+                                </Td>
+                              </Tr>
+                            ))}
                           </Tbody>
                         </Table>
                       </TableContainer>
@@ -590,7 +694,7 @@ export const ValidarPago = props => {
             <div className="d-flex px-3 mt-3">
               <div className="flex-grow-1">
                 <FormControl isRequired>
-                  <FormLabel htmlFor="correo">Comprobante de pago</FormLabel>
+                  <FormLabel htmlFor="correo">Evidencia de pago</FormLabel>
                   <input
                     id="fileinput"
                     onChange={selectedHandler}
@@ -665,27 +769,6 @@ export const ValidarPago = props => {
                 </FormControl>
                 <FormControl>
                   <div className="d-flex justify-content-end">
-                    <FormLabel className="mt-2" htmlFor="valor_multa_fecha">
-                      Multa por retraso:{' '}
-                    </FormLabel>
-                    <InputGroup className="w-25">
-                      <InputLeftElement
-                        pointerEvents="none"
-                        children={<Icon as={BiDollarCircle} color="gray.500" />}
-                      />
-                      <Input
-                        id="valor_multa_fecha"
-                        name="valor_multa_fecha"
-                        type="number"
-                        value={totales.valor_multa_fecha}
-                        readOnly
-                        variant="flushed"
-                      />
-                    </InputGroup>
-                  </div>
-                </FormControl>
-                <FormControl>
-                  <div className="d-flex justify-content-end">
                     <FormLabel className="mt-2" htmlFor="valor_pendiente">
                       Saldo pendiente:{' '}
                     </FormLabel>
@@ -741,11 +824,13 @@ export const ValidarPago = props => {
         <RegistroMultas
           isOpen={isOpen}
           setIsOpen={setIsOpen}
+          multas={multas}
           setMultas={setMultas}
         />
         <RegistroCuotaExt
           isOpenCuota={isOpenCuota}
           setIsOpenCuota={setIsOpenCuota}
+          cuotas={cuota}
           setCuota={setCuota}
         />
 
@@ -779,6 +864,7 @@ export const ValidarPago = props => {
           </ModalContent>
         </Modal>
       </Modal>
+      <ToastContainer />
     </>
   );
 };

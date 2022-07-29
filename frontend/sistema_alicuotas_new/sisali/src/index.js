@@ -4,14 +4,17 @@ import * as ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
+import { createStandaloneToast } from '@chakra-ui/toast';
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
+const { ToastContainer, toast } = createStandaloneToast()
 
 root.render(
   <StrictMode>
     <ColorModeScript />
     <App />
+    <ToastContainer />
   </StrictMode>
 );
 

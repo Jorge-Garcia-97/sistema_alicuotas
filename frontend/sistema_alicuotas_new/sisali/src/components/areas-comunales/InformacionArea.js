@@ -15,22 +15,19 @@ import {
   InputGroup,
 } from '@chakra-ui/react';
 import user from '../../img/usuario.png';
-import {
-    DeleteIcon,
-  EditIcon,
-  EmailIcon,
-  PhoneIcon,
-} from '@chakra-ui/icons';
-import Swal from 'sweetalert2';
+import { DeleteIcon, EditIcon, EmailIcon, PhoneIcon } from '@chakra-ui/icons';
+import { createStandaloneToast } from '@chakra-ui/toast';
 import { ModalFileInput } from './ModalFileInput';
 import { editArea } from '../../services/Post';
 import { EliminarArea } from './EliminarArea';
+import { validarLetras } from '../propietarios/validaciones';
 
-export const InformacionArea = (props) => {
+export const InformacionArea = props => {
   const { area, showInfo, setShowInfo, stateChanger } = props;
   const [state, setState] = useState([]);
   const [showInputFile, setShowInputFile] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
     setState(area);
@@ -40,38 +37,44 @@ export const InformacionArea = (props) => {
   }, [showInfo]);
 
   const onUpdate = async () => {
-    console.log(state);
-    const response = await editArea(state, area.id_area_comunal);
-    if (response) {
-      Toast.fire({
-        icon: 'success',
-        title: 'Actualización exitoso',
-      });
-      stateChanger(true);
-      onClose();
+    if (
+      validarLetras(state.nombre_area) &&
+      validarLetras(state.descripcion_area)
+    ) {
+      const response = await editArea(state, area.id_area_comunal);
+      if (response) {
+        toast({
+          title: 'Registro realizado con éxito',
+          description: 'Se actualizó la información del área.',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
+        });
+        stateChanger(true);
+        onClose();
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al registrar el área.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
+        });
+      }
     } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Algo ha salido mal',
+      toast({
+        title: 'Cuidado',
+        description:
+          'Se deben ingresar datos correctos en los campos solicitados.',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+        position: 'top-right',
       });
     }
   };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   const onClose = () => {
     setShowInfo(false);
@@ -99,11 +102,12 @@ export const InformacionArea = (props) => {
   return (
     <>
       <Modal
+        isCentered
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={showInfo}
         onClose={onClose}
-        size={'xl'}
+        size={'4xl'}
       >
         <ModalOverlay />
         <ModalContent>
@@ -111,23 +115,23 @@ export const InformacionArea = (props) => {
           <ModalCloseButton />
           <ModalBody>
             <div className="row">
-              <div className="col-sm-4">
+              <div className="col-sm-5 bg-light py-4 rounded">
                 {state.imagen_area ? (
                   <img
                     src={`http://localhost:4000/${state.imagen_area}`}
                     alt={'Imagen referencial'}
-                    style={{ maxHeight: '200px', maxWidth: '300px' }}
-                    className="d-block mx-auto w-100 h-100"
+                    style={{ height: '250px', width: '300px' }}
+                    className="d-block mx-auto my-auto"
                   />
                 ) : (
                   <img
                     src={user}
                     alt={'Imagen referencial'}
                     style={{ height: '300px', width: '300px' }}
-                    className="d-block mx-auto w-100 h-100"
+                    className="d-block mx-auto my-auto"
                   />
                 )}
-                <div className="w-100 text-center mt-3">
+                <div className="w-100 text-center mt-3 px-4">
                   <Button
                     onClick={openModalInputFile}
                     colorScheme="blue"
@@ -145,7 +149,7 @@ export const InformacionArea = (props) => {
                   </Button>
                 </div>
               </div>
-              <div className="col-sm-8">
+              <div className="col-sm-7 px-5">
                 <FormControl isRequired>
                   <FormLabel htmlFor="nombre">Nombre</FormLabel>
                   <InputGroup>
@@ -153,7 +157,7 @@ export const InformacionArea = (props) => {
                       pointerEvents="none"
                       children={<EditIcon color="gray.300" />}
                     />
-                    <Input                      
+                    <Input
                       id="nombre"
                       name="nombre"
                       type="text"
@@ -181,9 +185,8 @@ export const InformacionArea = (props) => {
                       placeholder="Descripción"
                       variant="flushed"
                     />
-                  </InputGroup>                  
+                  </InputGroup>
                 </FormControl>
-
                 <div className="mt-3 w-100 text-center">
                   <Button onClick={onUpdate} colorScheme="purple">
                     <EditIcon color="gray.300" className="me-1" /> Actualizar
@@ -212,9 +215,9 @@ export const InformacionArea = (props) => {
             setShowDeleteModal={setShowDeleteModal}
             setShowInfo={setShowInfo}
           />
-
         </ModalContent>
       </Modal>
+      <ToastContainer />
     </>
   );
 };

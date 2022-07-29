@@ -23,10 +23,11 @@ import {
   TableContainer,
   Checkbox,
 } from '@chakra-ui/react';
-import Swal from 'sweetalert2';
+import { createStandaloneToast } from '@chakra-ui/toast';
 import { CalendarIcon } from '@chakra-ui/icons';
 import { savePagos } from '../../services/Post';
 import moment from 'moment';
+import { get } from '../../services/Get';
 
 export const RegistrarAlicuota = props => {
   const { stateChanger, isOpen, setIsOpen, propiedades } = props;
@@ -36,6 +37,7 @@ export const RegistrarAlicuota = props => {
   });
   const [dataProp, setDataProp] = useState([]);
   const [checked, setChecked] = useState([]);
+  const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
     if (propiedades) {
@@ -62,22 +64,6 @@ export const RegistrarAlicuota = props => {
   const onClose = () => {
     setIsOpen(false);
   };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   const actionGuardar = () => {
     const propiedades = [...dataProp];
@@ -107,22 +93,34 @@ export const RegistrarAlicuota = props => {
       const bandera_boolean = banderas.some(item => item === false);
       const bandera_type = banderas.some(item => item === undefined);
       if (bandera_boolean || bandera_type) {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al registrar la alicuota.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
         });
       } else {
-        Toast.fire({
-          icon: 'success',
-          title: 'Registro exitoso',
+        toast({
+          title: 'Registro realizado con éxito',
+          description: 'Se registró el valor de la alicuota.',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
         });
         setIsOpen(false);
         stateChanger(true);
       }
     } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Debes ingresar datos en todos los campos',
+      toast({
+        title: 'Cuidado',
+        description: 'Se deben ingresar todos los datos solicitados.',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+        position: 'top-right',
       });
     }
   };
@@ -153,6 +151,43 @@ export const RegistrarAlicuota = props => {
     setChecked(tmp);
   };
 
+  const handleChangeMonth = async event => {
+    setInputs({ ...inputs, mes: event.target.value });
+    const response = await get(`pagoalicuota/mes/${event.target.value}`);
+    const data = [...dataProp];
+    let tmp = [];
+    let aux = [];
+    if (data.length > 0) {
+      if (response.length > 0) {
+        var data_temp = [];
+        response.forEach(res => {
+          data_temp.push(res.id_propiedad);
+        });
+        data_temp.forEach(d => {
+          var index_to_delete = data.findIndex(item => item.id_propiedad === d);
+          data.splice(index_to_delete, 1);
+        });
+        setDataProp(data);
+        for (let i = 0; i < data.length; i++) {
+          aux.push(true);
+        }
+        setChecked(aux);
+      } else {
+        setDataProp(propiedades);
+        for (let i = 0; i < propiedades.length; i++) {
+          tmp.push(true);
+        }
+        setChecked(tmp);
+      }
+    } else {
+      setDataProp(propiedades);
+      for (let i = 0; i < propiedades.length; i++) {
+        tmp.push(true);
+      }
+      setChecked(tmp);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -180,9 +215,7 @@ export const RegistrarAlicuota = props => {
                     id="mes"
                     name="mes"
                     value={inputs.mes}
-                    onChange={e =>
-                      setInputs({ ...inputs, mes: e.target.value })
-                    }
+                    onChange={e => handleChangeMonth(e)}
                     variant="flushed"
                     className="ps-2"
                   >
@@ -285,6 +318,7 @@ export const RegistrarAlicuota = props => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <ToastContainer />
     </>
   );
 };

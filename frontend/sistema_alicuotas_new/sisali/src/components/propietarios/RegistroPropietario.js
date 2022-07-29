@@ -21,8 +21,15 @@ import {
   saveUsuario,
 } from '../../services/Post';
 import { EditIcon, EmailIcon, PhoneIcon } from '@chakra-ui/icons';
-import Swal from 'sweetalert2';
+import { createStandaloneToast } from '@chakra-ui/toast';
 import './style.css';
+import {
+  validadorIdentidades,
+  validarCorreo,
+  validarLetras,
+  validarTelefonos,
+} from './validaciones';
+import { get } from '../../services/Get';
 
 export const RegistroPropietario = props => {
   const { stateChanger, isOpen, setIsOpen } = props;
@@ -38,75 +45,144 @@ export const RegistroPropietario = props => {
 
   const initialRef = useRef(null);
   const finalRef = useRef(null);
+  const { ToastContainer, toast } = createStandaloneToast();
 
   const guardarRegistro = async () => {
-    let data = {...inputs};
-    if (data.apellido !== "" && data.nombre !== "" && data.cedula !== "" && data.correo !== "" && data.rol !=="" && data.telefono !== "") {
-      let data_user = {
-        correo: data.correo,
-        password: 'admin123',
-      };
-      const resp = await saveUsuario(data_user);
-      if (resp.id > 0) {
-        const response = await savePropietario(data, resp.id);
-        if (response.id > 0) {
-          if (file) {
-            const formdata = new FormData();
-            formdata.append("image", file);
-            let carga = await saveImagenPropietario(formdata, response.id);
-            document.getElementById("fileinput").value = null;
-            setfile(null);
-            if (carga) {
-              Toast.fire({
-                icon: 'success',
-                title: 'Registro exitoso'
-              })
-              setIsOpen(false);
-              stateChanger(true);
-            }else{
-              Toast.fire({
-                icon: 'error',
-                title: 'Algo ha salido mal'
-              })
+    let data = { ...inputs };
+    if (
+      data.apellido !== '' &&
+      data.nombre !== '' &&
+      data.cedula !== '' &&
+      data.correo !== '' &&
+      data.rol !== '' &&
+      data.telefono !== ''
+    ) {
+      if (
+        validarLetras(data.apellido) &&
+        validarLetras(data.nombre) &&
+        validarCorreo(data.correo) &&
+        validarTelefonos(data.telefono)
+      ) {
+        if (validadorIdentidades(data.cedula)) {
+          const if_exist = await get(`propietario/by-cedula/${data.cedula}`);
+          if (if_exist.length == 0) {
+            let data_user = {
+              correo: data.correo,
+              password: 'admin123',
+            };
+            const resp = await saveUsuario(data_user);
+            if (resp.id > 0) {
+              const response = await savePropietario(data, resp.id);
+              if (response.id > 0) {
+                if (file) {
+                  const formdata = new FormData();
+                  formdata.append('image', file);
+                  let carga = await saveImagenPropietario(
+                    formdata,
+                    response.id
+                  );
+                  document.getElementById('fileinput').value = null;
+                  setfile(null);
+                  if (carga) {
+                    setIsOpen(false);
+                    stateChanger(true);
+                    toast({
+                      title: 'Registro realizado con éxito',
+                      description: 'Se registró el propietario.',
+                      status: 'success',
+                      duration: 9000,
+                      isClosable: true,
+                      position: 'top-right',
+                    });
+                  } else {
+                    toast({
+                      title: 'Error',
+                      description: 'Se encontró un error al cargar la imagen.',
+                      status: 'error',
+                      duration: 9000,
+                      isClosable: true,
+                      position: 'top-right',
+                    });
+                  }
+                }
+              } else {
+                toast({
+                  title: 'Error',
+                  description:
+                    'Se encontró un error al registrar el propietario.',
+                  status: 'error',
+                  duration: 9000,
+                  isClosable: true,
+                  position: 'top-right',
+                });
+              }
+            } else {
+              toast({
+                title: 'Error',
+                description: 'Se encontró un error al registrar el usuario.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right',
+              });
             }
-          }        
+          } else {
+            var usuario_temp = if_exist[0];
+            if (usuario_temp.estado_propietario === 'ACTIVO') {
+              toast({
+                title: 'Error',
+                description:
+                  'Ya existe un usuario con el número de cédula ingresado.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right',
+              });
+            } else {
+              toast({
+                title: 'Error',
+                description:
+                  'Ya existe un usuario deshabilitado con el número de cédula ingresado. Por favor solicite al administrador que elimine el registro mencionado o que lo actualice.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right',
+              });
+            }
+          }
         } else {
-          Toast.fire({
-            icon: 'error',
-            title: 'Algo ha salido mal'
-          })
+          toast({
+            title: 'Error',
+            description: 'El número de cédula ingresado no es válido.',
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+            position: 'top-right',
+          });
         }
       } else {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal'
-        })
+        toast({
+          title: 'Cuidado',
+          description: 'Se deben ingresar datos correctos en los campos solicitados.',
+          status: 'warning',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
+        });
       }
     } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Necesitas llenar todos los datos'
-      })
+      toast({
+        title: 'Cuidado',
+        description: 'Se deben ingresar todos los datos solicitados.',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+        position: 'top-right',
+      });
     }
   };
 
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-      toast.addEventListener('mouseenter', Swal.stopTimer)
-      toast.addEventListener('mouseleave', Swal.resumeTimer)
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup'
-    }
-  });
-
-  const selectedHandler = (e) => {
+  const selectedHandler = e => {
     setfile(e.target.files[0]);
   };
 
@@ -122,8 +198,6 @@ export const RegistroPropietario = props => {
     setInputs(_tmp);
   };
 
-  // const handleError = () => {};
-
   return (
     <>
       <Modal
@@ -133,7 +207,7 @@ export const RegistroPropietario = props => {
         isOpen={isOpen}
         onClose={onClose}
         size={'xl'}
-        motionPreset='slideInBottom'
+        motionPreset="slideInBottom"
       >
         <ModalOverlay />
         <ModalContent>
@@ -262,7 +336,7 @@ export const RegistroPropietario = props => {
               </ModalBody>
             </div>
           </div>
-          <div className="container px-4">            
+          <div className="container px-4">
             <FormControl mt={4} isRequired>
               <FormLabel htmlFor="correo">Imagen</FormLabel>
               <input
@@ -278,9 +352,10 @@ export const RegistroPropietario = props => {
               Guardar
             </Button>
             <Button onClick={onClose}>Cancelar</Button>
-          </ModalFooter>          
+          </ModalFooter>
         </ModalContent>
       </Modal>
+      <ToastContainer />
     </>
   );
 };

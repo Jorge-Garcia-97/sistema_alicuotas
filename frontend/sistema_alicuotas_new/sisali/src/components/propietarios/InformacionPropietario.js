@@ -15,22 +15,23 @@ import {
   InputGroup,
 } from '@chakra-ui/react';
 import user from '../../img/usuario.png';
-import {
-    DeleteIcon,
-  EditIcon,
-  EmailIcon,
-  PhoneIcon,
-} from '@chakra-ui/icons';
+import { DeleteIcon, EditIcon, EmailIcon, PhoneIcon } from '@chakra-ui/icons';
 import { editPropietario } from '../../services/Post';
-import Swal from 'sweetalert2';
 import { ModalFileInput } from './ModalFileInput';
 import { EliminarPropietario } from './EliminarPropietario';
+import { createStandaloneToast } from '@chakra-ui/toast';
+import {
+  validarCorreo,
+  validarLetras,
+  validarTelefonos,
+} from './validaciones';
 
 export const InformacionPropietario = props => {
   const { propietario, showInfo, setShowInfo, stateChanger } = props;
   const [state, setState] = useState([]);
   const [showInputFile, setShowInputFile] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
     setState(propietario);
@@ -40,38 +41,45 @@ export const InformacionPropietario = props => {
   }, [showInfo]);
 
   const onUpdate = async () => {
-    console.log(state);
-    const response = await editPropietario(state, state.id_propietario);
-    if (response) {
-      Toast.fire({
-        icon: 'success',
-        title: 'Actualización exitoso',
-      });
-      stateChanger(true);
-      onClose();
+    if (
+      validarLetras(state.nombre_propietario) &&
+      validarLetras(state.apellido_propietario) &&
+      validarCorreo(state.correo_propietario) &&
+      validarTelefonos(state.celular_propietario)
+    ) {
+      const response = await editPropietario(state, state.id_propietario);
+      if (response) {
+        toast({
+          title: 'Registro realizado con éxito',
+          description: 'Se actualizó la información del propietario.',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
+        });
+        stateChanger(true);
+        onClose();
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al registrar el propietario.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
+        });
+      }
     } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Algo ha salido mal',
+      toast({
+        title: 'Cuidado',
+        description: 'Se deben ingresar datos correctos en los campos solicitados.',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+        position: 'top-right',
       });
     }
   };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   const onClose = () => {
     setShowInfo(false);
@@ -99,11 +107,12 @@ export const InformacionPropietario = props => {
   return (
     <>
       <Modal
+        isCentered
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={showInfo}
         onClose={onClose}
-        size={'xl'}
+        size={'4xl'}
       >
         <ModalOverlay />
         <ModalContent>
@@ -111,20 +120,20 @@ export const InformacionPropietario = props => {
           <ModalCloseButton />
           <ModalBody>
             <div className="row">
-              <div className="col-sm-4">
+              <div className="col-sm-4 bg-light rounded py-2">
                 {state.imagen_propietario ? (
                   <img
                     src={`http://localhost:4000/${state.imagen_propietario}`}
                     alt={'Imagen referencial'}
-                    style={{ maxHeight: '200px', maxWidth: '300px' }}
-                    className="d-block mx-auto w-100 h-100"
+                    style={{ height: '300px', width: '300px' }}
+                    className="d-block mx-auto my-auto"
                   />
                 ) : (
                   <img
                     src={user}
                     alt={'Imagen referencial'}
                     style={{ height: '300px', width: '300px' }}
-                    className="d-block mx-auto w-100 h-100"
+                    className="d-block mx-auto my-auto"
                   />
                 )}
                 <div className="w-100 text-center mt-3">
@@ -145,18 +154,16 @@ export const InformacionPropietario = props => {
                     Propiedad
                   </Button> */}
 
-                  
                   <Button
                     onClick={onDelete}
                     colorScheme="red"
                     className="mt-2 w-100"
                   >
-                    <DeleteIcon color="gray.300" className="me-1" />{' '}
-                    Eliminar
+                    <DeleteIcon color="gray.300" className="me-1" /> Eliminar
                   </Button>
                 </div>
               </div>
-              <div className="col-sm-8">
+              <div className="col-sm-8 px-5">
                 <FormControl isRequired>
                   <FormLabel htmlFor="nombre">Nombres</FormLabel>
                   <InputGroup>
@@ -206,7 +213,7 @@ export const InformacionPropietario = props => {
                       name="cedula"
                       type="text"
                       value={state.cedula_propietario}
-                      onChange={handleInputChange}
+                      readOnly
                       placeholder="Cedula"
                       variant="flushed"
                     />
@@ -270,7 +277,7 @@ export const InformacionPropietario = props => {
             setShowInfo={setShowInfo}
           />
 
-          <EliminarPropietario 
+          <EliminarPropietario
             id_propietario={state.id_propietario}
             stateChanger={stateChanger}
             showDeleteModal={showDeleteModal}
@@ -279,6 +286,7 @@ export const InformacionPropietario = props => {
           />
         </ModalContent>
       </Modal>
+      <ToastContainer />
     </>
   );
 };

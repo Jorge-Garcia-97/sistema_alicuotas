@@ -2,7 +2,6 @@ import React from 'react';
 import { Navbar } from '../components/navbar/Navbar';
 import { Sidebar } from '../components/navbar/Sidebar';
 import { Outlet } from 'react-router-dom';
-import { useState } from 'react';
 import { LoginScreen } from '../views/LoginScreen';
 import { useSelector } from 'react-redux';
 
@@ -42,7 +41,7 @@ export const RoutesApp = () => {
         </div>
       ) : (
         <LoginScreen />
-      )}
+      )}      
     </>
   );
 };

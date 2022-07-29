@@ -5,7 +5,6 @@ var getConnection = require("../conexion");
 //consultar propiedades
 router.get("/propiedades/:estado", (req, res) => {
     try {
-
       const { estado } = req.params;
       getConnection(function (err, conn) {
         if (err) {

@@ -11,13 +11,13 @@ import {
   FormLabel,
   Input,
   Button,
-  Select,
   InputLeftElement,
   InputGroup,
 } from '@chakra-ui/react';
 import { saveArea, saveImagenArea } from '../../services/Post';
 import { EditIcon } from '@chakra-ui/icons';
-import Swal from 'sweetalert2';
+import { createStandaloneToast } from '@chakra-ui/toast';
+import { validarLetras } from '../propietarios/validaciones';
 
 export const RegistroArea = props => {
   const { stateChanger, isOpen, setIsOpen } = props;
@@ -26,65 +26,78 @@ export const RegistroArea = props => {
     descripcion_area: '',
   });
   const [file, setfile] = useState(null);
-
+  const { ToastContainer, toast } = createStandaloneToast();
   const initialRef = useRef(null);
   const finalRef = useRef(null);
 
   const guardarArea = async () => {
     let data = { ...inputs };
     if (data.nombre_area !== '' && data.descripcion_area !== '') {
-      const response = await saveArea(data);
-      console.log(response.id);
-      if (response.id > 0) {
-        if (file) {
-          const formdata = new FormData();
-          formdata.append('image', file);
-          let carga = await saveImagenArea(formdata, response.id);
-          document.getElementById('fileinput').value = null;
-          setfile(null);
-          if (carga) {
-            Toast.fire({
-              icon: 'success',
-              title: 'Registro exitoso',
-            });
-            setIsOpen(false);
-            stateChanger(true);
-          } else {
-            Toast.fire({
-              icon: 'error',
-              title: 'Algo ha salido mal',
-            });
+      if (
+        validarLetras(data.nombre_area) &&
+        validarLetras(data.descripcion_area)
+      ) {
+        const response = await saveArea(data);
+        if (response.id > 0) {
+          if (file) {
+            const formdata = new FormData();
+            formdata.append('image', file);
+            let carga = await saveImagenArea(formdata, response.id);
+            document.getElementById('fileinput').value = null;
+            setfile(null);
+            if (carga) {
+              toast({
+                title: 'Registro realizado con éxito',
+                description: 'Se registró el área.',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right',
+              });
+              setIsOpen(false);
+              stateChanger(true);
+            } else {
+              toast({
+                title: 'Error',
+                description: 'Se encontró un error al cargar la imagen.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right',
+              });
+            }
           }
+        } else {
+          toast({
+            title: 'Error',
+            description: 'Se encontró un error al registrar el área.',
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+            position: 'top-right',
+          });
         }
       } else {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
+        toast({
+          title: 'Cuidado',
+          description: 'Se deben ingresar datos correctos en los campos solicitados.',
+          status: 'warning',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
         });
       }
     } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Necesitas llenar todos los datos',
+      toast({
+        title: 'Cuidado',
+        description: 'Se deben ingresar todos los datos solicitados.',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+        position: 'top-right',
       });
     }
   };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   const selectedHandler = e => {
     setfile(e.target.files[0]);
@@ -111,7 +124,7 @@ export const RegistroArea = props => {
         isOpen={isOpen}
         onClose={onClose}
         size={'xl'}
-        motionPreset='slideInBottom'
+        motionPreset="slideInBottom"
       >
         <ModalOverlay />
         <ModalContent>
@@ -177,6 +190,7 @@ export const RegistroArea = props => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <ToastContainer />
     </>
   );
 };

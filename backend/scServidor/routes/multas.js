@@ -47,6 +47,29 @@ router.get("/multa/:id", (req, res) => {
   }
 });
 
+//consultar multas
+router.get("/multa/detalle/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    getConnection(function (err, conn) {
+      if (err) {
+        return res.status(500).send("¡Algo ha salido mal!");
+      } else {
+        conn.query("SELECT * FROM multas WHERE detalle_comprobante_id_detalle_comprobante = ?", [id], function (err, row) {
+          if (err) {
+            return res.status(404).send("No se ha encontrado ninguna multa");
+          } else {
+            return res.send(row);
+          }
+        });
+      }
+      conn.release();
+    });
+  } catch (error) {
+    res.send("¡Error!. intente más tarde");
+  }
+});
+
 //Registrar multa
 router.post("/multa/save/", (req, res) => {
   try {
@@ -55,8 +78,9 @@ router.post("/multa/save/", (req, res) => {
       motivo_multa: req.body.motivo_multa,
       valor_multa: req.body.valor_multa,
       estado_multa: req.body.estado_multa,
+      id_detalle_comprobante: req.body.detalle_comprobante_id_detalle_comprobante,
     };
-    const query = `INSERT INTO multas (fecha_multa, motivo_multa, valor_multa, estado_multa) VALUES ('${data.fecha_multa}', '${data.motivo_multa}', '${data.valor_multa}', '${data.estado_multa}')`;
+    const query = `INSERT INTO multas (fecha_multa, motivo_multa, valor_multa, estado_multa, detalle_comprobante_id_detalle_comprobante) VALUES ('${data.fecha_multa}', '${data.motivo_multa}', '${data.valor_multa}', '${data.estado_multa}', '${data.id_detalle_comprobante}')`;
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");
@@ -65,9 +89,8 @@ router.post("/multa/save/", (req, res) => {
           if (err) {
             console.log(err);
             return res.status(404).send("No se ha podido realizar su petición");
-          } else {
-            var id = row.insertId;
-            return res.send({ id });
+          } else {            
+            return res.status(200).send("Ok");
           }
         });
       }
