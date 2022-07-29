@@ -1,79 +1,61 @@
-/*import React from 'react'
+import { Button, Icon } from '@chakra-ui/react';
+import React from 'react';
+import { BsCalendarFill } from 'react-icons/bs';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import moment from 'moment';
+
+const localizer = momentLocalizer(moment);
+
 export const MainReservaciones = () => {
-  return (
-    <div>MainReservaciones</div>
-  )
-}*/
-import React, { useEffect, useState } from 'react';
-import user from '../../img/usuario.png';
-import { Button } from '@chakra-ui/react';
-
-export const MainReservaciones = props => {
-  const { areas, setArea, showInfo, setShowInfo } = props;
-  const [state, setState] = useState([]);
-
-  useEffect(() => {
-    setState(areas);
-  }, []);
-
-  const handleData = rowdata => {
-    setArea(rowdata);
-    setShowInfo(true);
+  const events = [
+    {
+      id: 0,
+      name: 'Holiday',
+      description: 'this is description',
+      allDay: true,
+      start: new Date(),
+      end: new Date(),
+    },
+  ];
+  const event = ({ event }) => {
+    return (
+      <div>
+        {event.name} <br /> <small>{event.description}</small>{' '}
+      </div>
+    );
   };
-  
   return (
     <>
-      {state ? (
-        <>
-          {state.map((item, i) => (
-            <div className="col-sm-2" key={i}>
-              <div className="card shadow-sm">
-                <>
-                  {item.imagen_area ? (
-                    <img
-                      src={`http://localhost:4000/${item.imagen_area}`}
-                      alt={'Imagen referencial'}
-                      style={{ maxHeight: '200px', maxWidth: '300px' }}
-                      className="d-block mx-auto w-100 h-100"
-                    />
-                  ) : (
-                    <img
-                      src={user}
-                      alt={'Imagen referencial'}
-                      style={{ height: '300px', width: '300px' }}
-                      className="d-block mx-auto w-100 h-100"
-                    />
-                  )}
-                </>
-                <div className="card-body border-top">
-                  <h1
-                    className="card-title fw-bold"
-                    style={{ fontSize: '25px' }}
-                  >
-                    {item.nombre_area}
-                  </h1>
-                  <p className="card-text">
-                    <i className="fa fa-briefcase" style={{ width: '30px' }} />
-                    {item.descripcion_area}
-                  </p>                  
-                </div>
-                <Button
-                  colorScheme="blue"
-                  style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
-                  onClick={() => handleData(item)}
-                  className="pt-1 pb-2"
-                >
-                  Más información <i className="fa fa-info-circle ms-1" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </>
-      ) : (
-        <>
-          <div>No hay datos</div>
-        </>
-      )}
+      <div className="container-fluid p-1">
+        <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
+          <h1 className="display-6 fw-bold">
+            <Icon
+              as={BsCalendarFill}
+              color="black"
+              boxSize={6}
+              className="me-2 mb-2"
+            />
+            Reservas
+          </h1>
+          <Button colorScheme="teal" className="px-3" variant="solid">
+            Crear Rerservación
+            <i className="fa fa-plus-circle ms-1" />
+          </Button>
+        </div>
+        <div className="container-fluid border py-4 shadow-sm">
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: 600 }}
+            components={{
+              event: event,
+            }}
+          />
+        </div>
+      </div>
     </>
   );
 };
