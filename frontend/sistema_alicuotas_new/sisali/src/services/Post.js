@@ -445,18 +445,21 @@ export const savePagos = async data => {
 
 export const editPagos = async (data, id) => {
   try {
-    const response = await fetch(`http://localhost:4000/pagoalicuota/edit/${id}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        mes_alicuota: data.mes_alicuota,
-        valor_alicuota: data.valor_alicuota,
-        fecha_maxima_alicuota: data.fecha_maxima_alicuota,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:4000/pagoalicuota/edit/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mes_alicuota: data.mes_alicuota,
+          valor_alicuota: data.valor_alicuota,
+          fecha_maxima_alicuota: data.fecha_maxima_alicuota,
+        }),
+      }
+    );
     if (response.status === 200) {
       return true;
     } else {
@@ -470,16 +473,19 @@ export const editPagos = async (data, id) => {
 
 export const editEstadoPagos = async (data, id) => {
   try {
-    const response = await fetch(`http://localhost:4000/pagoalicuota/edit/estado/${id}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        estado_alicuota: data.estado_alicuota,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:4000/pagoalicuota/edit/estado/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          estado_alicuota: data.estado_alicuota,
+        }),
+      }
+    );
     if (response.status === 200) {
       return true;
     } else {
@@ -493,16 +499,19 @@ export const editEstadoPagos = async (data, id) => {
 
 export const editValorPendientePago = async (data, id) => {
   try {
-    const response = await fetch(`http://localhost:4000/pagoalicuota/edit/valor_pendiente/${id}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        valor_pendiente_alicuota: data.valor_pendiente_alicuota,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:4000/pagoalicuota/edit/valor_pendiente/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          valor_pendiente_alicuota: data.valor_pendiente_alicuota,
+        }),
+      }
+    );
     if (response.status === 200) {
       return true;
     } else {
@@ -527,7 +536,7 @@ export const saveMultas = async data => {
         motivo_multa: data.motivo_multa,
         valor_multa: data.valor_multa,
         estado_multa: data.estado_multa,
-        detalle_comprobante_id_detalle_comprobante: data.id_detalle_comprobante
+        detalle_comprobante_id_detalle_comprobante: data.id_detalle_comprobante,
       }),
     });
     if (response.status === 200) {
@@ -604,7 +613,7 @@ export const saveCuotaExtra = async data => {
         detalle_cuota: data.detalle_cuota,
         valor_cuota: data.valor_cuota,
         estado_cuota: data.estado_cuota,
-        detalle_comprobante_id_detalle_comprobante: data.id_detalle_comprobante
+        detalle_comprobante_id_detalle_comprobante: data.id_detalle_comprobante,
       }),
     });
     if (response.status === 200) {
@@ -806,6 +815,36 @@ export const editImagenEvidencia = async (data, id) => {
         body: data,
       }
     );
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export const saveReserva = async data => {
+  try {
+    const response = await fetch(`http://localhost:4000/reservacion/save/`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        motivo_reservacion: data.motivo_reservacion,
+        fecha_inicio: data.fecha_inicio,
+        fecha_fin: data.fecha_fin,
+        valor_garantia: data.valor_garantia,
+        valor_alquiler: data.valor_alquiler,
+        estado_reservacion: "ACTIVO",
+        propiedad_id_propiedad: data.propiedad,
+        area_comunal_id_area_comunal: data.area,        
+      }),
+    });
     if (response.status === 200) {
       return true;
     } else {
