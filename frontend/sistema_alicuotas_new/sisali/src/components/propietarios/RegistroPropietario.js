@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -46,6 +46,21 @@ export const RegistroPropietario = props => {
   const initialRef = useRef(null);
   const finalRef = useRef(null);
   const { ToastContainer, toast } = createStandaloneToast();
+
+  useEffect(() => {
+    setInputs({
+      nombre: '',
+      apellido: '',
+      cedula: '',
+      correo: '',
+      telefono: '',
+      rol: '',
+    });
+    return () => {
+      setInputs({});
+    }
+  }, [isOpen])
+  
 
   const guardarRegistro = async () => {
     let data = { ...inputs };

@@ -326,7 +326,7 @@ export const ValidarPago = props => {
   const initialRef = useRef(null);
   const finalRef = useRef(null);
 
-  const onCloseModal = () => {
+  const onCloseModal = () => {    
     setIsOpenConfirmation(false);
     setIsOpenValidarPago(false);
   };

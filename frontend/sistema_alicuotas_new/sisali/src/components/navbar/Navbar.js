@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,10 @@ import { logout } from '../../reducer/auth';
 
 export const Navbar = () => {
   const { nombre, apellido } = useSelector((state) => state.auth);
+  const [ user, setUser] = useState({
+    name: nombre ? nombre : 'Usuario',
+    lastname: apellido ? apellido : ''
+  })
   const dispatch = useDispatch();
   
   const cerrarSesion = () => {
@@ -51,7 +55,7 @@ export const Navbar = () => {
                     to="/"
                   >
                     <i className="fa fa-user-circle me-2" />
-                    {nombre + " " + apellido}
+                    {user.name + ' ' + user.lastname }
                   </Link>
                   <ul
                     className="dropdown-menu shadow"

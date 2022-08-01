@@ -6,11 +6,18 @@ import {
   SidebarContent,
   SidebarHeader,
 } from 'react-pro-sidebar';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import './sidebar.css';
 
 export const Sidebar = () => {
   const [menuCollapse, setMenuCollapse] = useState(false);
+  const { id, isAdmin, rol } = useSelector(state => state.auth);
+  const [user, setUser] = useState({
+    id: id ? id : undefined,
+    isAdmin: isAdmin ? isAdmin : undefined,
+    rol: rol ? rol : undefined,
+  });
   return (
     <>
       <ProSidebar
@@ -36,104 +43,523 @@ export const Sidebar = () => {
               )}
             </div>
           </SidebarHeader>
-          <Menu className="h-100 d-flex flex-column">
-            <div className="mt-2 text-center px-2 h-100">
-              {menuCollapse ? (
-                <>                  
-                  <MenuItem
-                    className="py-3 my-2"
-                    icon={<i className="fa fa-users"></i>}
-                  ></MenuItem>
-                  <MenuItem
-                    className="py-3 my-2"
-                    icon={<i className="fa fa-home"></i>}
-                  ></MenuItem>
-                  <MenuItem
-                    className="py-3 my-2"
-                    icon={<i className="fa fa-address-card-o"></i>}
-                  ></MenuItem>
-                  <MenuItem
-                    className="py-3 my-2"
-                    icon={<i className="fa fa-map"></i>}
-                  ></MenuItem>
-                  <MenuItem
-                    className="py-3 my-2"
-                    icon={<i className="fa fa-credit-card"></i>}
-                  ></MenuItem>
-                  <MenuItem
-                    className="py-3 my-2"
-                    icon={<i className="fa fa-calendar-check"></i>}
-                  ></MenuItem>
-                  <MenuItem
-                    className="py-3 my-2"
-                    icon={<i className="fa fa-file-alt"></i>}
-                  ></MenuItem>
-                  
-                </>
-              ) : (
-                <>                  
-                  <Link to={'/propietarios'}>
+          {isAdmin && (
+            <Menu className="h-100 d-flex flex-column">
+              <div className="mt-2 text-center px-2 h-100">
+                {menuCollapse ? (
+                  <>
                     <MenuItem
-                      className="link py-3 my-2"
-                      icon={<i className="fa fa-users me-1"></i>}
-                    >
-                      Propietarios
-                    </MenuItem>
-                  </Link>
-                  <Link to={'/propiedades'}>
+                      className="py-3 my-2"
+                      icon={<i className="fa fa-users"></i>}
+                    ></MenuItem>
                     <MenuItem
-                      className="link py-3 my-2"
-                      icon={<i className="fa fa-home me-1"></i>}
-                    >
-                      Propiedades
-                    </MenuItem>
-                  </Link>
-                  <Link to={'/administradores'}>
+                      className="py-3 my-2"
+                      icon={<i className="fa fa-home"></i>}
+                    ></MenuItem>
                     <MenuItem
-                      className="link py-3 my-2"
-                      icon={<i className="fa fa-address-card-o me-1"></i>}
-                    >
-                      Administradores
-                    </MenuItem>
-                  </Link>
-                  <Link to={'/areas'}>
+                      className="py-3 my-2"
+                      icon={<i className="fa fa-address-card-o"></i>}
+                    ></MenuItem>
                     <MenuItem
-                      className="link py-3 my-2"
-                      icon={<i className="fa fa-map me-1"></i>}
-                    >
-                      Areas
-                    </MenuItem>
-                  </Link>
-                  <Link to={'/alicuotas'}>
+                      className="py-3 my-2"
+                      icon={<i className="fa fa-map"></i>}
+                    ></MenuItem>
                     <MenuItem
-                      className="link py-3 my-2"
-                      icon={<i className="fa fa-credit-card me-1"></i>}
-                    >
-                      Alicuotas
-                    </MenuItem>
-                  </Link>
-                  <Link to={'/reservaciones'}>
+                      className="py-3 my-2"
+                      icon={<i className="fa fa-credit-card"></i>}
+                    ></MenuItem>
                     <MenuItem
-                      className="link py-3 my-2"
-                      icon={<i className="fa fa-calendar-check me-1"></i>}
-                    >
-                      Reservas
-                    </MenuItem>
-                  </Link>
-                  <Link to={'/solicitudes'}>
+                      className="py-3 my-2"
+                      icon={<i className="fa fa-calendar-check"></i>}
+                    ></MenuItem>
                     <MenuItem
-                      className="link py-3 my-2"
-                      icon={<i className="fa fa-file-alt me-1"></i>}
-                    >
-                      Solicitudes
-                    </MenuItem>
-                  </Link>
-                  
-                  
-                </>
+                      className="py-3 my-2"
+                      icon={<i className="fa fa-file-alt"></i>}
+                    ></MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <Link to={'/propietarios'}>
+                      <MenuItem
+                        className="link py-3 my-2"
+                        icon={<i className="fa fa-users me-1"></i>}
+                      >
+                        Propietarios
+                      </MenuItem>
+                    </Link>
+                    <Link to={'/propiedades'}>
+                      <MenuItem
+                        className="link py-3 my-2"
+                        icon={<i className="fa fa-home me-1"></i>}
+                      >
+                        Propiedades
+                      </MenuItem>
+                    </Link>
+                    <Link to={'/administradores'}>
+                      <MenuItem
+                        className="link py-3 my-2"
+                        icon={<i className="fa fa-address-card-o me-1"></i>}
+                      >
+                        Administradores
+                      </MenuItem>
+                    </Link>
+                    <Link to={'/areas'}>
+                      <MenuItem
+                        className="link py-3 my-2"
+                        icon={<i className="fa fa-map me-1"></i>}
+                      >
+                        Areas
+                      </MenuItem>
+                    </Link>
+                    <Link to={'/alicuotas'}>
+                      <MenuItem
+                        className="link py-3 my-2"
+                        icon={<i className="fa fa-credit-card me-1"></i>}
+                      >
+                        Alicuotas
+                      </MenuItem>
+                    </Link>
+                    <Link to={'/reservaciones'}>
+                      <MenuItem
+                        className="link py-3 my-2"
+                        icon={<i className="fa fa-calendar-check me-1"></i>}
+                      >
+                        Reservas
+                      </MenuItem>
+                    </Link>
+                    <Link to={'/solicitudes'}>
+                      <MenuItem
+                        className="link py-3 my-2"
+                        icon={<i className="fa fa-file-alt me-1"></i>}
+                      >
+                        Solicitudes
+                      </MenuItem>
+                    </Link>
+                  </>
+                )}
+              </div>
+            </Menu>
+          )}
+          {!isAdmin && (
+            <>
+              {rol == 'Propietario' && (
+                <Menu className="h-100 d-flex flex-column">
+                  <div className="mt-2 text-center px-2 h-100">
+                    {menuCollapse ? (
+                      <>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-users"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-home"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-credit-card"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-file-alt"></i>}
+                        ></MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <Link to={'/propietarios'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-users me-1"></i>}
+                          >
+                            Propietarios
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/propiedades'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-home me-1"></i>}
+                          >
+                            Propiedades
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/alicuotas'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-credit-card me-1"></i>}
+                          >
+                            Alicuotas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/solicitudes'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-file-alt me-1"></i>}
+                          >
+                            Solicitudes
+                          </MenuItem>
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </Menu>
               )}
-            </div>
-          </Menu>
+              {rol == 'Arrendatario' && (
+                <Menu className="h-100 d-flex flex-column">
+                  <div className="mt-2 text-center px-2 h-100">
+                    {menuCollapse ? (
+                      <>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-file-alt"></i>}
+                        ></MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <Link to={'/solicitudes'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-file-alt me-1"></i>}
+                          >
+                            Solicitudes
+                          </MenuItem>
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </Menu>
+              )}
+              {rol == 'Presidente' && (
+                <Menu className="h-100 d-flex flex-column">
+                  <div className="mt-2 text-center px-2 h-100">
+                    {menuCollapse ? (
+                      <>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-users"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-home"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-address-card-o"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-map"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-credit-card"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-calendar-check"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-file-alt"></i>}
+                        ></MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <Link to={'/propietarios'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-users me-1"></i>}
+                          >
+                            Propietarios
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/propiedades'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-home me-1"></i>}
+                          >
+                            Propiedades
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/administradores'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-address-card-o me-1"></i>}
+                          >
+                            Administradores
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/areas'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-map me-1"></i>}
+                          >
+                            Areas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/alicuotas'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-credit-card me-1"></i>}
+                          >
+                            Alicuotas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/reservaciones'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-calendar-check me-1"></i>}
+                          >
+                            Reservas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/solicitudes'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-file-alt me-1"></i>}
+                          >
+                            Solicitudes
+                          </MenuItem>
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </Menu>
+              )}
+              {rol == 'Vicepresidente' && (
+                <Menu className="h-100 d-flex flex-column">
+                  <div className="mt-2 text-center px-2 h-100">
+                    {menuCollapse ? (
+                      <>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-users"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-home"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-address-card-o"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-map"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-credit-card"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-calendar-check"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-file-alt"></i>}
+                        ></MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <Link to={'/propietarios'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-users me-1"></i>}
+                          >
+                            Propietarios
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/propiedades'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-home me-1"></i>}
+                          >
+                            Propiedades
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/administradores'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-address-card-o me-1"></i>}
+                          >
+                            Administradores
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/areas'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-map me-1"></i>}
+                          >
+                            Areas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/alicuotas'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-credit-card me-1"></i>}
+                          >
+                            Alicuotas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/reservaciones'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-calendar-check me-1"></i>}
+                          >
+                            Reservas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/solicitudes'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-file-alt me-1"></i>}
+                          >
+                            Solicitudes
+                          </MenuItem>
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </Menu>
+              )}
+              {rol == 'Secretario' && (
+                <Menu className="h-100 d-flex flex-column">
+                  <div className="mt-2 text-center px-2 h-100">
+                    {menuCollapse ? (
+                      <>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-calendar-check"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-file-alt"></i>}
+                        ></MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <Link to={'/reservaciones'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-calendar-check me-1"></i>}
+                          >
+                            Reservas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/solicitudes'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-file-alt me-1"></i>}
+                          >
+                            Solicitudes
+                          </MenuItem>
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </Menu>
+              )}
+              {rol == 'Tesorero' && (
+                <Menu className="h-100 d-flex flex-column">
+                  <div className="mt-2 text-center px-2 h-100">
+                    {menuCollapse ? (
+                      <>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-credit-card"></i>}
+                        ></MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <Link to={'/alicuotas'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-credit-card me-1"></i>}
+                          >
+                            Alicuotas
+                          </MenuItem>
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </Menu>
+              )}
+              {rol == 'Vocal' && (
+                <Menu className="h-100 d-flex flex-column">
+                  <div className="mt-2 text-center px-2 h-100">
+                    {menuCollapse ? (
+                      <>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-calendar-check"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-file-alt"></i>}
+                        ></MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <Link to={'/reservaciones'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-calendar-check me-1"></i>}
+                          >
+                            Reservas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/solicitudes'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-file-alt me-1"></i>}
+                          >
+                            Solicitudes
+                          </MenuItem>
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </Menu>
+              )}
+              {rol == 'Vocal Suplente' && (
+                <Menu className="h-100 d-flex flex-column">
+                  <div className="mt-2 text-center px-2 h-100">
+                    {menuCollapse ? (
+                      <>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-calendar-check"></i>}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<i className="fa fa-file-alt"></i>}
+                        ></MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <Link to={'/reservaciones'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-calendar-check me-1"></i>}
+                          >
+                            Reservas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/solicitudes'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<i className="fa fa-file-alt me-1"></i>}
+                          >
+                            Solicitudes
+                          </MenuItem>
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </Menu>
+              )}
+            </>
+          )}
         </SidebarContent>
       </ProSidebar>
     </>

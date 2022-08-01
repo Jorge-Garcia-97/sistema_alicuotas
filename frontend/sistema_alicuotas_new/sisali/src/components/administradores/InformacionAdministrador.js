@@ -14,21 +14,16 @@ import {
   InputLeftElement,
   InputGroup,
 } from '@chakra-ui/react';
-import {
-    DeleteIcon,
-  EditIcon,
-  EmailIcon,
-  PhoneIcon,
-} from '@chakra-ui/icons';
-import Swal from 'sweetalert2';
+import { DeleteIcon, EditIcon, EmailIcon, PhoneIcon } from '@chakra-ui/icons';
+import { createStandaloneToast } from '@chakra-ui/toast';
 import { editAdministrador } from '../../services/Post';
-import { EliminarAdministrador} from './EliminarAdministrador';
+import { EliminarAdministrador } from './EliminarAdministrador';
 
 export const InformacionAdministrador = props => {
   const { administrador, showInfo, setShowInfo, stateChanger } = props;
   const [state, setState] = useState([]);
-  const [showInputFile, setShowInputFile] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
     setState(administrador);
@@ -41,35 +36,28 @@ export const InformacionAdministrador = props => {
     console.log(state);
     const response = await editAdministrador(state, state.id_administrador);
     if (response) {
-      Toast.fire({
-        icon: 'success',
-        title: 'Actualización exitoso',
+      toast({
+        title: 'Registro realizado con éxito',
+        description: 'Se registró el usuario administrador.',
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+        position: 'top-right',
       });
       stateChanger(true);
       onClose();
     } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Algo ha salido mal',
+      toast({
+        title: 'Error',
+        description:
+          'Hubo un error al actualizar la información del usuario administrador.',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+        position: 'top-right',
       });
     }
   };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   const onClose = () => {
     setShowInfo(false);
@@ -77,10 +65,6 @@ export const InformacionAdministrador = props => {
 
   const onDelete = () => {
     setShowDeleteModal(true);
-  };
-
-  const openModalInputFile = () => {
-    setShowInputFile(true);
   };
 
   const initialRef = useRef(null);
@@ -108,116 +92,103 @@ export const InformacionAdministrador = props => {
           <ModalHeader>Información del Administrador</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <div className="row">
-              <div className="col-sm-4">
-                
-                <div className="w-100 text-center mt-3">
-                  <Button
-                    onClick={openModalInputFile}
-                    colorScheme="blue"
-                    className="w-100"
-                  >
-                  </Button>
-                  
-                  <Button
-                    onClick={onDelete}
-                    colorScheme="red"
-                    className="mt-2 w-100"
-                  >
-                    <DeleteIcon color="gray.300" className="me-1" />{' '}
-                    Eliminar
-                  </Button>
-                </div>
-              </div>
-              <div className="col-sm-8">
-                <FormControl isRequired>
-                  <FormLabel htmlFor="nombre">Nombres</FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<EditIcon color="gray.300" />}
-                    />
-                    <Input
-                      ref={initialRef}
-                      id="nombre"
-                      name="nombre"
-                      type="text"
-                      value={state.nombre_administrador}
-                      onChange={handleInputChange}
-                      placeholder="Nombres"
-                      variant="flushed"
-                    />
-                  </InputGroup>
-                  <FormLabel htmlFor="celular" mt={3}>
-                    Celular
-                  </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<EditIcon color="gray.300" />}
-                    />
-                    <Input
-                      id="celular"
-                      name="celular"
-                      type="text"
-                      value={state.celular_administrador}
-                      onChange={handleInputChange}
-                      placeholder="Celular"
-                      variant="flushed"
-                    />
-                  </InputGroup>
-                  <FormLabel htmlFor="correo" mt={3}>
-                    Correo
-                  </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<EmailIcon color="gray.300" />}
-                    />
-                    <Input
-                      id="correo"
-                      name="correo"
-                      type="email"
-                      value={state.correo_propietario}
-                      onChange={handleInputChange}
-                      placeholder="Correo"
-                      variant="flushed"
-                    />
-                  </InputGroup>
-                  <FormLabel htmlFor="cedula" mt={3}>
-                    Cédula
-                  </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<EditIcon color="gray.300" />}
-                    />
-                    <Input
-                      id="cedula"
-                      name="cedula"
-                      type="text"
-                      value={state.cedula_propietario}
-                      onChange={handleInputChange}
-                      placeholder="Cedula"
-                      variant="flushed"
-                    />
-                  </InputGroup>             
-                  
-                </FormControl>
-
-                <div className="mt-3 w-100 text-center">
-                  <Button onClick={onUpdate} colorScheme="purple">
-                    <EditIcon color="gray.300" className="me-1" /> Actualizar
-                    Información
-                  </Button>
-                </div>
+            <div className="px-4">
+              <FormControl>
+                <FormLabel htmlFor="nombre">Nombres</FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<EditIcon color="gray.300" />}
+                  />
+                  <Input
+                    ref={initialRef}
+                    id="nombre"
+                    name="nombre"
+                    type="text"
+                    value={state.nombre_administrador}
+                    onChange={handleInputChange}
+                    placeholder="Nombres"
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl mt={4}>
+                <FormLabel htmlFor="cedula">Cédula</FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<EditIcon color="gray.300" />}
+                  />
+                  <Input
+                    id="cedula"
+                    name="cedula"
+                    type="text"
+                    value={state.cedula_administrador}
+                    readOnly
+                    placeholder="Cedula"
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl mt={4}>
+                <FormLabel htmlFor="celular" mt={3}>
+                  Celular
+                </FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<EditIcon color="gray.300" />}
+                  />
+                  <Input
+                    id="celular"
+                    name="celular"
+                    type="text"
+                    value={state.celular_administrador}
+                    onChange={handleInputChange}
+                    placeholder="Celular"
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl mt={4}>
+                <FormLabel htmlFor="correo" mt={3}>
+                  Correo
+                </FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<EmailIcon color="gray.300" />}
+                  />
+                  <Input
+                    id="correo"
+                    name="correo"
+                    type="email"
+                    value={state.correo_administrador}
+                    onChange={handleInputChange}
+                    placeholder="Correo"
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
+              <div className="mt-3 w-100 text-center">
+                <Button onClick={onUpdate} colorScheme="purple">
+                  <EditIcon color="gray.300" className="me-1" /> Actualizar
+                  Información
+                </Button>
+                <Button
+                  onClick={onDelete}
+                  colorScheme="red"
+                  className="ms-3"
+                >
+                  <DeleteIcon color="gray.300" className="me-1" /> Eliminar
+                </Button>
               </div>
             </div>
           </ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>Cerrar</Button>
           </ModalFooter>
-          <EliminarAdministrador 
+          <EliminarAdministrador
             id_administrador={state.id_administrador}
             stateChanger={stateChanger}
             showDeleteModal={showDeleteModal}
@@ -225,6 +196,7 @@ export const InformacionAdministrador = props => {
             setShowInfo={setShowInfo}
           />
         </ModalContent>
+        <ToastContainer />
       </Modal>
     </>
   );

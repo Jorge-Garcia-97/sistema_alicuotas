@@ -15,20 +15,22 @@ import {
   InputGroup,
   Icon,
   Select,
+  Text,
 } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { AiOutlineDollarCircle } from 'react-icons/ai';
+import { AiOutlineDollarCircle, AiOutlineWarning } from 'react-icons/ai';
 import { GrCircleInformation } from 'react-icons/gr';
 import { createStandaloneToast } from '@chakra-ui/toast';
 import moment from 'moment';
+import { editEstadoReserva } from '../../services/Post';
 
 export const VerReserva = props => {
-  const { isOpen, setIsOpen, reserva } = props;
+  const { stateChanger, isOpen, setIsOpen, reserva } = props;
+  const [isOpenConfirmation, setIsOpenConfirmation] = useState(false);
   const { ToastContainer, toast } = createStandaloneToast();
-  const onClose = () => {
-    setIsOpen(false);
-  };
+  
   const [inputs, setInputs] = useState({
+    id: '',
     fecha_fin: '',
     fecha_inicio: '',
     valor_alquiler: 0,
@@ -37,9 +39,11 @@ export const VerReserva = props => {
     propiedad: '',
     area: '',
   });
+
   useEffect(() => {
     if (reserva) {
       setInputs({
+        id: reserva.id_reservacion,
         fecha_fin: reserva.fecha_fin,
         fecha_inicio: reserva.fecha_inicio,
         valor_alquiler: reserva.valor_alquiler,
@@ -63,8 +67,41 @@ export const VerReserva = props => {
       setInputs({});
     };
   }, [isOpen]);
+
   const initialRef = useRef(null);
   const finalRef = useRef(null);
+
+  const borrarReserva = async () => {
+    const to_send = {...inputs}
+    const response = await editEstadoReserva(to_send.id);
+    if (response) {
+      stateChanger(true);
+      onCloseModal();
+    } else {
+      toast({
+        title: 'Error',
+        description: 'Error al actualizar la información de la reserva.',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+        position: 'top-right',
+      });
+    }
+  }
+
+  const onCloseModal = () => {
+    setIsOpenConfirmation(false);
+    setIsOpen(false);
+  };
+
+  const onOpenConfirmation = () => {
+    setIsOpenConfirmation(true);
+  };
+
+  const onCloseConfirmation = () => {
+    setIsOpenConfirmation(false);
+  };
+
   return (
     <>
       <Modal
@@ -72,7 +109,7 @@ export const VerReserva = props => {
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={onCloseModal}
         size={'xl'}
         motionPreset="slideInBottom"
       >
@@ -159,14 +196,14 @@ export const VerReserva = props => {
                       }
                     />
                     <Input
-                        id="propiedad"
-                        name="propiedad"
-                        value={inputs.propiedad}
-                        readOnly
-                        type="text"
-                        placeholder="Fecha de finalización"
-                        variant="flushed"
-                      />
+                      id="propiedad"
+                      name="propiedad"
+                      value={inputs.propiedad}
+                      readOnly
+                      type="text"
+                      placeholder="Fecha de finalización"
+                      variant="flushed"
+                    />
                   </InputGroup>
                 </FormControl>
               </div>
@@ -235,13 +272,48 @@ export const VerReserva = props => {
                 </InputGroup>
               </FormControl>
             </div>
+            <div className="text-center mt-3">
+              <Button colorScheme="red" onClick={onOpenConfirmation}>
+                Eliminar Reservación
+                <Icon as={AiOutlineWarning} color="gray.50" className="ms-2" />
+              </Button>
+            </div>
           </ModalBody>
           <ModalFooter mt={3} bgColor={'blackAlpha.50'}>
-            <Button colorScheme="red" onClick={onClose}>
+            <Button colorScheme="red" onClick={onCloseModal}>
               Cancelar
             </Button>
           </ModalFooter>
         </ModalContent>
+        {/* Verificar cancelación */}
+        <Modal
+          blockScrollOnMount={true}
+          isCentered
+          isOpen={isOpenConfirmation}
+          onClose={onCloseConfirmation}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Cancelar Reserva</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Text fontWeight="bold" mb="1rem">
+                ¿Está seguro de querer eliminar la reserva? <br />
+              </Text>
+              <Text mb="1rem">
+                Se perderán todos los datos registrados para esta reserva.
+              </Text>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="orange" mr={3} onClick={borrarReserva}>
+                Aceptar
+              </Button>
+              <Button colorScheme="red" onClick={onCloseConfirmation}>
+                Cancelar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
         <ToastContainer />
       </Modal>
     </>

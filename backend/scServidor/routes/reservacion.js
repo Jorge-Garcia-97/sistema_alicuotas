@@ -77,19 +77,19 @@ router.get("/reservacion/:id", (req, res) => {
 
 //consultar reservaciones por ID
 router.get(
-  "/reservacion/realizada/:idPropiedad/:idArea/:fechaInicio/:fechaFin",
+  "/reservacion/realizada/:idArea/:fechaInicio/:fechaFin",
   (req, res) => {
-    const { idPropiedad, idArea, fechaInicio, fechaFin } = req.params;
+    const { idArea, fechaInicio, fechaFin } = req.params;
     try {
       getConnection(function (err, conn) {
         if (err) {
           return res.status(500).send("¡Algo ha salido mal!");
         } else {
           var query =
-            "SELECT * FROM reservacion where propiedad_id_propiedad = ? and area_comunal_id_area_comunal = ? and fecha_inicio = ? and fecha_fin = ?";
+            "SELECT * FROM reservacion where area_comunal_id_area_comunal = ? and fecha_inicio = ? and fecha_fin = ?";
           conn.query(
             query,
-            [idPropiedad, idArea, fechaInicio, fechaFin],
+            [idArea, fechaInicio, fechaFin],
             function (err, row) {
               if (err) {
                 return res.status(404).send("No se ha encontrado ningún dato");
@@ -108,19 +108,19 @@ router.get(
 );
 
 router.get(
-  "/reservacion/realizada-2/:idPropiedad/:idArea/:fechaInicio/:fechaFin",
+  "/reservacion/realizada-2/:idArea/:fechaInicio/:fechaFin",
   (req, res) => {
-    const { idPropiedad, idArea, fechaInicio, fechaFin } = req.params;
+    const { idArea, fechaInicio, fechaFin } = req.params;
     try {
       getConnection(function (err, conn) {
         if (err) {
           return res.status(500).send("¡Algo ha salido mal!");
         } else {
           var query =
-            "SELECT * FROM reservacion where propiedad_id_propiedad = ? and area_comunal_id_area_comunal = ? and fecha_inicio <= ? and fecha_fin >= ?";
+            "SELECT * FROM reservacion where area_comunal_id_area_comunal = ? and fecha_inicio <= ? and fecha_fin >= ?";
           conn.query(
             query,
-            [idPropiedad, idArea, fechaInicio, fechaFin],
+            [idArea, fechaInicio, fechaFin],
             function (err, row) {
               if (err) {
                 return res.status(404).send("No se ha encontrado ningún dato");
@@ -176,7 +176,7 @@ router.post("/reservacion/edit/:id/", (req, res) => {
   try {
     const { id } = req.params;
     const data = {
-      motivo_reservacion: req.body.motivo_reseracion,
+      motivo_reservacion: req.body.motivo_reservacion,
       fecha_inicio: req.body.fecha_inicio,
       fecha_fin: req.body.fecha_fin,
       valor_garantia: req.body.valor_garantia,
@@ -184,7 +184,35 @@ router.post("/reservacion/edit/:id/", (req, res) => {
       propiedad_id_propiedad: req.body.propiedad_id_propiedad,
       area_comunal_id_area_comunal: req.body.area_comunal_id_area_comunal,
     };
-    const query = `UPDATE reservacion SET motivo_reservacion = '${data.motivo_reseracion}', fecha_inicio = '${data.fecha_inicio}', fecha_fin = '${data.fecha_fin}', valor_garantia = '${data.valor_garantia}', valor_alquiler = '${data.valor_alquiler}', propiedad_id_propiedad = '${data.propiedad_id_propiedad}', area_comunal_id_area_comunal = '${data.area_comunal_id_area_comunal}'' WHERE id_reservacion = ?`;
+    const query = `UPDATE reservacion SET motivo_reservacion = '${data.motivo_reservacion}', fecha_inicio = '${data.fecha_inicio}', fecha_fin = '${data.fecha_fin}', valor_garantia = '${data.valor_garantia}', valor_alquiler = '${data.valor_alquiler}', propiedad_id_propiedad = '${data.propiedad_id_propiedad}', area_comunal_id_area_comunal = '${data.area_comunal_id_area_comunal}'' WHERE id_reservacion = ?`;
+    getConnection(function (err, conn) {
+      if (err) {
+        return res.status(500).send("¡Algo ha salido mal!");
+      } else {
+        conn.query(query, [id], function (err, row) {
+          if (err) {
+            return res.status(404).send("No se ha podido realizar su petición");
+          } else {
+            return res.status(200).send("Ok");
+          }
+        });
+      }
+      conn.release();
+    });
+  } catch (error) {
+    res.send("¡Error!. intente más tarde");
+  }
+});
+
+//Actulizar información de la reservación
+router.post("/reservacion/edit/estado/:id/", (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = {
+      estado_reservacion: req.body.estado_reservacion,
+    };
+    const query = `UPDATE reservacion SET estado_reservacion = '${data.estado_reservacion}' WHERE id_reservacion = ?`;
+    console.log(query, id);
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");

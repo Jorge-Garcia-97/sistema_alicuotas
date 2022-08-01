@@ -104,6 +104,30 @@ router.get("/usuario/inicio/:nombre/:password", (req, res) => {
   }
 });
 
+router.get("/usuario/admin/inicio/:nombre/:password", (req, res) => {
+  const { nombre, password } = req.params;
+  try {
+    getConnection(function (err, conn) {
+      if (err) {
+        return res.status(500).send("¡Algo ha salido mal!");
+      } else {
+        query = "SELECT * FROM usuario as u, administrador as a WHERE u.nombre_usuario = ? AND u.contraseña_usuario = ? AND u.id_usuario = a.usuario_id_usuario";
+        conn.query(query, [nombre, password], function (err, row) {
+          if (err) {
+            console.log(err);
+            return res.status(404).send("No se ha encontrado ningún dato");
+          } else {
+            return res.send(row);
+          }
+        });
+      }
+      conn.release();
+    });
+  } catch (error) {
+    res.send("¡Error!. Intente más tarde.");
+  }
+});
+
 //Agregar usuario
 router.post("/usuario/save/", (req, res) => {
   try {

@@ -30,15 +30,18 @@ export const saveAdministrador = async (data, usuario_id) => {
       },
       body: JSON.stringify({
         nombre_administrador: data.nombre,
-        celular_administrador: data.celular,
+        celular_administrador: data.telefono,
         correo_administrador: data.correo,
         cedula_administrador: data.cedula,
-        estado_administrador: 'ACTIVO',
+        estado_administrador: data.estado,
         usuario_id_usuario: usuario_id,
       }),
     });
-    const json = await response.json();
-    return json;
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.error(error);
     return false;
@@ -57,10 +60,9 @@ export const editAdministrador = async (data, id) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          nombre_administrador: data.nombre,
-          celular_administrador: data.celular,
-          correo_administrador: data.correo,
-          cedula_administrador: data.cedula,
+          nombre_administrador: data.nombre_administrador,
+          celular_administrador: data.celular_administrador,
+          correo_administrador: data.correo_administrador,
         }),
       }
     );
@@ -840,9 +842,87 @@ export const saveReserva = async data => {
         fecha_fin: data.fecha_fin,
         valor_garantia: data.valor_garantia,
         valor_alquiler: data.valor_alquiler,
-        estado_reservacion: "ACTIVO",
+        estado_reservacion: 'ACTIVO',
         propiedad_id_propiedad: data.propiedad,
-        area_comunal_id_area_comunal: data.area,        
+        area_comunal_id_area_comunal: data.area,
+      }),
+    });
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export const editEstadoReserva = async id => {
+  try {
+    const response = await fetch(
+      `http://localhost:4000/reservacion/edit/estado/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          estado_reservacion: 'INACTIVO',
+        }),
+      }
+    );
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export const saveSolicitud = async data => {
+  try {
+    console.log(data);
+    const response = await fetch(`http://localhost:4000/solicitud/save/`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tipo_solicitud: data.tipo_solicitud,
+        detalle_solicitud: data.detalle_solicitud,
+        fecha_solicitud: data.fecha_solicitud,
+        estado_solicitud: 'PENDIENTE',
+        propiedad_id_propiedad: data.id_propiedad,
+      }),
+    });
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export const editEstadoSolicitud = async (data, id) => {
+  try {
+    console.log(data);
+    const response = await fetch(`http://localhost:4000/solicitud/edit/estado/${id}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        estado_solicitud: data.estado_solicitud,
       }),
     });
     if (response.status === 200) {

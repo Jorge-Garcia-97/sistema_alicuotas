@@ -5,7 +5,7 @@ import { Button } from '@chakra-ui/react';
 import { RegistroPropietario } from './RegistroPropietario';
 import { CardsPropietarios } from './CardsPropietarios';
 import { InformacionPropietario } from './InformacionPropietario';
-import { createStandaloneToast } from '@chakra-ui/toast'
+import { createStandaloneToast } from '@chakra-ui/toast';
 
 export const MainPropietario = () => {
   const [propietarios, setPropietarios] = useState({
@@ -85,7 +85,7 @@ export const MainPropietario = () => {
             </Button>
           </div>
           <div className="row">
-            {propietarios.propietarios ? (
+            {propietarios.propietarios.length > 0 ? (
               <>
                 <CardsPropietarios
                   {...propietarios}

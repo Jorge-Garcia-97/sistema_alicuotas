@@ -25,7 +25,7 @@ import moment from 'moment';
 import { get } from '../../services/Get';
 
 export const CrearReservacion = props => {
-  const { stateChanger, isOpen, setIsOpen, propiedades, areas } = props;
+  const { stateChanger, isOpen, setIsOpen, propiedades, areas, startDate, endDate } = props;
   const [inputs, setInputs] = useState({
     fecha_fin: '',
     fecha_inicio: '',
@@ -40,9 +40,10 @@ export const CrearReservacion = props => {
   const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
+    // console.log(startDate, endDate);
     setInputs({
-      fecha_fin: '',
-      fecha_inicio: '',
+      fecha_inicio: startDate ? moment(startDate).format('YYYY-MM-DDThh:mm:ss') : '',
+      fecha_fin: endDate ? moment(endDate).format('YYYY-MM-DDThh:mm:ss') : '',
       valor_alquiler: 0,
       valor_garantia: 0,
       motivo_reservacion: '',
@@ -68,11 +69,11 @@ export const CrearReservacion = props => {
     ) {
       // console.log(to_send)
       var response = await get(
-        `reservacion/realizada/${to_send.propiedad}/${to_send.area}/${to_send.fecha_inicio}/${to_send.fecha_fin}`
+        `reservacion/realizada/${to_send.area}/${to_send.fecha_inicio}/${to_send.fecha_fin}`
       );
       if (response.length == 0) {
         response = await get(
-          `reservacion/realizada-2/${to_send.propiedad}/${to_send.area}/${to_send.fecha_inicio}/${to_send.fecha_fin}`
+          `reservacion/realizada-2/${to_send.area}/${to_send.fecha_inicio}/${to_send.fecha_fin}`
         );
         if (response.length == 0) {
           response = await saveReserva(to_send);
