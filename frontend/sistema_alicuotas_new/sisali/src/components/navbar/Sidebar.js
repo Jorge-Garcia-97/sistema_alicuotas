@@ -1,3 +1,4 @@
+import { Icon } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import {
   ProSidebar,
@@ -8,16 +9,14 @@ import {
 } from 'react-pro-sidebar';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { FaCoins, FaMountain, FaUsersCog } from 'react-icons/fa';
+import { GiPayMoney } from 'react-icons/gi';
+import { BsCalendarFill, BsFillInfoCircleFill } from 'react-icons/bs';
 import './sidebar.css';
 
 export const Sidebar = () => {
   const [menuCollapse, setMenuCollapse] = useState(false);
-  const { id, isAdmin, rol } = useSelector(state => state.auth);
-  const [user, setUser] = useState({
-    id: id ? id : undefined,
-    isAdmin: isAdmin ? isAdmin : undefined,
-    rol: rol ? rol : undefined,
-  });
+  const { isAdmin, rol } = useSelector(state => state.auth);
   return (
     <>
       <ProSidebar
@@ -58,23 +57,27 @@ export const Sidebar = () => {
                     ></MenuItem>
                     <MenuItem
                       className="py-3 my-2"
-                      icon={<i className="fa fa-address-card-o"></i>}
+                      icon={<Icon as={FaUsersCog} />}
                     ></MenuItem>
                     <MenuItem
                       className="py-3 my-2"
-                      icon={<i className="fa fa-map"></i>}
+                      icon={<Icon as={FaMountain} />}
                     ></MenuItem>
                     <MenuItem
                       className="py-3 my-2"
-                      icon={<i className="fa fa-credit-card"></i>}
+                      icon={<Icon as={GiPayMoney} />}
                     ></MenuItem>
                     <MenuItem
                       className="py-3 my-2"
-                      icon={<i className="fa fa-calendar-check"></i>}
+                      icon={<Icon as={FaCoins} />}
                     ></MenuItem>
                     <MenuItem
                       className="py-3 my-2"
-                      icon={<i className="fa fa-file-alt"></i>}
+                      icon={<Icon as={BsCalendarFill} />}
+                    ></MenuItem>
+                    <MenuItem
+                      className="py-3 my-2"
+                      icon={<Icon as={BsFillInfoCircleFill} />}
                     ></MenuItem>
                   </>
                 ) : (
@@ -82,7 +85,7 @@ export const Sidebar = () => {
                     <Link to={'/propietarios'}>
                       <MenuItem
                         className="link py-3 my-2"
-                        icon={<i className="fa fa-users me-1"></i>}
+                        icon={<i className="fa fa-users me-2"></i>}
                       >
                         Propietarios
                       </MenuItem>
@@ -90,7 +93,7 @@ export const Sidebar = () => {
                     <Link to={'/propiedades'}>
                       <MenuItem
                         className="link py-3 my-2"
-                        icon={<i className="fa fa-home me-1"></i>}
+                        icon={<i className="fa fa-home me-2"></i>}
                       >
                         Propiedades
                       </MenuItem>
@@ -98,7 +101,7 @@ export const Sidebar = () => {
                     <Link to={'/administradores'}>
                       <MenuItem
                         className="link py-3 my-2"
-                        icon={<i className="fa fa-address-card-o me-1"></i>}
+                        icon={<Icon as={FaUsersCog} className="me-2" />}
                       >
                         Administradores
                       </MenuItem>
@@ -106,7 +109,7 @@ export const Sidebar = () => {
                     <Link to={'/areas'}>
                       <MenuItem
                         className="link py-3 my-2"
-                        icon={<i className="fa fa-map me-1"></i>}
+                        icon={<Icon as={FaMountain} className="me-2" />}
                       >
                         Areas
                       </MenuItem>
@@ -114,15 +117,23 @@ export const Sidebar = () => {
                     <Link to={'/alicuotas'}>
                       <MenuItem
                         className="link py-3 my-2"
-                        icon={<i className="fa fa-credit-card me-1"></i>}
+                        icon={<Icon as={GiPayMoney} className="me-2" />}
                       >
                         Alicuotas
+                      </MenuItem>
+                    </Link>
+                    <Link to={'/pendiente'}>
+                      <MenuItem
+                        className="link py-3 my-2"
+                        icon={<Icon as={FaCoins} className="me-2" />}
+                      >
+                        Pendientes
                       </MenuItem>
                     </Link>
                     <Link to={'/reservaciones'}>
                       <MenuItem
                         className="link py-3 my-2"
-                        icon={<i className="fa fa-calendar-check me-1"></i>}
+                        icon={<Icon as={BsCalendarFill} className="me-2" />}
                       >
                         Reservas
                       </MenuItem>
@@ -130,7 +141,9 @@ export const Sidebar = () => {
                     <Link to={'/solicitudes'}>
                       <MenuItem
                         className="link py-3 my-2"
-                        icon={<i className="fa fa-file-alt me-1"></i>}
+                        icon={
+                          <Icon as={BsFillInfoCircleFill} className="me-2" />
+                        }
                       >
                         Solicitudes
                       </MenuItem>
@@ -157,11 +170,11 @@ export const Sidebar = () => {
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-credit-card"></i>}
+                          icon={<Icon as={GiPayMoney} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-file-alt"></i>}
+                          icon={<Icon as={BsFillInfoCircleFill} />}
                         ></MenuItem>
                       </>
                     ) : (
@@ -169,7 +182,7 @@ export const Sidebar = () => {
                         <Link to={'/propietarios'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-users me-1"></i>}
+                            icon={<i className="fa fa-users me-2"></i>}
                           >
                             Propietarios
                           </MenuItem>
@@ -177,7 +190,7 @@ export const Sidebar = () => {
                         <Link to={'/propiedades'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-home me-1"></i>}
+                            icon={<i className="fa fa-home me-2"></i>}
                           >
                             Propiedades
                           </MenuItem>
@@ -185,7 +198,7 @@ export const Sidebar = () => {
                         <Link to={'/alicuotas'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-credit-card me-1"></i>}
+                            icon={<Icon as={GiPayMoney} className="me-2" />}
                           >
                             Alicuotas
                           </MenuItem>
@@ -193,7 +206,12 @@ export const Sidebar = () => {
                         <Link to={'/solicitudes'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-file-alt me-1"></i>}
+                            icon={
+                              <Icon
+                                as={BsFillInfoCircleFill}
+                                className="me-2"
+                              />
+                            }
                           >
                             Solicitudes
                           </MenuItem>
@@ -210,7 +228,7 @@ export const Sidebar = () => {
                       <>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-file-alt"></i>}
+                          icon={<Icon as={BsFillInfoCircleFill} />}
                         ></MenuItem>
                       </>
                     ) : (
@@ -218,7 +236,12 @@ export const Sidebar = () => {
                         <Link to={'/solicitudes'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-file-alt me-1"></i>}
+                            icon={
+                              <Icon
+                                as={BsFillInfoCircleFill}
+                                className="me-2"
+                              />
+                            }
                           >
                             Solicitudes
                           </MenuItem>
@@ -243,23 +266,27 @@ export const Sidebar = () => {
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-address-card-o"></i>}
+                          icon={<Icon as={FaUsersCog} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-map"></i>}
+                          icon={<Icon as={FaMountain} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-credit-card"></i>}
+                          icon={<Icon as={GiPayMoney} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-calendar-check"></i>}
+                          icon={<Icon as={FaCoins} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-file-alt"></i>}
+                          icon={<Icon as={BsCalendarFill} />}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<Icon as={BsFillInfoCircleFill} />}
                         ></MenuItem>
                       </>
                     ) : (
@@ -267,7 +294,7 @@ export const Sidebar = () => {
                         <Link to={'/propietarios'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-users me-1"></i>}
+                            icon={<i className="fa fa-users me-2"></i>}
                           >
                             Propietarios
                           </MenuItem>
@@ -275,7 +302,7 @@ export const Sidebar = () => {
                         <Link to={'/propiedades'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-home me-1"></i>}
+                            icon={<i className="fa fa-home me-2"></i>}
                           >
                             Propiedades
                           </MenuItem>
@@ -283,7 +310,7 @@ export const Sidebar = () => {
                         <Link to={'/administradores'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-address-card-o me-1"></i>}
+                            icon={<Icon as={FaUsersCog} className="me-2" />}
                           >
                             Administradores
                           </MenuItem>
@@ -291,7 +318,7 @@ export const Sidebar = () => {
                         <Link to={'/areas'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-map me-1"></i>}
+                            icon={<Icon as={FaMountain} className="me-2" />}
                           >
                             Areas
                           </MenuItem>
@@ -299,15 +326,23 @@ export const Sidebar = () => {
                         <Link to={'/alicuotas'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-credit-card me-1"></i>}
+                            icon={<Icon as={GiPayMoney} className="me-2" />}
                           >
                             Alicuotas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/pendiente'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<Icon as={FaCoins} className="me-2" />}
+                          >
+                            Pendientes
                           </MenuItem>
                         </Link>
                         <Link to={'/reservaciones'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-calendar-check me-1"></i>}
+                            icon={<Icon as={BsCalendarFill} className="me-2" />}
                           >
                             Reservas
                           </MenuItem>
@@ -315,7 +350,12 @@ export const Sidebar = () => {
                         <Link to={'/solicitudes'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-file-alt me-1"></i>}
+                            icon={
+                              <Icon
+                                as={BsFillInfoCircleFill}
+                                className="me-2"
+                              />
+                            }
                           >
                             Solicitudes
                           </MenuItem>
@@ -340,23 +380,27 @@ export const Sidebar = () => {
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-address-card-o"></i>}
+                          icon={<Icon as={FaUsersCog} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-map"></i>}
+                          icon={<Icon as={FaMountain} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-credit-card"></i>}
+                          icon={<Icon as={GiPayMoney} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-calendar-check"></i>}
+                          icon={<Icon as={FaCoins} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-file-alt"></i>}
+                          icon={<Icon as={BsCalendarFill} />}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<Icon as={BsFillInfoCircleFill} />}
                         ></MenuItem>
                       </>
                     ) : (
@@ -364,7 +408,7 @@ export const Sidebar = () => {
                         <Link to={'/propietarios'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-users me-1"></i>}
+                            icon={<i className="fa fa-users me-2"></i>}
                           >
                             Propietarios
                           </MenuItem>
@@ -372,7 +416,7 @@ export const Sidebar = () => {
                         <Link to={'/propiedades'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-home me-1"></i>}
+                            icon={<i className="fa fa-home me-2"></i>}
                           >
                             Propiedades
                           </MenuItem>
@@ -380,7 +424,7 @@ export const Sidebar = () => {
                         <Link to={'/administradores'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-address-card-o me-1"></i>}
+                            icon={<Icon as={FaUsersCog} className="me-2" />}
                           >
                             Administradores
                           </MenuItem>
@@ -388,7 +432,7 @@ export const Sidebar = () => {
                         <Link to={'/areas'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-map me-1"></i>}
+                            icon={<Icon as={FaMountain} className="me-2" />}
                           >
                             Areas
                           </MenuItem>
@@ -396,15 +440,23 @@ export const Sidebar = () => {
                         <Link to={'/alicuotas'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-credit-card me-1"></i>}
+                            icon={<Icon as={GiPayMoney} className="me-2" />}
                           >
                             Alicuotas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/pendiente'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<Icon as={FaCoins} className="me-2" />}
+                          >
+                            Pendientes
                           </MenuItem>
                         </Link>
                         <Link to={'/reservaciones'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-calendar-check me-1"></i>}
+                            icon={<Icon as={BsCalendarFill} className="me-2" />}
                           >
                             Reservas
                           </MenuItem>
@@ -412,7 +464,12 @@ export const Sidebar = () => {
                         <Link to={'/solicitudes'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-file-alt me-1"></i>}
+                            icon={
+                              <Icon
+                                as={BsFillInfoCircleFill}
+                                className="me-2"
+                              />
+                            }
                           >
                             Solicitudes
                           </MenuItem>
@@ -429,11 +486,11 @@ export const Sidebar = () => {
                       <>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-calendar-check"></i>}
+                          icon={<Icon as={BsCalendarFill} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-file-alt"></i>}
+                          icon={<Icon as={BsFillInfoCircleFill} />}
                         ></MenuItem>
                       </>
                     ) : (
@@ -441,7 +498,7 @@ export const Sidebar = () => {
                         <Link to={'/reservaciones'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-calendar-check me-1"></i>}
+                            icon={<Icon as={BsCalendarFill} className="me-2" />}
                           >
                             Reservas
                           </MenuItem>
@@ -449,7 +506,12 @@ export const Sidebar = () => {
                         <Link to={'/solicitudes'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-file-alt me-1"></i>}
+                            icon={
+                              <Icon
+                                as={BsFillInfoCircleFill}
+                                className="me-2"
+                              />
+                            }
                           >
                             Solicitudes
                           </MenuItem>
@@ -466,7 +528,11 @@ export const Sidebar = () => {
                       <>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-credit-card"></i>}
+                          icon={<Icon as={GiPayMoney} />}
+                        ></MenuItem>
+                        <MenuItem
+                          className="py-3 my-2"
+                          icon={<Icon as={FaCoins} />}
                         ></MenuItem>
                       </>
                     ) : (
@@ -474,9 +540,17 @@ export const Sidebar = () => {
                         <Link to={'/alicuotas'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-credit-card me-1"></i>}
+                            icon={<Icon as={GiPayMoney} className="me-2" />}
                           >
                             Alicuotas
+                          </MenuItem>
+                        </Link>
+                        <Link to={'/pendiente'}>
+                          <MenuItem
+                            className="link py-3 my-2"
+                            icon={<Icon as={FaCoins} className="me-2" />}
+                          >
+                            Pendientes
                           </MenuItem>
                         </Link>
                       </>
@@ -491,11 +565,11 @@ export const Sidebar = () => {
                       <>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-calendar-check"></i>}
+                          icon={<Icon as={BsCalendarFill} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-file-alt"></i>}
+                          icon={<Icon as={BsFillInfoCircleFill} />}
                         ></MenuItem>
                       </>
                     ) : (
@@ -503,7 +577,7 @@ export const Sidebar = () => {
                         <Link to={'/reservaciones'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-calendar-check me-1"></i>}
+                            icon={<Icon as={BsCalendarFill} className="me-2" />}
                           >
                             Reservas
                           </MenuItem>
@@ -511,7 +585,12 @@ export const Sidebar = () => {
                         <Link to={'/solicitudes'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-file-alt me-1"></i>}
+                            icon={
+                              <Icon
+                                as={BsFillInfoCircleFill}
+                                className="me-2"
+                              />
+                            }
                           >
                             Solicitudes
                           </MenuItem>
@@ -528,11 +607,11 @@ export const Sidebar = () => {
                       <>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-calendar-check"></i>}
+                          icon={<Icon as={BsCalendarFill} />}
                         ></MenuItem>
                         <MenuItem
                           className="py-3 my-2"
-                          icon={<i className="fa fa-file-alt"></i>}
+                          icon={<Icon as={BsFillInfoCircleFill} />}
                         ></MenuItem>
                       </>
                     ) : (
@@ -540,7 +619,7 @@ export const Sidebar = () => {
                         <Link to={'/reservaciones'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-calendar-check me-1"></i>}
+                            icon={<Icon as={BsCalendarFill} className="me-2" />}
                           >
                             Reservas
                           </MenuItem>
@@ -548,7 +627,12 @@ export const Sidebar = () => {
                         <Link to={'/solicitudes'}>
                           <MenuItem
                             className="link py-3 my-2"
-                            icon={<i className="fa fa-file-alt me-1"></i>}
+                            icon={
+                              <Icon
+                                as={BsFillInfoCircleFill}
+                                className="me-2"
+                              />
+                            }
                           >
                             Solicitudes
                           </MenuItem>

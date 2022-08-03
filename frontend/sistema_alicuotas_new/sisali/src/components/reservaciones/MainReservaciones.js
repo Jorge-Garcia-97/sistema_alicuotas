@@ -48,7 +48,7 @@ export const MainReservaciones = () => {
       const response_areas = await get(`areacomunal/ACTIVO`);
       const response_propiedades = await get(`propiedades/ACTIVO`);
       var reservaciones_tmp = [];
-      if (response_areas && response_propiedades) {
+      if (response_areas && response_propiedades && response_reservacion) {
         response_reservacion.forEach(reservacion => {
           let data = {
             id: reservacion.id_reservacion,

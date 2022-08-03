@@ -428,7 +428,6 @@ export const savePagos = async data => {
       body: JSON.stringify({
         mes_alicuota: data.mes_alicuota,
         valor_alicuota: data.valor_alicuota,
-        valor_pendiente_alicuota: data.valor_pendiente_alicuota,
         fecha_maxima_alicuota: data.dateMax,
         estado_alicuota: data.estado_alicuota,
         propiedad_id_propiedad: data.id_propiedad,
@@ -499,31 +498,31 @@ export const editEstadoPagos = async (data, id) => {
   }
 };
 
-export const editValorPendientePago = async (data, id) => {
-  try {
-    const response = await fetch(
-      `http://localhost:4000/pagoalicuota/edit/valor_pendiente/${id}`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          valor_pendiente_alicuota: data.valor_pendiente_alicuota,
-        }),
-      }
-    );
-    if (response.status === 200) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-};
+// export const editValorPendientePago = async (data, id) => {
+//   try {
+//     const response = await fetch(
+//       `http://localhost:4000/pagoalicuota/edit/valor_pendiente/${id}`,
+//       {
+//         method: 'POST',
+//         headers: {
+//           Accept: 'application/json',
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           valor_pendiente_alicuota: data.valor_pendiente_alicuota,
+//         }),
+//       }
+//     );
+//     if (response.status === 200) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     return false;
+//   }
+// };
 
 export const saveMultas = async data => {
   try {
@@ -537,7 +536,6 @@ export const saveMultas = async data => {
         fecha_multa: data.fecha_multa,
         motivo_multa: data.motivo_multa,
         valor_multa: data.valor_multa,
-        estado_multa: data.estado_multa,
         detalle_comprobante_id_detalle_comprobante: data.id_detalle_comprobante,
       }),
     });
@@ -577,31 +575,31 @@ export const editMultas = async (id, data) => {
   }
 };
 
-export const editEstadoMultas = async (id, data) => {
-  try {
-    const response = await fetch(
-      `http://localhost:4000/multa/edit/estado/${id}`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          estado_multa: data.estado_multa,
-        }),
-      }
-    );
-    if (response.status === 200) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-};
+// export const editEstadoMultas = async (id, data) => {
+//   try {
+//     const response = await fetch(
+//       `http://localhost:4000/multa/edit/estado/${id}`,
+//       {
+//         method: 'POST',
+//         headers: {
+//           Accept: 'application/json',
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           estado_multa: data.estado_multa,
+//         }),
+//       }
+//     );
+//     if (response.status === 200) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     return false;
+//   }
+// };
 
 export const saveCuotaExtra = async data => {
   try {
@@ -614,7 +612,6 @@ export const saveCuotaExtra = async data => {
       body: JSON.stringify({
         detalle_cuota: data.detalle_cuota,
         valor_cuota: data.valor_cuota,
-        estado_cuota: data.estado_cuota,
         detalle_comprobante_id_detalle_comprobante: data.id_detalle_comprobante,
       }),
     });
@@ -656,31 +653,31 @@ export const editCuotaExtra = async (id, data) => {
   }
 };
 
-export const editEstadoCuotaExtra = async (id, data) => {
-  try {
-    const response = await fetch(
-      `http://localhost:4000/cuota_extra/edit/estado/${id}`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          estado_cuota: data.estado_cuota,
-        }),
-      }
-    );
-    if (response.status === 200) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-};
+// export const editEstadoCuotaExtra = async (id, data) => {
+//   try {
+//     const response = await fetch(
+//       `http://localhost:4000/cuota_extra/edit/estado/${id}`,
+//       {
+//         method: 'POST',
+//         headers: {
+//           Accept: 'application/json',
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           estado_cuota: data.estado_cuota,
+//         }),
+//       }
+//     );
+//     if (response.status === 200) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     return false;
+//   }
+// };
 
 export const saveComprobante = async data => {
   try {
@@ -745,6 +742,10 @@ export const saveDetalleComprobante = async data => {
         body: JSON.stringify({
           forma_pago: data.forma_pago,
           concepto_comprobante: data.concepto_comprobante,
+          subtotal_comprobante: data.subtotal_comprobante,
+          subtotal_multas_comprobante: data.subtotal_multas_comprobante,
+          subtotal_cuotas_comprobante: data.subtotal_cuotas_comprobante,
+          total_comprobante: data.total_comprobante,
           pago_alicuota_id_pago_alicuota: data.id_pago_alicuota,
           comprobante_id_comprobante: data.id_comprobante,
         }),
@@ -772,6 +773,10 @@ export const editDetalleComprobante = async (data, id) => {
         body: JSON.stringify({
           forma_pago: data.forma_pago,
           concepto_comprobante: data.concepto_comprobante,
+          subtotal_comprobante: data.subtotal_comprobante,
+          subtotal_multas_comprobante: data.subtotal_multas_comprobante,
+          subtotal_cuotas_comprobante: data.subtotal_cuotas_comprobante,
+          total_comprobante: data.total_comprobante,
         }),
       }
     );
@@ -915,14 +920,44 @@ export const saveSolicitud = async data => {
 export const editEstadoSolicitud = async (data, id) => {
   try {
     console.log(data);
-    const response = await fetch(`http://localhost:4000/solicitud/edit/estado/${id}`, {
+    const response = await fetch(
+      `http://localhost:4000/solicitud/edit/estado/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          estado_solicitud: data.estado_solicitud,
+        }),
+      }
+    );
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export const saveValorPendiente = async data => {
+  try {
+    console.log(data);
+    const response = await fetch(`http://localhost:4000/valor_pendiente/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        estado_solicitud: data.estado_solicitud,
+        detalle_valor: data.detalle_valor,
+        total_valor: data.total_valor,
+        estado_valor: 'PENDIENTE',
+        id_comprobante: data.id_comprobante,
       }),
     });
     if (response.status === 200) {
@@ -935,3 +970,4 @@ export const editEstadoSolicitud = async (data, id) => {
     return false;
   }
 };
+

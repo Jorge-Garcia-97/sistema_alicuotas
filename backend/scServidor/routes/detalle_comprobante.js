@@ -89,10 +89,14 @@ router.post("/detalle_comprobante/save/", (req, res) => {
     const data = {
       forma_pago: req.body.forma_pago,
       concepto_comprobante: req.body.concepto_comprobante,
+      subtotal_comprobante: req.body.subtotal_comprobante,
+      subtotal_multas_comprobante: req.body.subtotal_multas_comprobante,
+      subtotal_cuotas_comprobante: req.body.subtotal_cuotas_comprobante,
+      total_comprobante: req.body.total_comprobante,
       pago_alicuota_id_pago_alicuota: req.body.pago_alicuota_id_pago_alicuota,
       comprobante_id_comprobante: req.body.comprobante_id_comprobante,
     };      
-    const query = `INSERT INTO detalle_comprobante (forma_pago, concepto_comprobante, pago_alicuota_id_pago_alicuota, comprobante_id_comprobante) VALUES ('${data.forma_pago}', '${data.concepto_comprobante}', '${data.pago_alicuota_id_pago_alicuota}', '${data.comprobante_id_comprobante}')`;    
+    const query = `INSERT INTO detalle_comprobante (forma_pago, concepto_comprobante, subtotal_detalle_comprobante, subtotal_multas_detalle_comprobante, subtotal_cuotas_detalle_comprobante, total_detalle_comprobante, pago_alicuota_id_pago_alicuota, comprobante_id_comprobante) VALUES ('${data.forma_pago}', '${data.concepto_comprobante}', '${data.subtotal_comprobante}', '${data.subtotal_multas_comprobante}', '${data.subtotal_cuotas_comprobante}', '${data.total_comprobante}', '${data.pago_alicuota_id_pago_alicuota}', '${data.comprobante_id_comprobante}')`;    
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");

@@ -1,20 +1,17 @@
 import { Button, Spinner } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { InformacionSolicitudes } from './InformacionSolicitudes';
 import { createStandaloneToast } from '@chakra-ui/toast';
 import { get } from '../../services/Get';
-import { RegistroSolicitud } from './RegistroSolicitud';
+import { InformacionValoresPendientes } from './InformacionValoresPendientes';
 
-export const MainSolicitudes = () => {
+export const MainPendiente = () => {
   const [state, setState] = useState({
-    solicitudes: [],
-    propiedades: [],
+    valores_pendientes: [],
   });
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const { ToastContainer, toast } = createStandaloneToast();
-
   const openModalRegsitro = () => {
     setIsOpenModal(true);
   };
@@ -24,11 +21,9 @@ export const MainSolicitudes = () => {
 
     async function cargarData() {
       try {
-        const response = await get(`solicitudes/estado/PENDIENTE`);
-        const resp_propiedades = await get(`propiedades/ACTIVO`);
+        const response = await get(`valores_pendientes/estado/PENDIENTE`);
         setState({
-          solicitudes: response,
-          propiedades: resp_propiedades,
+          valores_pendientes: response,
         });
         setCargando(false);
         setRefresh(false);
@@ -68,7 +63,7 @@ export const MainSolicitudes = () => {
           <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
             <h1 className="display-6 fw-bold">
               <i className="fa fa-credit-card me-1" />
-              Solicitudes
+              Valores Pendientes
             </h1>
             <Button
               colorScheme="teal"
@@ -81,18 +76,18 @@ export const MainSolicitudes = () => {
             </Button>
           </div>
           <div className="container-fluid border shadow-sm">
-            <InformacionSolicitudes
+            <InformacionValoresPendientes
               {...state}
               stateChanger={setRefresh}
               isOpenModal={isOpenModal}
             />
-
+            {/* 
             <RegistroSolicitud
               {...state}
               stateChanger={setRefresh}
               isOpen={isOpenModal}
               setIsOpen={setIsOpenModal}
-            />
+            /> */}
           </div>
         </div>
       )}

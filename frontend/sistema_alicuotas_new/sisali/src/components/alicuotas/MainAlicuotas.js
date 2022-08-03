@@ -23,6 +23,7 @@ export const MainAlicuotas = () => {
   const [dataImagen, setDataImagen] = useState();
   const [data_multas, setData_Multas] = useState();
   const [data_cuotas, setData_Cuotas] = useState();
+  const [data_valores, setData_Valores] = useState();
   const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
@@ -97,6 +98,7 @@ export const MainAlicuotas = () => {
               setDataImagen={setDataImagen}
               setData_Cuotas={setData_Cuotas}
               setData_Multas={setData_Multas}
+              setData_Valores={setData_Valores}
               setIsOpenValidarPago={setIsOpenValidarPago}
               setIsOpenInformacionPago={setIsOpenInformacionPago}
               setIsOpenEditarPago={setIsOpenEditarPago}
@@ -128,6 +130,7 @@ export const MainAlicuotas = () => {
               dataImagen={dataImagen}
               data_cuotas={data_cuotas}
               data_multas={data_multas}
+              data_valores={data_valores}
               isOpen={isOpenInformacionPago}
               setIsOpen={setIsOpenInformacionPago}
             />

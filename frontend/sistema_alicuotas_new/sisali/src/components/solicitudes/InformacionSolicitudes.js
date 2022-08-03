@@ -26,7 +26,7 @@ import { editEstadoSolicitud } from '../../services/Post';
 import { createStandaloneToast } from '@chakra-ui/toast';
 
 export const InformacionSolicitudes = props => {
-  const { stateChanger, solicitudes, setIsOpen, isOpenDeleteModal } = props;
+  const { stateChanger, solicitudes} = props;
   const [state, setState] = useState([]);
   const [isOpenConfirmation, setIsOpenConfirmation] = useState(false);
   const [isOpenDenegation, setIsOpenDenegation] = useState(false);

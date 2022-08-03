@@ -8,6 +8,7 @@ import { MainSolicitudes } from '../components/solicitudes/MainSolicitudes';
 import { MainAreas } from '../components/areas-comunales/MainAreas';
 import { MainAdministradores } from '../components/administradores/MainAdministradores';
 import { MainPropiedades } from '../components/propiedades/MainPropiedades';
+import { MainPendiente } from '../components/pendientes/MainPendiente';
 
 export const AppRouter = () => {
   return (
@@ -21,6 +22,7 @@ export const AppRouter = () => {
           <Route path="/reservaciones" element={<MainReservaciones />} />
           <Route path="/solicitudes" element={<MainSolicitudes />} />    
           <Route path="/propiedades" element={<MainPropiedades />} />        
+          <Route path="/pendiente" element={<MainPendiente />} />   
         </Route>
       </Routes>
     </Router>
