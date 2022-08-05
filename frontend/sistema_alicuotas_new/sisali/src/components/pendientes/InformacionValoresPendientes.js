@@ -106,7 +106,7 @@ export const InformacionValoresPendientes = (props) => {
                         <div>
                           <Button
                             size="sm"
-                            colorScheme={'telegram'}
+                            colorScheme={'teal'}
                             // onClick={() => aprobarSolicitud(item)}
                             rightIcon={<CheckCircleIcon />}
                           >

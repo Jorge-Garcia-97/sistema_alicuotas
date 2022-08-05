@@ -23,21 +23,24 @@ export const Sidebar = () => {
         collapsed={menuCollapse}
         onMouseEnter={() => setMenuCollapse(false)}
         onMouseLeave={() => setMenuCollapse(true)}
+        className="bg-light shadow-sm border-end"
       >
         <SidebarContent className="children">
           <SidebarHeader>
             <div className="border-bottom w-100 px-3 pb-2">
               {menuCollapse ? (
                 <div className="d-flex justify-content-center align-items-center">
-                  <h4 className="mt-2">
+                  <h4 className="link pt-2 pb-2 mt-1 mb-1">
                     <i className="fa fa-home" />
                   </h4>
                 </div>
               ) : (
                 <div className="d-flex justify-content-center align-items-center">
-                  <h4 className="mt-2">
-                    <i className="fa fa-home me-2" /> San Marino
-                  </h4>
+                  <Link to={'/'}>
+                    <h4 className="link pt-3 pb-2">
+                      <i className="fa fa-home me-2" /> San Marino
+                    </h4>
+                  </Link>
                 </div>
               )}
             </div>

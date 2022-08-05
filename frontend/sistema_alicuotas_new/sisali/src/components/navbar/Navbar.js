@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logout } from '../../reducer/auth';
+import logo from '../../img/logo.png';
+import './sidebar.css';
 
 export const Navbar = () => {
   const { nombre, apellido } = useSelector((state) => state.auth);
@@ -19,13 +21,13 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark ps-2 pe-5">
+      <nav className="navbar navbar-expand-lg navbar-dark gradient ps-2 pe-5 shadow-sm">
         <div className="container-fluid">
           <div className="collapse navbar-collapse d-flex justify-content-between">
             <div className='text-white'>
-              <h4>Sistema de Alicuotas</h4>
+              <img src={logo} style={{width: 100, height: 18}} />
             </div>
-            <div>
+            {/* <div>
               <form className="d-flex">
                 <input
                   className="form-control bg-transparent text-white me-2"
@@ -37,7 +39,7 @@ export const Navbar = () => {
                   Search
                 </button>
               </form>
-            </div>
+            </div> */}
             <div>
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">

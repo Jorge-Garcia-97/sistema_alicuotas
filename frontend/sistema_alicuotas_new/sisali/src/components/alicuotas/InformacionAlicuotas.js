@@ -14,7 +14,7 @@ import {
   Select,
 } from '@chakra-ui/react';
 import moment from 'moment';
-import { CheckCircleIcon, EditIcon } from '@chakra-ui/icons';
+import { CheckCircleIcon, EditIcon, InfoIcon } from '@chakra-ui/icons';
 import { get } from '../../services/Get';
 
 export const InformacionAlicuotas = props => {
@@ -332,7 +332,7 @@ export const InformacionAlicuotas = props => {
                           size="sm"
                           colorScheme={'telegram'}
                           onClick={() => openInformacionPago(item)}
-                          rightIcon={<CheckCircleIcon />}
+                          rightIcon={<InfoIcon />}
                         >
                           Revisar Pago
                         </Button>

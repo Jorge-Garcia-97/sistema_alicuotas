@@ -26,27 +26,27 @@ export const CardsPropietarios = props => {
       {state ? (
         <>
           {state.map((item, i) => (
-            <div className="col-sm-2" key={i}>
+            <div className="col-sm-3" key={i}>
               <div className="card shadow-sm">
                 <>
                   {item.imagen_propietario ? (
                     <img
                       src={`http://localhost:4000/${item.imagen_propietario}`}
                       alt={'Imagen referencial'}
-                      style={{ height: '200px', width: '100%' }}
+                      style={{ height: '150px', width: '150px' }}
                       className="d-block mx-auto"
                     />
                   ) : (
                     <img
                       src={user}
                       alt={'Imagen referencial'}
-                      style={{ height: '300px', width: '100%' }}
+                      style={{ height: '150px', width: '150px' }}
                       className="d-block mx-auto w-100 h-100"
                     />
                   )}
                 </>
                 <div className="card-body border-top">
-                  <h1 className="card-title fw-bold" style={{fontSize: '25px'}}>
+                  <h1 className="card-title fw-bold" style={{fontSize: '20px'}}>
                     {item.nombre_propietario + ' ' + item.apellido_propietario}
                   </h1>
                   <p className="card-text">
@@ -67,7 +67,7 @@ export const CardsPropietarios = props => {
                   </p>
                 </div>
                 <Button
-                  colorScheme="blue"
+                  colorScheme="telegram"
                   style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
                   onClick={() => handleData(item)}
                   className="pt-1 pb-2"

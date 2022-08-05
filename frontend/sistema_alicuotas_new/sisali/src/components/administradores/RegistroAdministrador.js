@@ -276,7 +276,7 @@ export const RegistroAdministrador = props => {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={guardarRegistro}>
+            <Button colorScheme="telegram" mr={3} onClick={guardarRegistro}>
               Guardar
             </Button>
             <Button onClick={onClose}>Cancelar</Button>

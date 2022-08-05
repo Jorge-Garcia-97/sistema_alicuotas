@@ -141,7 +141,7 @@ export const RegistroMultas = props => {
             </div>
           </ModalBody>
           <ModalFooter mt={3} bgColor={'blackAlpha.50'}>
-            <Button colorScheme="blue" mr={3} onClick={actionGuardar}>
+            <Button colorScheme="telegram" mr={3} onClick={actionGuardar}>
               Guardar
             </Button>
             <Button colorScheme="red" onClick={onClose}>

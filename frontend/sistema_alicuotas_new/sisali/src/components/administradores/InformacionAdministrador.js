@@ -171,7 +171,7 @@ export const InformacionAdministrador = props => {
                 </InputGroup>
               </FormControl>
               <div className="mt-3 w-100 text-center">
-                <Button onClick={onUpdate} colorScheme="purple">
+                <Button onClick={onUpdate} colorScheme="telegram">
                   <EditIcon color="gray.300" className="me-1" /> Actualizar
                   Información
                 </Button>

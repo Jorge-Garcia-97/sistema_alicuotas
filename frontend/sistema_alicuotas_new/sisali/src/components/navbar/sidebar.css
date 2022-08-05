@@ -1,17 +1,17 @@
 .pro-sidebar {
   height: calc(100vh - (57px));
   background-color: #555555;
-  color: white;
+  color: #0C2A43;
   /* box-shadow: 0 4px 4px 0px rgba(0, 0, 0, 0.1), 0 6px 6px 0 rgba(0, 0, 0, 0.1); */
 }
 .pro-sidebar .children {
   height: calc(100vh - (57px));
 }
 .pro-sidebar .children .link:hover {
-  background-color: #262626;
+  background-color: #68686823;
 }
 .pro-sidebar .children a:hover {
-  color: white;
+  color: #0C2A43;
 }
 .pro-sidebar-inner .pro-sidebar-layout {
   overflow-y: hidden;
@@ -20,9 +20,15 @@
   font-size: 20px;
 }
 .pro-sidebar-inner .pro-sidebar-layout ul .pro-inner-item .pro-icon-wrapper {
-  color: white;
+  color: #0C2A43;
   border-radius: 10px;
 }
 .color-blue {
   color: #003093;
+}
+.color-navbar{
+  background-color: #0C2A43;
+}
+.gradient {
+  background-color: #0C2A43;
 }

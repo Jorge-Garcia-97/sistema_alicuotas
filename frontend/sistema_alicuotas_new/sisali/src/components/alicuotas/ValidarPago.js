@@ -564,7 +564,7 @@ export const ValidarPago = props => {
                 <div className="d-flex justify-content-between">
                   <h1 className="fw-bold mt-3 mb-2">Detalle de Multas</h1>
                   <Button
-                    colorScheme="teal"
+                    colorScheme="telegram"
                     className="px-3 mt-2 mb-1"
                     variant="solid"
                     size={'sm'}
@@ -622,7 +622,7 @@ export const ValidarPago = props => {
                 <div className="d-flex justify-content-between">
                   <h1 className="fw-bold mt-3 mb-2">Cuota Extraordinaria</h1>
                   <Button
-                    colorScheme="teal"
+                    colorScheme="telegram"
                     className="px-3 mt-2 mb-1"
                     variant="solid"
                     size={'sm'}
@@ -868,7 +868,7 @@ export const ValidarPago = props => {
             </div>
           </ModalBody>
           <ModalFooter mt={3} bgColor={'blackAlpha.50'}>
-            <Button colorScheme="blue" mr={3} onClick={guardarRegistro}>
+            <Button colorScheme="telegram" mr={3} onClick={guardarRegistro}>
               Guardar
             </Button>
             <Button colorScheme="red" onClick={onOpenConfirmation}>
@@ -983,7 +983,7 @@ export const ValidarPago = props => {
             </div>
           </ModalBody>
           <ModalFooter mt={3} bgColor={'blackAlpha.50'}>
-            <Button colorScheme="blue" mr={3} onClick={actionGuardarValor}>
+            <Button colorScheme="telegram" mr={3} onClick={actionGuardarValor}>
               Guardar
             </Button>
             {/* <Button colorScheme="red" onClick={onCloseModalValores}>

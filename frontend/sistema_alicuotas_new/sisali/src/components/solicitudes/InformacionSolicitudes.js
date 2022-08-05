@@ -119,7 +119,7 @@ export const InformacionSolicitudes = props => {
                         <div>
                           <Button
                             size="sm"
-                            colorScheme={'telegram'}
+                            colorScheme={'teal'}
                             onClick={() => aprobarSolicitud(item)}
                             rightIcon={<CheckCircleIcon />}
                           >

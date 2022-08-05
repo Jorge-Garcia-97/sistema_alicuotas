@@ -4,6 +4,7 @@ import { InformacionSolicitudes } from './InformacionSolicitudes';
 import { createStandaloneToast } from '@chakra-ui/toast';
 import { get } from '../../services/Get';
 import { RegistroSolicitud } from './RegistroSolicitud';
+import { useSelector } from 'react-redux';
 
 export const MainSolicitudes = () => {
   const [state, setState] = useState({
@@ -14,6 +15,7 @@ export const MainSolicitudes = () => {
   const [cargando, setCargando] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const { ToastContainer, toast } = createStandaloneToast();
+  const { isAdmin, id, rol } = useSelector(state => state.auth);
 
   const openModalRegsitro = () => {
     setIsOpenModal(true);
@@ -30,6 +32,30 @@ export const MainSolicitudes = () => {
           solicitudes: response,
           propiedades: resp_propiedades,
         });
+        if (isAdmin) {
+          setState({
+            solicitudes: response,
+            propiedades: resp_propiedades,
+          });
+        } else {
+          if (rol == 'Presidente' || rol == 'Vicepresidente') {
+            setState({
+              solicitudes: response,
+              propiedades: resp_propiedades,
+            });
+          } else {
+            let temporal = [];
+            response.map(item => {
+              if (item.propietario_id_propietario == id) {
+                temporal.push(item);
+              }
+            });
+            setState({
+              solicitudes: temporal,
+              propiedades: resp_propiedades,
+            });
+          }
+        }
         setCargando(false);
         setRefresh(false);
       } catch (error) {
@@ -66,15 +92,16 @@ export const MainSolicitudes = () => {
       ) : (
         <div className="container-fluid p-1">
           <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
-            <h1 className="display-6 fw-bold">
+            <h1 className="fw-bold" style={{ fontSize: '25px' }}>
               <i className="fa fa-credit-card me-1" />
               Solicitudes
             </h1>
             <Button
-              colorScheme="teal"
+              colorScheme="telegram"
               className="px-3"
               variant="solid"
               onClick={openModalRegsitro}
+              size={'sm'}
             >
               Agregar
               <i className="fa fa-plus-circle ms-1" />

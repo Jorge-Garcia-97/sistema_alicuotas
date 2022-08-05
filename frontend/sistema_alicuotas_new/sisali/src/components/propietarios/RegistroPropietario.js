@@ -363,7 +363,7 @@ export const RegistroPropietario = props => {
             </FormControl>
           </div>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={guardarRegistro}>
+            <Button colorScheme="telegram" mr={3} onClick={guardarRegistro}>
               Guardar
             </Button>
             <Button onClick={onClose}>Cancelar</Button>

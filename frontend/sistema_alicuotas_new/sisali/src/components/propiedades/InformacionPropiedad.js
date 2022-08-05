@@ -19,7 +19,7 @@ import { editPropiedad } from '../../services/Post';
 import { EliminarPropiedad } from './EliminarPropiedad';
 import { createStandaloneToast } from '@chakra-ui/toast';
 import { validarNumeros } from '../propietarios/validaciones';
-import casa from '../../img/casa2.jpg';
+import casa from '../../img/casa_modelo.jpeg';
 
 export const InformacionPropiedad = props => {
   const { propiedad, propietarios, showInfo, setShowInfo, stateChanger } =
@@ -114,7 +114,7 @@ export const InformacionPropiedad = props => {
               <img
                   src={casa}
                   alt={'Imagen referencial'}
-                  style={{ height: '200px', width: '400px' }}
+                  style={{ height: '250px', width: '100%' }}
                   className="d-block mx-auto mb-2"
                 />
               </div>
@@ -185,7 +185,7 @@ export const InformacionPropiedad = props => {
               <Button onClick={onDelete} colorScheme="red" className="me-2">
                 <DeleteIcon color="gray.300" className="me-1" /> Eliminar
               </Button>
-              <Button onClick={onUpdate} colorScheme="purple" className="ms-2">
+              <Button onClick={onUpdate} colorScheme="telegram" className="ms-2">
                 <EditIcon color="gray.300" className="me-1" /> Actualizar
                 Información
               </Button>

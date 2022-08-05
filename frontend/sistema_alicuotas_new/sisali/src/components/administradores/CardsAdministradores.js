@@ -49,7 +49,7 @@ export const CardsAdministradores = props => {
                   </p>
                 </div>
                 <Button
-                  colorScheme="blue"
+                  colorScheme="telegram"
                   style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
                   onClick={() => handleData(item)}
                   className="pt-1 pb-2"

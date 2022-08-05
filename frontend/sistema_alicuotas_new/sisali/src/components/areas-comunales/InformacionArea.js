@@ -115,12 +115,12 @@ export const InformacionArea = props => {
           <ModalCloseButton />
           <ModalBody>
             <div className="row">
-              <div className="col-sm-5 bg-light py-4 rounded">
+              <div className="col-sm-5 bg-light pb-4 rounded px-0">
                 {state.imagen_area ? (
                   <img
                     src={`http://localhost:4000/${state.imagen_area}`}
                     alt={'Imagen referencial'}
-                    style={{ height: '250px', width: '300px' }}
+                    style={{ height: '250px', width: '100%' }}
                     className="d-block mx-auto my-auto"
                   />
                 ) : (
@@ -134,7 +134,7 @@ export const InformacionArea = props => {
                 <div className="w-100 text-center mt-3 px-4">
                   <Button
                     onClick={openModalInputFile}
-                    colorScheme="blue"
+                    colorScheme="telegram"
                     className="w-100"
                   >
                     <EditIcon color="gray.300" className="me-1" />
@@ -188,7 +188,7 @@ export const InformacionArea = props => {
                   </InputGroup>
                 </FormControl>
                 <div className="mt-3 w-100 text-center">
-                  <Button onClick={onUpdate} colorScheme="purple">
+                  <Button onClick={onUpdate} colorScheme="telegram">
                     <EditIcon color="gray.300" className="me-1" /> Actualizar
                     Información
                   </Button>

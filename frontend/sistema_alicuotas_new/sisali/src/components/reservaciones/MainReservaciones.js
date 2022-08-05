@@ -167,7 +167,7 @@ export const MainReservaciones = () => {
         <>
           <div className="container-fluid p-1">
             <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
-              <h1 className="display-6 fw-bold">
+              <h1 className="fw-bold" style={{fontSize: '25px'}}>
                 <Icon
                   as={BsCalendarFill}
                   color="black"
@@ -177,10 +177,11 @@ export const MainReservaciones = () => {
                 Reservas
               </h1>
               <Button
-                colorScheme="teal"
+                colorScheme="telegram"
                 className="px-3"
                 variant="solid"
                 onClick={abrirModal}
+                size={'sm'}
               >
                 Crear Rerservación
                 <i className="fa fa-plus-circle ms-1" />

@@ -7,6 +7,7 @@ import { RegistrarAlicuota } from './RegistrarAlicuota';
 import { ValidarPago } from './ValidarPago';
 import { InformacionPago } from './InformacionPago';
 import { EditarAlicuota } from './EditarAlicuota';
+import { useSelector } from 'react-redux';
 
 export const MainAlicuotas = () => {
   const [state, setState] = useState({
@@ -25,6 +26,7 @@ export const MainAlicuotas = () => {
   const [data_cuotas, setData_Cuotas] = useState();
   const [data_valores, setData_Valores] = useState();
   const { ToastContainer, toast } = createStandaloneToast();
+  const { isAdmin, id, rol } = useSelector(state => state.auth);
 
   useEffect(() => {
     setCargando(true);
@@ -37,6 +39,30 @@ export const MainAlicuotas = () => {
           alicuotas: response,
           propiedades: resp_propiedades,
         });
+        if (isAdmin) {
+          setState({
+            alicuotas: response,
+            propiedades: resp_propiedades,
+          });
+        } else {
+          if (rol == 'Presidente' || rol == 'Vicepresidente') {
+            setState({
+              alicuotas: response,
+              propiedades: resp_propiedades,
+            });
+          } else {
+            let temporal = [];
+            response.map(item => {
+              if (item.id_propietario == id) {
+                temporal.push(item);
+              }
+            });
+            setState({
+              alicuotas: temporal,
+              propiedades: resp_propiedades,
+            });
+          }
+        }
         setCargando(false);
         setRefresh(false);
       } catch (error) {
@@ -77,15 +103,16 @@ export const MainAlicuotas = () => {
       ) : (
         <div className="container-fluid p-1">
           <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
-            <h1 className="display-6 fw-bold">
+            <h1 className="fw-bold" style={{fontSize: '25px'}}>
               <i className="fa fa-credit-card me-1" />
               Pago de alicuotas
             </h1>
             <Button
-              colorScheme="teal"
+              colorScheme="telegram"
               className="px-3"
               variant="solid"
               onClick={openModal}
+              size={'sm'}
             >
               Agregar
               <i className="fa fa-plus-circle ms-1" />
