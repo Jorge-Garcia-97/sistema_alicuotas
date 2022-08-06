@@ -72,7 +72,7 @@ export const MainAlicuotas = () => {
           status: 'error',
           duration: 9000,
           isClosable: true,
-          position: "top-right"
+          position: 'top-right',
         });
       }
     }
@@ -103,20 +103,37 @@ export const MainAlicuotas = () => {
       ) : (
         <div className="container-fluid p-1">
           <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
-            <h1 className="fw-bold" style={{fontSize: '25px'}}>
+            <h1 className="fw-bold" style={{ fontSize: '25px' }}>
               <i className="fa fa-credit-card me-1" />
               Pago de alicuotas
             </h1>
-            <Button
-              colorScheme="telegram"
-              className="px-3"
-              variant="solid"
-              onClick={openModal}
-              size={'sm'}
-            >
-              Agregar
-              <i className="fa fa-plus-circle ms-1" />
-            </Button>
+            {isAdmin ? (
+              <Button
+                colorScheme="telegram"
+                className="px-3"
+                variant="solid"
+                onClick={openModal}
+                size={'sm'}
+              >
+                Agregar
+                <i className="fa fa-plus-circle ms-1" />
+              </Button>
+            ) : (
+              <>
+                {rol == 'Presidente' || rol == 'Tesorero' && (
+                  <Button
+                    colorScheme="telegram"
+                    className="px-3"
+                    variant="solid"
+                    onClick={openModal}
+                    size={'sm'}
+                  >
+                    Agregar
+                    <i className="fa fa-plus-circle ms-1" />
+                  </Button>
+                )}
+              </>
+            )}
           </div>
           <div className="container-fluid border shadow-sm">
             <InformacionAlicuotas

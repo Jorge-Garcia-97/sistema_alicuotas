@@ -45,6 +45,12 @@ export const MainSolicitudes = () => {
             });
           } else {
             let temporal = [];
+            let auxiliar = [];
+            resp_propiedades.map(item => {
+              if (item.id_propietario == id) {
+                auxiliar.push(item);
+              }
+            });
             response.map(item => {
               if (item.propietario_id_propietario == id) {
                 temporal.push(item);
@@ -52,7 +58,7 @@ export const MainSolicitudes = () => {
             });
             setState({
               solicitudes: temporal,
-              propiedades: resp_propiedades,
+              propiedades: auxiliar,
             });
           }
         }

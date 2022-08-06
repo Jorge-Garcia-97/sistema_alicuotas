@@ -26,7 +26,7 @@ export const CardsPropietarios = props => {
       {state ? (
         <>
           {state.map((item, i) => (
-            <div className="col-sm-3" key={i}>
+            <div className="col-sm-3 mb-2" key={i}>
               <div className="card shadow-sm">
                 <>
                   {item.imagen_propietario ? (

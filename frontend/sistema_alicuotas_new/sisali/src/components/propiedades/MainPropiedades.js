@@ -99,16 +99,33 @@ export const MainPropiedades = () => {
               <i className="fa fa-home me-1" />
               Propiedades
             </h1>
-            <Button
-              colorScheme="telegram"
-              className="px-3"
-              variant="solid"
-              size={'sm'}
-              onClick={openModal}
-            >
-              Agregar
-              <i className="fa fa-plus-circle ms-1" />
-            </Button>
+            {isAdmin ? (
+              <Button
+                colorScheme="telegram"
+                className="px-3"
+                variant="solid"
+                size={'sm'}
+                onClick={openModal}
+              >
+                Agregar
+                <i className="fa fa-plus-circle ms-1" />
+              </Button>
+            ) : (
+              <>
+                {rol == 'Presidente' && (
+                  <Button
+                    colorScheme="telegram"
+                    className="px-3"
+                    variant="solid"
+                    size={'sm'}
+                    onClick={openModal}
+                  >
+                    Agregar
+                    <i className="fa fa-plus-circle ms-1" />
+                  </Button>
+                )}
+              </>
+            )}
           </div>
           <div className="row">
             {propiedades.propiedades ? (

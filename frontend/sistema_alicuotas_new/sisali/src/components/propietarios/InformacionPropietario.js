@@ -195,6 +195,8 @@ export const InformacionPropietario = props => {
                       variant="flushed"
                     />
                   </InputGroup>
+                </FormControl>
+                <FormControl isRequired>
                   <FormLabel htmlFor="apellido" mt={3}>
                     Apellidos
                   </FormLabel>
@@ -213,24 +215,50 @@ export const InformacionPropietario = props => {
                       variant="flushed"
                     />
                   </InputGroup>
-                  <FormLabel htmlFor="cedula" mt={3}>
-                    Cédula
-                  </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<EditIcon color="gray.300" />}
-                    />
-                    <Input
-                      id="cedula"
-                      name="cedula"
-                      type="text"
-                      value={state.cedula_propietario}
-                      readOnly
-                      placeholder="Cedula"
-                      variant="flushed"
-                    />
-                  </InputGroup>
+                </FormControl>
+                <div className="d-flex">
+                  <FormControl className='me-2'>
+                    <FormLabel htmlFor="cedula" mt={3}>
+                      Cédula
+                    </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<EditIcon color="gray.300" />}
+                      />
+                      <Input
+                        id="cedula"
+                        name="cedula"
+                        type="text"
+                        value={state.cedula_propietario}
+                        readOnly
+                        placeholder="Cedula"
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormControl className='ms-2'>
+                    <FormLabel htmlFor="cedula" mt={3}>
+                      Rol
+                    </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<EditIcon color="gray.300" />}
+                      />
+                      <Input
+                        id="cedula"
+                        name="cedula"
+                        type="text"
+                        value={state.rol_propietario}
+                        readOnly
+                        placeholder="Cedula"
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                </div>
+                <FormControl isRequired>
                   <FormLabel htmlFor="correo" mt={3}>
                     Correo
                   </FormLabel>
@@ -249,6 +277,8 @@ export const InformacionPropietario = props => {
                       variant="flushed"
                     />
                   </InputGroup>
+                </FormControl>
+                <FormControl isRequired>
                   <FormLabel htmlFor="celular" mt={3}>
                     Teléfono
                   </FormLabel>

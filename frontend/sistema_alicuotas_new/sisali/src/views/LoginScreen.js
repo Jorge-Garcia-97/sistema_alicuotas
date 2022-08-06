@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { autenticacion } from '../reducer/auth';
 import './LoginScreen.css';
+import logo from '../img/logo_blue.png';
 
 export const LoginScreen = () => {
   const [state, setState] = useState({ usuario: '', password: '' });
@@ -32,7 +33,7 @@ export const LoginScreen = () => {
         <div className="container w-100 h-100">
           <div className="d-flex w-100 h-100 align-items-center justify-content-center">
             <div className="p-5 shadow rounded bg-white">
-              <h1 className="display-5 fw-bold">Sistema de Alicuotas</h1>
+              <img src={logo} style={{width: 450, height: 90}} className="mb-4" />
               <form method="post" onSubmit={inicioSesion}>
                 <FormControl isRequired>
                   <FormLabel htmlFor="usuario" mt={4}>
