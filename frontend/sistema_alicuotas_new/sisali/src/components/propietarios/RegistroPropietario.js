@@ -343,7 +343,7 @@ export const RegistroPropietario = props => {
                       <option value="Vicepresidente">Vicepresidente</option>
                       <option value="Secretario">Secretario</option>
                       <option value="Tesorero">Tesorero</option>
-                      <option value="Vocal">Vocal</option>
+                      <option value="Vocal">Vocal Principal</option>
                       <option value="Vocal-sup">Vocal Suplente</option>
                     </Select>
                   </InputGroup>
