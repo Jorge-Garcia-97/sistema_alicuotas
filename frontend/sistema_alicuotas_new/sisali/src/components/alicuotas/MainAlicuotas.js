@@ -90,6 +90,8 @@ export const MainAlicuotas = () => {
           ? false
           : rol == 'Vicepresidente'
           ? false
+          : rol == 'Tesorero'
+          ? false
           : true;
         setIsReadOnly(bandera);
       } catch (error) {
@@ -119,27 +121,29 @@ export const MainAlicuotas = () => {
     setIsOpenReporte(false);
   };
 
-  const generarReporte = async() => {
+  const generarReporte = async () => {
     const response = await get(`pagoalicuota/mes/${mes}`);
     print(response);
-  }
+  };
 
-  const print = (data) => {
+  const print = data => {
     const doc = new jsPDF();
     doc.setFontSize(12);
-    const header_info = [
-      ['CUOTAS REGISTRADAS', 'ESTADO', 'SUBTOTAL'],
-    ];    
+    const header_info = [['CUOTAS REGISTRADAS', 'ESTADO', 'SUBTOTAL']];
 
     let total_recaudar = 0;
-    data.map((item) => {
+    data.map(item => {
       total_recaudar = total_recaudar + item.valor_alicuota;
     });
 
     const data1 = [];
     data.map((item, i) => {
       data1[i] = [
-        item.nombre_propietario + ' ' + item.apellido_propietario + ' - Casa:' + item.numero_casa,
+        item.nombre_propietario +
+          ' ' +
+          item.apellido_propietario +
+          ' - Casa:' +
+          item.numero_casa,
         item.estado_alicuota,
         Intl.NumberFormat('en-IN', {
           style: 'currency',
@@ -147,7 +151,7 @@ export const MainAlicuotas = () => {
           minimumFractionDigits: 2,
         }).format(item.valor_alicuota),
       ];
-    });    
+    });
 
     const totales1 = [
       [
@@ -167,7 +171,7 @@ export const MainAlicuotas = () => {
         2: { halign: 'right' },
       },
       body: data1,
-    });    
+    });
     doc.autoTable({
       startY: doc.lastAutoTable.finalY,
       margin: { left: 115, right: 15 },
@@ -287,7 +291,7 @@ export const MainAlicuotas = () => {
                 </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                  <Text fontWeight="bold" className='my-1'>
+                  <Text fontWeight="bold" className="my-1">
                     Seleccione un mes para generar el Reporte
                   </Text>
                   <FormControl isRequired className="me-1 mb-2">
@@ -318,7 +322,11 @@ export const MainAlicuotas = () => {
                   </FormControl>
                 </ModalBody>
                 <ModalFooter bgColor={'blackAlpha.50'}>
-                  <Button colorScheme="telegram" mr={3} onClick={generarReporte}>
+                  <Button
+                    colorScheme="telegram"
+                    mr={3}
+                    onClick={generarReporte}
+                  >
                     Generar
                   </Button>
                   <Button colorScheme="red" onClick={onCloseReporte}>

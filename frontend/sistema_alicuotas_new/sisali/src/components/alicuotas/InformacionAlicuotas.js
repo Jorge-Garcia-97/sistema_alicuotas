@@ -62,8 +62,9 @@ export const InformacionAlicuotas = props => {
       : rol == 'Presidente'
       ? false
       : rol == 'Vicepresidente'
-      ? false
-      : true;
+      ? false      
+      : rol == 'Tesorero'
+      ? false : true;
     setIsReadOnly(bandera);
   }, []);
 
