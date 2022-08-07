@@ -971,3 +971,29 @@ export const saveValorPendiente = async data => {
   }
 };
 
+export const editEstadoValorPendiente = async (data, id) => {
+  try {
+    console.log(data);
+    const response = await fetch(
+      `http://localhost:4000/valor_pendiente/edit/estado/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          estado_valor: data.estado_valor_pendiente,
+        }),
+      }
+    );
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};

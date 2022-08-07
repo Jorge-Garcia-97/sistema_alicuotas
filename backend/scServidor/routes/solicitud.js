@@ -11,7 +11,7 @@ router.get("/solicitudes/estado/:estado", (req, res) => {
         return res.status(500).send("¡Algo ha salido mal!");
       } else {
         conn.query(
-          "SELECT * FROM solicitudes as s, propiedad as p WHERE s.propiedad_id_propiedad = p.id_propiedad AND estado_solicitud = ?",
+          "SELECT * FROM solicitudes as s, propiedad as p, propietario as pr WHERE s.propiedad_id_propiedad = p.id_propiedad AND p.propietario_id_propietario = pr.id_propietario AND s.estado_solicitud = ? ORDER BY s.fecha_solicitud DESC",
           [estado],
           function (err, row) {
             if (err) {

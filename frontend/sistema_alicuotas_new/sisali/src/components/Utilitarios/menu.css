@@ -1,3 +1,6 @@
 .gradient {
     background-color: #0C2A43;
-  }
+}
+.container-fluid.h-100 .row.h-100.align-items-center .card{
+  height: 300px;
+}

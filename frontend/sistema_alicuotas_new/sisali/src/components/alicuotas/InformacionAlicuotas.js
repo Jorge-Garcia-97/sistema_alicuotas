@@ -16,6 +16,7 @@ import {
 import moment from 'moment';
 import { CheckCircleIcon, EditIcon, InfoIcon } from '@chakra-ui/icons';
 import { get } from '../../services/Get';
+import { useSelector } from 'react-redux';
 
 export const InformacionAlicuotas = props => {
   const {
@@ -27,13 +28,15 @@ export const InformacionAlicuotas = props => {
     setIsOpenInformacionPago,
     setIsOpenEditarPago,
     setDataImagen,
-    setData_Valores
+    setData_Valores,
   } = props;
   const [state, setState] = useState([]);
   const [filtroMes, setFiltroMes] = useState();
   const [filtroPropietario, setFiltroPropietario] = useState();
   const [filtroEstado, setFiltroEstado] = useState();
   const [dataProp, setDataProp] = useState([]);
+  const { isAdmin, rol } = useSelector(state => state.auth);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   useEffect(() => {
     const findDuplicates = arr => {
@@ -49,11 +52,19 @@ export const InformacionAlicuotas = props => {
 
       return uniqueArray;
     };
-    if (alicuotas !== undefined && alicuotas !== null){
+    if (alicuotas !== undefined && alicuotas !== null) {
       const resp = findDuplicates(alicuotas);
       setDataProp(resp);
       setState(alicuotas);
-    }    
+    }
+    let bandera = isAdmin
+      ? false
+      : rol == 'Presidente'
+      ? false
+      : rol == 'Vicepresidente'
+      ? false
+      : true;
+    setIsReadOnly(bandera);
   }, []);
 
   const handleFiltroMes = mes => {
@@ -122,9 +133,12 @@ export const InformacionAlicuotas = props => {
           apellido_propietario: data_detalles[0].apellido_propietario,
           celular_propietario: data_detalles[0].celular_propietario,
           correo_propietario: data_detalles[0].correo_propietario,
-          subtotal_detalle_comprobante: data_detalles[0].subtotal_detalle_comprobante,
-          subtotal_multas_detalle_comprobante: data_detalles[0].subtotal_multas_detalle_comprobante,
-          subtotal_cuotas_detalle_comprobante: data_detalles[0].subtotal_cuotas_detalle_comprobante,
+          subtotal_detalle_comprobante:
+            data_detalles[0].subtotal_detalle_comprobante,
+          subtotal_multas_detalle_comprobante:
+            data_detalles[0].subtotal_multas_detalle_comprobante,
+          subtotal_cuotas_detalle_comprobante:
+            data_detalles[0].subtotal_cuotas_detalle_comprobante,
           total_detalle_comprobante: data_detalles[0].total_detalle_comprobante,
         };
         setData(to_send);
@@ -148,7 +162,7 @@ export const InformacionAlicuotas = props => {
             multas_to_send.push(data_multa_temp);
           });
           setData_Multas(multas_to_send);
-        }        
+        }
         if (data_valores_pendientes.length > 0) {
           const valores_to_send = [];
           data_valores_pendientes.map(valor => {
@@ -309,23 +323,29 @@ export const InformacionAlicuotas = props => {
                     <Td>
                       {item.estado_alicuota == 'PENDIENTE' ? (
                         <>
-                          <Button
-                            size="sm"
-                            colorScheme={'green'}
-                            onClick={() => openValidarPago(item)}
-                            rightIcon={<CheckCircleIcon />}
-                          >
-                            Validar Pago
-                          </Button>
-                          <Button
-                            size="sm"
-                            colorScheme={'yellow'}
-                            ml={2}
-                            rightIcon={<EditIcon />}
-                            onClick={() => openEditarPago(item)}
-                          >
-                            Editar
-                          </Button>
+                          {!isReadOnly ? (
+                            <>
+                              <Button
+                                size="sm"
+                                colorScheme={'green'}
+                                onClick={() => openValidarPago(item)}
+                                rightIcon={<CheckCircleIcon />}
+                              >
+                                Validar Pago
+                              </Button>
+                              <Button
+                                size="sm"
+                                colorScheme={'yellow'}
+                                ml={2}
+                                rightIcon={<EditIcon />}
+                                onClick={() => openEditarPago(item)}
+                              >
+                                Editar
+                              </Button>
+                            </>
+                          ) : (
+                            <span>Sin acciones</span>
+                          )}
                         </>
                       ) : (
                         <Button

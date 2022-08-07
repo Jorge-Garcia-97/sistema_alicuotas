@@ -738,7 +738,7 @@ export const ValidarPago = props => {
                     onChange={e =>
                       setInputs({
                         ...inputs,
-                        valor_pagado: e.target.value ? e.target.value : 0,
+                        valor_pagado: e.target.value > 0 ? e.target.value : "",
                       })
                     }
                     variant="flushed"

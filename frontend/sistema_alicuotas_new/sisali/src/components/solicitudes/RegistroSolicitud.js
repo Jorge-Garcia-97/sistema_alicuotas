@@ -112,7 +112,7 @@ export const RegistroSolicitud = props => {
                       setInputs({ ...inputs, fecha_solicitud: e.target.value })
                     }
                     className="form-control"
-                    type="date"
+                    type="datetime-local"
                     variant="flushed"
                   />
                 </InputGroup>

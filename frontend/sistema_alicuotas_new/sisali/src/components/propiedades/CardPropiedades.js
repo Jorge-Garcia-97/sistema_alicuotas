@@ -22,7 +22,7 @@ export const CardPropiedades = props => {
       {state ? (
         <>
           {state.map((item, i) => (
-            <div className="col-sm-3" key={i}>
+            <div className="col-sm-3 mb-2" key={i}>
               <div className="card shadow-sm">
                 <img
                   src={casa}
@@ -38,12 +38,12 @@ export const CardPropiedades = props => {
                     Casa: {item.numero_casa}
                   </h1>
                   <p className="card-text">
-                    <i className="fa fa-briefcase" style={{ width: '30px' }} />
+                    <i className="fa fa-location-arrow" style={{ width: '30px' }} />
                     {item.direccion_propiedad}
                   </p>
                   <p className="card-text">
                     <i
-                      className="fa fa-address-card"
+                      className="fa fa-user"
                       style={{ width: '30px' }}
                     />
                     {item.nombre_propietario + ' ' + item.apellido_propietario}

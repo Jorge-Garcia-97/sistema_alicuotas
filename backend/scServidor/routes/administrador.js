@@ -56,7 +56,7 @@ router.get("/administradores/estado/:estado", (req, res) => {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");
       } else {
-        query = "SELECT * FROM administrador where estado_administrador = ?";
+        query = "SELECT * FROM administrador where estado_administrador = ? ORDER BY nombre_administrador";
         conn.query(query, [estado], function (err, row) {
           if (err) {
             return res.status(404).send("No se ha encontrado ningún dato");

@@ -82,7 +82,7 @@ export const RegistroPropietario = props => {
           const if_exist = await get(`propietario/by-cedula/${data.cedula}`);
           if (if_exist.length == 0) {
             let data_user = {
-              correo: data.correo,
+              correo: data.cedula,
               password: 'admin123',
             };
             const resp = await saveUsuario(data_user);

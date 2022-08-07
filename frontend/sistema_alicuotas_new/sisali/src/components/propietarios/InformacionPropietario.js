@@ -29,10 +29,13 @@ export const InformacionPropietario = props => {
   const [showInputFile, setShowInputFile] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { ToastContainer, toast } = createStandaloneToast();
-  const { isAdmin, id, rol } = useSelector(state => state.auth);
+  const { isAdmin, rol } = useSelector(state => state.auth);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   useEffect(() => {
     setState(propietario);
+    let bandera = isAdmin ? false : rol == 'Presidente' ? false : rol == 'Vicepresidente' ? false : true;
+    setIsReadOnly(bandera);
     return () => {
       setState([]);
     };
@@ -115,7 +118,7 @@ export const InformacionPropietario = props => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Información del Propietario</ModalHeader>
+          <ModalHeader bgColor={'blackAlpha.50'}>Información del Propietario</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div className="row">
@@ -172,12 +175,22 @@ export const InformacionPropietario = props => {
                           Eliminar
                         </Button>
                       )}
+                      {rol == 'Vicepresidente' && (
+                        <Button
+                          onClick={onDelete}
+                          colorScheme="red"
+                          className="mt-2 w-100"
+                        >
+                          <DeleteIcon color="gray.300" className="me-1" />{' '}
+                          Eliminar
+                        </Button>
+                      )}
                     </>
                   )}
                 </div>
               </div>
               <div className="col-sm-8 px-5">
-                <FormControl isRequired>
+                <FormControl isRequired={!isReadOnly}>
                   <FormLabel htmlFor="nombre">Nombres</FormLabel>
                   <InputGroup>
                     <InputLeftElement
@@ -191,12 +204,13 @@ export const InformacionPropietario = props => {
                       type="text"
                       value={state.nombre_propietario}
                       onChange={handleInputChange}
+                      isReadOnly={isReadOnly}
                       placeholder="Nombres"
                       variant="flushed"
                     />
                   </InputGroup>
                 </FormControl>
-                <FormControl isRequired>
+                <FormControl isRequired={!isReadOnly}>
                   <FormLabel htmlFor="apellido" mt={3}>
                     Apellidos
                   </FormLabel>
@@ -211,6 +225,7 @@ export const InformacionPropietario = props => {
                       type="text"
                       value={state.apellido_propietario}
                       onChange={handleInputChange}
+                      isReadOnly={isReadOnly}
                       placeholder="Apellidos"
                       variant="flushed"
                     />
@@ -308,8 +323,8 @@ export const InformacionPropietario = props => {
               </div>
             </div>
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Cerrar</Button>
+          <ModalFooter bgColor={'blackAlpha.50'}>
+            <Button onClick={onClose} colorScheme={'red'}>Cerrar</Button>
           </ModalFooter>
 
           <ModalFileInput

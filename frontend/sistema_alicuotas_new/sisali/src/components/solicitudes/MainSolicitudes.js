@@ -26,12 +26,27 @@ export const MainSolicitudes = () => {
 
     async function cargarData() {
       try {
-        const response = await get(`solicitudes/estado/PENDIENTE`);
+        let response = []
+        const pendientes = await get(`solicitudes/estado/PENDIENTE`);
+        const aceptadas = await get(`solicitudes/estado/APROBADA`);
+        const rechazadas = await get(`solicitudes/estado/RECHAZADA`);        
         const resp_propiedades = await get(`propiedades/ACTIVO`);
-        setState({
-          solicitudes: response,
-          propiedades: resp_propiedades,
-        });
+        if(pendientes.length > 0) {
+          pendientes.forEach((r) => {
+            response.push(r);
+          });
+        }        
+        if(aceptadas.length > 0) {
+          aceptadas.forEach((r) => {
+            response.push(r);
+          });
+        }
+        if(rechazadas.length > 0) {
+          rechazadas.forEach((r) => {
+            response.push(r);
+          });
+        }
+        console.log("RESPONSE", response);
         if (isAdmin) {
           setState({
             solicitudes: response,

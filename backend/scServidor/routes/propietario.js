@@ -13,7 +13,7 @@ router.get("/propietarios/:estado", (req, res) => {
         return res.status(500).send("Error ¯_(°.°)_/¯");
       } else {
         const query =
-          "SELECT * FROM propietario as p, imagen_propietario as i WHERE i.propietario_id_propietario = p.id_propietario AND p.estado_propietario = ?";
+          "SELECT * FROM propietario as p, imagen_propietario as i WHERE i.propietario_id_propietario = p.id_propietario AND p.estado_propietario = ? ORDER BY p.apellido_propietario";
         conn.query(query, [estado], function (err, row) {
           if (err) {
             return res.status(404).send("Disculpas, no a funcionado");

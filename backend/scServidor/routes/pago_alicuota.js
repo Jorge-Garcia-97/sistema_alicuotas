@@ -10,7 +10,7 @@ router.get("/pagoalicuota/", (req, res) => {
         return res.status(500).send("¡Algo ha salido mal!");
       } else {
         const query =
-          "SELECT pg.id_pago_alicuota, pg.mes_alicuota, pg.fecha_maxima_alicuota, pg.valor_alicuota, pg.estado_alicuota, pd.id_propiedad, pd.numero_casa, p.id_propietario, p.nombre_propietario, p.apellido_propietario, p.celular_propietario, p.correo_propietario FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario";
+          "SELECT pg.id_pago_alicuota, pg.mes_alicuota, pg.fecha_maxima_alicuota, pg.valor_alicuota, pg.estado_alicuota, pd.id_propiedad, pd.numero_casa, p.id_propietario, p.nombre_propietario, p.apellido_propietario, p.celular_propietario, p.correo_propietario FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario ORDER BY pg.fecha_maxima_alicuota";
         conn.query(query, function (err, row) {
           if (err) {
             return res
@@ -37,7 +37,7 @@ router.get("/pagoalicuota/mes/:mes", (req, res) => {
         return res.status(500).send("¡Algo ha salido mal!");
       } else {
         const query =
-          "SELECT * FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario and pg.mes_alicuota = ?";
+          "SELECT * FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario and pg.mes_alicuota = ? ORDER BY pg.fecha_maxima_alicuota";
         conn.query(query, [mes], function (err, row) {
           if (err) {
             return res
