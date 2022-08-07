@@ -274,14 +274,14 @@ export const VerReserva = props => {
             </div>
             <div className="text-center mt-3">
               <Button colorScheme="red" onClick={onOpenConfirmation}>
-                Eliminar Reservación
+                Cancelar Reservación
                 <Icon as={AiOutlineWarning} color="gray.50" className="ms-2" />
               </Button>
             </div>
           </ModalBody>
           <ModalFooter mt={3} bgColor={'blackAlpha.50'}>
-            <Button colorScheme="red" onClick={onCloseModal}>
-              Cancelar
+            <Button colorScheme="blue" onClick={onCloseModal}>
+              Cerrar
             </Button>
           </ModalFooter>
         </ModalContent>
