@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import casa from '../../img/casa2.jpg';
+import casa from '../../img/casa_modelo.jpeg';
 import { Button } from '@chakra-ui/react';
 
 export const CardPropiedades = props => {
@@ -22,12 +22,12 @@ export const CardPropiedades = props => {
       {state ? (
         <>
           {state.map((item, i) => (
-            <div className="col-sm-2" key={i}>
+            <div className="col-sm-3 mb-2" key={i}>
               <div className="card shadow-sm">
                 <img
                   src={casa}
                   alt={'Imagen referencial'}
-                  style={{ height: '150px', width: '100%' }}
+                  style={{ height: '250px', width: '100%' }}
                   className="d-block mx-auto"
                 />
                 <div className="card-body border-top">
@@ -35,22 +35,22 @@ export const CardPropiedades = props => {
                     className="card-title fw-bold"
                     style={{ fontSize: '25px' }}
                   >
-                    {item.numero_casa}
+                    Casa: {item.numero_casa}
                   </h1>
                   <p className="card-text">
-                    <i className="fa fa-briefcase" style={{ width: '30px' }} />
+                    <i className="fa fa-location-arrow" style={{ width: '30px' }} />
                     {item.direccion_propiedad}
                   </p>
                   <p className="card-text">
                     <i
-                      className="fa fa-address-card"
+                      className="fa fa-user"
                       style={{ width: '30px' }}
                     />
                     {item.nombre_propietario + ' ' + item.apellido_propietario}
                   </p>
                 </div>
                 <Button
-                  colorScheme="blue"
+                  colorScheme="telegram"
                   style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
                   onClick={() => handleData(item)}
                   className="pt-1 pb-2"

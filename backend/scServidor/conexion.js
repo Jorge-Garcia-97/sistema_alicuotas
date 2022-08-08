@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 var pool = mysql.createPool({
     host:'sistema-ali-db2.cy0u5e7biw5u.sa-east-1.rds.amazonaws.com',
-    database: 'db_cobranzas',
+    database: 'ali_database',
     user:'admin',
     password:'sistemaali2022' 
 });

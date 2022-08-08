@@ -49,6 +49,29 @@ router.get("/administrador/:id", (req, res) => {
   }
 });
 
+router.get("/administradores/estado/:estado", (req, res) => {
+  const { estado } = req.params;
+  try {
+    getConnection(function (err, conn) {
+      if (err) {
+        return res.status(500).send("¡Algo ha salido mal!");
+      } else {
+        query = "SELECT * FROM administrador where estado_administrador = ? ORDER BY nombre_administrador";
+        conn.query(query, [estado], function (err, row) {
+          if (err) {
+            return res.status(404).send("No se ha encontrado ningún dato");
+          } else {
+            return res.send(row);
+          }
+        });
+      }
+      conn.release();
+    });
+  } catch (error) {
+    res.send("¡Error!. Intente más tarde.");
+  }
+});
+
 router.get("/administrador/by-cedula/:cedula", (req, res) => {
   const { cedula } = req.params;
   try {
@@ -114,13 +137,12 @@ router.post("/administrador/edit/:id", (req, res) => {
       nombre_administrador: req.body.nombre_administrador,
       celular_administrador: req.body.celular_administrador,
       correo_administrador: req.body.correo_administrador,
-      estado_administrador: req.body.estado_administrador,
     };    
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("Oh!, something went wrong");
       } else {
-        const query = `UPDATE administrador SET nombre_administrador = '${data.nombre_administrador}', celular_administrador = '${data.celular_administrador}', correo_administrador = '${data.correo_administrador}', estado_administrador = '${data.estado_administrador}' WHERE id_administrador = ?`;
+        const query = `UPDATE administrador SET nombre_administrador = '${data.nombre_administrador}', celular_administrador = '${data.celular_administrador}', correo_administrador = '${data.correo_administrador}' WHERE id_administrador = ?`;
         conn.query(query, [id], function (err, row) {
           if (err) {
             return res

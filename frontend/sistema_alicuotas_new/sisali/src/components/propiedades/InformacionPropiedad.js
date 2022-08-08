@@ -19,7 +19,8 @@ import { editPropiedad } from '../../services/Post';
 import { EliminarPropiedad } from './EliminarPropiedad';
 import { createStandaloneToast } from '@chakra-ui/toast';
 import { validarNumeros } from '../propietarios/validaciones';
-import casa from '../../img/casa2.jpg';
+import casa from '../../img/casa_modelo.jpeg';
+import { useSelector } from 'react-redux';
 
 export const InformacionPropiedad = props => {
   const { propiedad, propietarios, showInfo, setShowInfo, stateChanger } =
@@ -28,11 +29,20 @@ export const InformacionPropiedad = props => {
   const [statePropietarios, setStatePropietarios] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { ToastContainer, toast } = createStandaloneToast();
+  const { isAdmin, rol } = useSelector(state => state.auth);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   useEffect(() => {
     setState(propiedad);
     setStatePropietarios(propietarios);
-    console.log(propietarios);
+    let bandera = isAdmin
+      ? false
+      : rol == 'Presidente'
+      ? false
+      : rol == 'Vicepresidente'
+      ? false
+      : true;
+    setIsReadOnly(bandera);
     return () => {
       setState([]);
     };
@@ -106,16 +116,16 @@ export const InformacionPropiedad = props => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Información de la Propiedad</ModalHeader>
+          <ModalHeader bgColor={'blackAlpha.50'}>Información de la Propiedad</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div className="px-4">
               <div>
-              <img
+                <img
                   src={casa}
                   alt={'Imagen referencial'}
-                  style={{ height: '200px', width: '400px' }}
-                  className="d-block mx-auto mb-2"
+                  style={{ height: '250px', width: '100%' }}
+                  className="d-block mx-auto mb-2 rounded"
                 />
               </div>
               <div>
@@ -140,7 +150,7 @@ export const InformacionPropiedad = props => {
                     />
                   </InputGroup>
                 </FormControl>
-                <FormControl isRequired mt={3}>
+                <FormControl isRequired={!isReadOnly} mt={3}>
                   <FormLabel htmlFor="numero_casa">Número de Casa</FormLabel>
                   <InputGroup>
                     <InputLeftElement
@@ -154,12 +164,13 @@ export const InformacionPropiedad = props => {
                       type="text"
                       value={state.numero_casa}
                       onChange={handleInputChange}
+                      isReadOnly={isReadOnly}
                       placeholder="Número de casa"
                       variant="flushed"
                     />
                   </InputGroup>
                 </FormControl>
-                <FormControl isRequired mt={3}>
+                <FormControl isRequired={!isReadOnly} mt={3}>
                   <FormLabel htmlFor="direccion_propiedad">
                     Dirección de Propiedad
                   </FormLabel>
@@ -174,6 +185,7 @@ export const InformacionPropiedad = props => {
                       type="text"
                       value={state.direccion_propiedad}
                       onChange={handleInputChange}
+                      isReadOnly={isReadOnly}
                       placeholder="Dirección de propiedad"
                       variant="flushed"
                     />
@@ -182,17 +194,25 @@ export const InformacionPropiedad = props => {
               </div>
             </div>
             <div className="mt-4 w-100 text-center">
-              <Button onClick={onDelete} colorScheme="red" className="me-2">
-                <DeleteIcon color="gray.300" className="me-1" /> Eliminar
-              </Button>
-              <Button onClick={onUpdate} colorScheme="purple" className="ms-2">
-                <EditIcon color="gray.300" className="me-1" /> Actualizar
-                Información
-              </Button>
+              {!isReadOnly && (
+                <>
+                  <Button onClick={onDelete} colorScheme="red" className="me-2">
+                    <DeleteIcon color="gray.300" className="me-1" /> Eliminar
+                  </Button>
+                  <Button
+                    onClick={onUpdate}
+                    colorScheme="telegram"
+                    className="ms-2"
+                  >
+                    <EditIcon color="gray.300" className="me-1" /> Actualizar
+                    Información
+                  </Button>
+                </>
+              )}
             </div>
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Cerrar</Button>
+          <ModalFooter bgColor={'blackAlpha.50'}>
+            <Button onClick={onClose} colorScheme={'red'}>Cerrar</Button>
           </ModalFooter>
 
           <EliminarPropiedad

@@ -183,7 +183,7 @@ export const RegistroArea = props => {
             </FormControl>
           </div>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={guardarArea}>
+            <Button colorScheme="telegram" mr={3} onClick={guardarArea}>
               Guardar
             </Button>
             <Button onClick={onClose}>Cancelar</Button>

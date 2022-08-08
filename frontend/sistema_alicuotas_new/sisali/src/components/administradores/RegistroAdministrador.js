@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -15,90 +15,156 @@ import {
   InputLeftElement,
   InputGroup,
 } from '@chakra-ui/react';
-import {
-  saveAdministrador,
-  saveUsuario,
-} from '../../services/Post';
+import { saveAdministrador, saveUsuario } from '../../services/Post';
 import { EditIcon, EmailIcon, PhoneIcon } from '@chakra-ui/icons';
-import Swal from 'sweetalert2';
+import { createStandaloneToast } from '@chakra-ui/toast';
 import './style.css';
+import {
+  validadorIdentidades,
+  validarCorreo,
+  validarLetras,
+  validarTelefonos,
+} from '../propietarios/validaciones';
+import { get } from '../../services/Get';
 
-export const RegistroAdministrador= props => {
+export const RegistroAdministrador = props => {
   const { stateChanger, isOpen, setIsOpen } = props;
   const [inputs, setInputs] = useState({
     nombre: '',
-    celular: '',
+    cedula: '',
     correo: '',
-    celular: '',
-    estado: '',
+    telefono: '',
+    estado: 'ACTIVO',
   });
-  const [file, setfile] = useState(null);
+  const { ToastContainer, toast } = createStandaloneToast();
 
   const initialRef = useRef(null);
   const finalRef = useRef(null);
 
+  useEffect(() => {
+    setInputs({
+      nombre: '',
+      cedula: '',
+      correo: '',
+      telefono: '',
+      estado: 'ACTIVO',
+    });
+    return () => {
+      setInputs({});
+    };
+  }, [isOpen]);
+
   const guardarRegistro = async () => {
-    let data = {...inputs};
-    if (data.nombre !== "" && data.celular !== "" && data.correo !== "" && data.celular !=="" && data.estado !== "") {
-      let data_user = {
-        correo: data.correo,
-        password: 'admin123',
-      };
-      const resp = await saveUsuario(data_user);
-      if (resp.id > 0) {
-        const response = await saveAdministrador(data, resp.id);
-        if (response.id > 0) {
-            if (response) {
-              Toast.fire({
-                icon: 'success',
-                title: 'Registro exitoso'
-              })
-              setIsOpen(false);
-              stateChanger(true);
-            }else{
-              Toast.fire({
-                icon: 'error',
-                title: 'Algo ha salido mal'
-              })
-            }    
+    let data = { ...inputs };
+    if (
+      data.nombre !== '' &&
+      data.cedula !== '' &&
+      data.correo !== '' &&
+      data.telefono !== ''
+    ) {
+      if (
+        validarLetras(data.nombre) &&
+        validarCorreo(data.correo) &&
+        validarTelefonos(data.telefono)
+      ) {
+        if (validadorIdentidades(data.cedula)) {
+          const if_exist = await get(`administrador/by-cedula/${data.cedula}`);
+          if (if_exist.length == 0) {
+            let data_user = {
+              correo: data.correo,
+              password: 'admin123',
+            };
+            const resp = await saveUsuario(data_user);
+            if (resp.id > 0) {
+              const response = await saveAdministrador(data, resp.id);
+              if (response) {
+                setIsOpen(false);
+                stateChanger(true);
+                toast({
+                  title: 'Registro realizado con éxito',
+                  description: 'Se registró el usuario administrador.',
+                  status: 'success',
+                  duration: 9000,
+                  isClosable: true,
+                  position: 'top-right',
+                });
+              } else {
+                toast({
+                  title: 'Error',
+                  description:
+                    'Se encontró un error al registrar el usuario administrador.',
+                  status: 'error',
+                  duration: 9000,
+                  isClosable: true,
+                  position: 'top-right',
+                });
+              }
+            } else {
+              toast({
+                title: 'Error',
+                description:
+                  'Se encontró un error al registrar el usuario administrador.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right',
+              });
+            }
+          } else {
+            var usuario_temp = if_exist[0];
+            if (usuario_temp.estado_propietario === 'ACTIVO') {
+              toast({
+                title: 'Error',
+                description:
+                  'Ya existe un usuario con el número de cédula ingresado.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right',
+              });
+            } else {
+              toast({
+                title: 'Error',
+                description:
+                  'Ya existe un usuario deshabilitado con el número de cédula ingresado. Por favor solicite al administrador que elimine el registro mencionado o que lo actualice.',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right',
+              });
+            }
+          }
         } else {
-          Toast.fire({
-            icon: 'error',
-            title: 'Algo ha salido mal'
-          })
+          toast({
+            title: 'Error',
+            description: 'El número de cédula ingresado no es válido.',
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+            position: 'top-right',
+          });
         }
       } else {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal'
-        })
+        toast({
+          title: 'Cuidado',
+          description:
+            'Se deben ingresar datos correctos en los campos solicitados.',
+          status: 'warning',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
+        });
       }
     } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Necesitas llenar todos los datos'
-      })
+      toast({
+        title: 'Cuidado',
+        description: 'Se deben ingresar todos los datos solicitados.',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+        position: 'top-right',
+      });
     }
-  };
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-      toast.addEventListener('mouseenter', Swal.stopTimer)
-      toast.addEventListener('mouseleave', Swal.resumeTimer)
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup'
-    }
-  });
-
-  const selectedHandler = (e) => {
-    setfile(e.target.files[0]);
   };
 
   const onClose = () => {
@@ -122,17 +188,17 @@ export const RegistroAdministrador= props => {
         isOpen={isOpen}
         onClose={onClose}
         size={'xl'}
-        motionPreset='slideInBottom'
+        motionPreset="slideInBottom"
       >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Registro de nuevo Administrador</ModalHeader>
           <ModalCloseButton />
-          <div className="row">
-            <div className="col-sm-6">
-              <ModalBody>
-                <FormControl isRequired>
-                  <FormLabel htmlFor="nombre">Nombres</FormLabel>
+          <ModalBody>
+            <div className="px-3">
+              <div className="d-flex">
+                <FormControl isRequired className="me-3">
+                  <FormLabel htmlFor="nombre">Nombres: </FormLabel>
                   <InputGroup>
                     <InputLeftElement
                       pointerEvents="none"
@@ -150,48 +216,8 @@ export const RegistroAdministrador= props => {
                     />
                   </InputGroup>
                 </FormControl>
-                <FormControl mt={4} isRequired>
-                  <FormLabel htmlFor="celular">Celular</FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<EditIcon color="gray.300" />}
-                    />
-                    <Input
-                      id="celular"
-                      name="celular"
-                      type="text"
-                      value={inputs.celular}
-                      onChange={handleInputChange}
-                      placeholder="Celular"
-                      variant="flushed"
-                    />
-                  </InputGroup>
-                </FormControl>
-                <FormControl mt={4} isRequired>
-                  <FormLabel htmlFor="correo">Correo</FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<EmailIcon color="gray.300" />}
-                    />
-                    <Input
-                      id="correo"
-                      name="correo"
-                      type="text"
-                      value={inputs.correo}
-                      onChange={handleInputChange}
-                      placeholder="Correo"
-                      variant="flushed"
-                    />
-                  </InputGroup>
-                </FormControl>
-              </ModalBody>
-            </div>
-            <div className="col-sm-6">
-              <ModalBody>
-              <FormControl mt={4} isRequired>
-                  <FormLabel htmlFor="cedula">Cédula</FormLabel>
+                <FormControl isRequired className="ms-3">
+                  <FormLabel htmlFor="cedula">Cédula: </FormLabel>
                   <InputGroup>
                     <InputLeftElement
                       pointerEvents="none"
@@ -208,12 +234,32 @@ export const RegistroAdministrador= props => {
                     />
                   </InputGroup>
                 </FormControl>
-                <FormControl mt={4} isRequired>
-                  <FormLabel htmlFor="telefono">Teléfono</FormLabel>
+              </div>
+              <div className="d-flex">
+                <FormControl mt={4} isRequired className="me-3">
+                  <FormLabel htmlFor="correo">Correo: </FormLabel>
                   <InputGroup>
                     <InputLeftElement
                       pointerEvents="none"
-                      children={<PhoneIcon color="gray.300" />}
+                      children={<EmailIcon color="gray.300" />}
+                    />
+                    <Input
+                      id="correo"
+                      name="correo"
+                      type="text"
+                      value={inputs.correo}
+                      onChange={handleInputChange}
+                      placeholder="Correo"
+                      variant="flushed"
+                    />
+                  </InputGroup>
+                </FormControl>
+                <FormControl mt={4} isRequired className="ms-3">
+                  <FormLabel htmlFor="telefono">Teléfono: </FormLabel>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents="none"
+                      children={<EditIcon color="gray.300" />}
                     />
                     <Input
                       id="telefono"
@@ -221,21 +267,22 @@ export const RegistroAdministrador= props => {
                       type="text"
                       value={inputs.telefono}
                       onChange={handleInputChange}
-                      placeholder="Teléfono"
+                      placeholder="Celular"
                       variant="flushed"
                     />
                   </InputGroup>
-                </FormControl>                
-              </ModalBody>
+                </FormControl>
+              </div>
             </div>
-          </div>          
+          </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={guardarRegistro}>
+            <Button colorScheme="telegram" mr={3} onClick={guardarRegistro}>
               Guardar
             </Button>
             <Button onClick={onClose}>Cancelar</Button>
-          </ModalFooter>          
+          </ModalFooter>
         </ModalContent>
+        <ToastContainer />
       </Modal>
     </>
   );

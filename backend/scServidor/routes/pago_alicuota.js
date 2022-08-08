@@ -10,7 +10,7 @@ router.get("/pagoalicuota/", (req, res) => {
         return res.status(500).send("¡Algo ha salido mal!");
       } else {
         const query =
-          "SELECT pg.id_pago_alicuota, pg.mes_alicuota, pg.fecha_maxima_alicuota, pg.valor_alicuota, pg.valor_pendiente_alicuota, pg.estado_alicuota, pd.id_propiedad, pd.numero_casa, p.id_propietario, p.nombre_propietario, p.apellido_propietario, p.celular_propietario, p.correo_propietario FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario";
+          "SELECT pg.id_pago_alicuota, pg.mes_alicuota, pg.fecha_maxima_alicuota, pg.valor_alicuota, pg.estado_alicuota, pd.id_propiedad, pd.numero_casa, p.id_propietario, p.nombre_propietario, p.apellido_propietario, p.celular_propietario, p.correo_propietario FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario ORDER BY pg.fecha_maxima_alicuota";
         conn.query(query, function (err, row) {
           if (err) {
             return res
@@ -37,7 +37,7 @@ router.get("/pagoalicuota/mes/:mes", (req, res) => {
         return res.status(500).send("¡Algo ha salido mal!");
       } else {
         const query =
-          "SELECT * FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario and pg.mes_alicuota = ?";
+          "SELECT * FROM pago_alicuota as pg, propiedad as pd, propietario as p where pg.propiedad_id_propiedad = pd.id_propiedad and pd.propietario_id_propietario = p.id_propietario and pg.mes_alicuota = ? ORDER BY pg.fecha_maxima_alicuota";
         conn.query(query, [mes], function (err, row) {
           if (err) {
             return res
@@ -61,12 +61,11 @@ router.post("/pagoalicuota/save/", (req, res) => {
     const data = {
       mes_alicuota: req.body.mes_alicuota,
       valor_alicuota: req.body.valor_alicuota,
-      valor_pendiente_alicuota: req.body.valor_pendiente_alicuota,
       fecha_maxima_alicuota: req.body.fecha_maxima_alicuota,
       estado_alicuota: req.body.estado_alicuota,
       propiedad_id_propiedad: req.body.propiedad_id_propiedad,
     };
-    const query = `INSERT INTO pago_alicuota (mes_alicuota, fecha_maxima_alicuota, valor_alicuota, valor_pendiente_alicuota, estado_alicuota, propiedad_id_propiedad) VALUES ( '${data.mes_alicuota}', '${data.fecha_maxima_alicuota}','${data.valor_alicuota}','${data.valor_pendiente_alicuota}','${data.estado_alicuota}','${data.propiedad_id_propiedad}')`;
+    const query = `INSERT INTO pago_alicuota (mes_alicuota, fecha_maxima_alicuota, valor_alicuota, estado_alicuota, propiedad_id_propiedad) VALUES ( '${data.mes_alicuota}', '${data.fecha_maxima_alicuota}','${data.valor_alicuota}','${data.estado_alicuota}','${data.propiedad_id_propiedad}')`;
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");
@@ -118,33 +117,33 @@ router.post("/pagoalicuota/edit/:id", (req, res) => {
 });
 
 //Actulizar estado de la alícuota o de dar de baja
-router.post("/pagoalicuota/edit/valor_pendiente/:id/", (req, res) => {
-  try {
-    const { id } = req.params;
-    const data = {
-      valor_pendiente_alicuota: req.body.valor_pendiente_alicuota,
-    };
-    const query = `UPDATE pago_alicuota SET valor_pendiente_alicuota= '${data.valor_pendiente_alicuota}' WHERE id_pago_alicuota = ?`;
-    getConnection(function (err, conn) {
-      if (err) {
-        return res.status(500).send("Oh!, something went wrong");
-      } else {
-        conn.query(query, [id], function (err, row) {
-          if (err) {
-            return res
-              .status(404)
-              .send("Sorry for that. The request could not be made.");
-          } else {
-            return res.status(200).send("Ok");
-          }
-        });
-      }
-      conn.release();
-    });
-  } catch (error) {
-    res.send("Error. Please try again later.");
-  }
-});
+// router.post("/pagoalicuota/edit/valor_pendiente/:id/", (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const data = {
+//       valor_pendiente_alicuota: req.body.valor_pendiente_alicuota,
+//     };
+//     const query = `UPDATE pago_alicuota SET valor_pendiente_alicuota= '${data.valor_pendiente_alicuota}' WHERE id_pago_alicuota = ?`;
+//     getConnection(function (err, conn) {
+//       if (err) {
+//         return res.status(500).send("Oh!, something went wrong");
+//       } else {
+//         conn.query(query, [id], function (err, row) {
+//           if (err) {
+//             return res
+//               .status(404)
+//               .send("Sorry for that. The request could not be made.");
+//           } else {
+//             return res.status(200).send("Ok");
+//           }
+//         });
+//       }
+//       conn.release();
+//     });
+//   } catch (error) {
+//     res.send("Error. Please try again later.");
+//   }
+// });
 
 //Actulizar estado de la alícuota o de dar de baja
 router.post("/pagoalicuota/edit/estado/:id/", (req, res) => {

@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { CardsAreas } from './CardsAreas';
 import { RegistroArea } from './RegistrarArea';
 import { InformacionArea } from './InformacionArea';
+import { useSelector } from 'react-redux';
 
 export const MainAreas = () => {
   const [state, setState] = useState({
@@ -17,10 +18,20 @@ export const MainAreas = () => {
   const [area, setArea] = useState({});
   const [showInfo, setShowInfo] = useState(false);
   const { ToastContainer, toast } = createStandaloneToast();
+  const { isAdmin, rol } = useSelector(state => state.auth);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   useEffect(() => {
     setCargando(true);
     cargarData();
+    let bandera = isAdmin
+      ? false
+      : rol == 'Presidente'
+      ? false
+      : rol == 'Vicepresidente'
+      ? false
+      : true;
+    setIsReadOnly(bandera);
   }, [refresh]);
 
   async function cargarData() {
@@ -38,7 +49,7 @@ export const MainAreas = () => {
         status: 'error',
         duration: 9000,
         isClosable: true,
-        position: "top-right"
+        position: 'top-right',
       });
     }
   }
@@ -66,19 +77,22 @@ export const MainAreas = () => {
       ) : (
         <div className="container-fluid p-1">
           <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
-            <h1 className="display-6 fw-bold">
+            <h1 className="fw-bold" style={{ fontSize: '25px' }}>
               <i className="fa fa-map me-1" />
               Areas Comunales
             </h1>
-            <Button
-              colorScheme="teal"
-              className="px-3"
-              variant="solid"
-              onClick={openModal}
-            >
-              Agregar
-              <i className="fa fa-plus-circle ms-1" />
-            </Button>
+            {!isReadOnly && (
+              <Button
+                colorScheme="telegram"
+                className="px-3"
+                variant="solid"
+                size={'sm'}
+                onClick={openModal}
+              >
+                Agregar
+                <i className="fa fa-plus-circle ms-1" />
+              </Button>
+            )}
           </div>
           <div className="row">
             {state.areas ? (
@@ -107,12 +121,11 @@ export const MainAreas = () => {
               showInfo={showInfo}
               setShowInfo={setShowInfo}
               stateChanger={setRefresh}
-            />            
-            
+            />
           </div>
-        </div>        
-      )}    
-      <ToastContainer />  
+        </div>
+      )}
+      <ToastContainer />
     </>
   );
 };

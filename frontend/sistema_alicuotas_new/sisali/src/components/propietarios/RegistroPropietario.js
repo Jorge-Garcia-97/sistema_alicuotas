@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -47,6 +47,21 @@ export const RegistroPropietario = props => {
   const finalRef = useRef(null);
   const { ToastContainer, toast } = createStandaloneToast();
 
+  useEffect(() => {
+    setInputs({
+      nombre: '',
+      apellido: '',
+      cedula: '',
+      correo: '',
+      telefono: '',
+      rol: '',
+    });
+    return () => {
+      setInputs({});
+    }
+  }, [isOpen])
+  
+
   const guardarRegistro = async () => {
     let data = { ...inputs };
     if (
@@ -67,8 +82,8 @@ export const RegistroPropietario = props => {
           const if_exist = await get(`propietario/by-cedula/${data.cedula}`);
           if (if_exist.length == 0) {
             let data_user = {
-              correo: data.correo,
-              password: 'admin123',
+              correo: data.cedula,
+              password: data.cedula,
             };
             const resp = await saveUsuario(data_user);
             if (resp.id > 0) {
@@ -328,7 +343,7 @@ export const RegistroPropietario = props => {
                       <option value="Vicepresidente">Vicepresidente</option>
                       <option value="Secretario">Secretario</option>
                       <option value="Tesorero">Tesorero</option>
-                      <option value="Vocal">Vocal</option>
+                      <option value="Vocal">Vocal Principal</option>
                       <option value="Vocal-sup">Vocal Suplente</option>
                     </Select>
                   </InputGroup>
@@ -348,7 +363,7 @@ export const RegistroPropietario = props => {
             </FormControl>
           </div>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={guardarRegistro}>
+            <Button colorScheme="telegram" mr={3} onClick={guardarRegistro}>
               Guardar
             </Button>
             <Button onClick={onClose}>Cancelar</Button>

@@ -55,7 +55,7 @@ export const ModalFileInput = props => {
               />
             </FormControl>
             <div className='w-100 mt-3 text-center'>
-              <Button onClick={cargarImagen} colorScheme="blue">
+              <Button onClick={cargarImagen} colorScheme="telegram">
                 <EditIcon color="gray.300" className="me-1" /> Actualizar Imagen
               </Button>
             </div>

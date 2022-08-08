@@ -20,11 +20,8 @@ import { editPropietario } from '../../services/Post';
 import { ModalFileInput } from './ModalFileInput';
 import { EliminarPropietario } from './EliminarPropietario';
 import { createStandaloneToast } from '@chakra-ui/toast';
-import {
-  validarCorreo,
-  validarLetras,
-  validarTelefonos,
-} from './validaciones';
+import { validarCorreo, validarLetras, validarTelefonos } from './validaciones';
+import { useSelector } from 'react-redux';
 
 export const InformacionPropietario = props => {
   const { propietario, showInfo, setShowInfo, stateChanger } = props;
@@ -32,9 +29,13 @@ export const InformacionPropietario = props => {
   const [showInputFile, setShowInputFile] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { ToastContainer, toast } = createStandaloneToast();
+  const { isAdmin, rol } = useSelector(state => state.auth);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   useEffect(() => {
     setState(propietario);
+    let bandera = isAdmin ? false : rol == 'Presidente' ? false : rol == 'Vicepresidente' ? false : true;
+    setIsReadOnly(bandera);
     return () => {
       setState([]);
     };
@@ -72,7 +73,8 @@ export const InformacionPropietario = props => {
     } else {
       toast({
         title: 'Cuidado',
-        description: 'Se deben ingresar datos correctos en los campos solicitados.',
+        description:
+          'Se deben ingresar datos correctos en los campos solicitados.',
         status: 'warning',
         duration: 9000,
         isClosable: true,
@@ -116,7 +118,7 @@ export const InformacionPropietario = props => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Información del Propietario</ModalHeader>
+          <ModalHeader bgColor={'blackAlpha.50'}>Información del Propietario</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div className="row">
@@ -139,7 +141,7 @@ export const InformacionPropietario = props => {
                 <div className="w-100 text-center mt-3">
                   <Button
                     onClick={openModalInputFile}
-                    colorScheme="blue"
+                    colorScheme="telegram"
                     className="w-100"
                   >
                     <EditIcon color="gray.300" className="me-1" />
@@ -153,18 +155,42 @@ export const InformacionPropietario = props => {
                     <PlusSquareIcon color="gray.300" className="me-1" />{' '}
                     Propiedad
                   </Button> */}
-
-                  <Button
-                    onClick={onDelete}
-                    colorScheme="red"
-                    className="mt-2 w-100"
-                  >
-                    <DeleteIcon color="gray.300" className="me-1" /> Eliminar
-                  </Button>
+                  {isAdmin ? (
+                    <Button
+                      onClick={onDelete}
+                      colorScheme="red"
+                      className="mt-2 w-100"
+                    >
+                      <DeleteIcon color="gray.300" className="me-1" /> Eliminar
+                    </Button>
+                  ) : (
+                    <>
+                      {rol == 'Presidente' && (
+                        <Button
+                          onClick={onDelete}
+                          colorScheme="red"
+                          className="mt-2 w-100"
+                        >
+                          <DeleteIcon color="gray.300" className="me-1" />{' '}
+                          Eliminar
+                        </Button>
+                      )}
+                      {rol == 'Vicepresidente' && (
+                        <Button
+                          onClick={onDelete}
+                          colorScheme="red"
+                          className="mt-2 w-100"
+                        >
+                          <DeleteIcon color="gray.300" className="me-1" />{' '}
+                          Eliminar
+                        </Button>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
               <div className="col-sm-8 px-5">
-                <FormControl isRequired>
+                <FormControl isRequired={!isReadOnly}>
                   <FormLabel htmlFor="nombre">Nombres</FormLabel>
                   <InputGroup>
                     <InputLeftElement
@@ -178,10 +204,13 @@ export const InformacionPropietario = props => {
                       type="text"
                       value={state.nombre_propietario}
                       onChange={handleInputChange}
+                      isReadOnly={isReadOnly}
                       placeholder="Nombres"
                       variant="flushed"
                     />
                   </InputGroup>
+                </FormControl>
+                <FormControl isRequired={!isReadOnly}>
                   <FormLabel htmlFor="apellido" mt={3}>
                     Apellidos
                   </FormLabel>
@@ -196,28 +225,55 @@ export const InformacionPropietario = props => {
                       type="text"
                       value={state.apellido_propietario}
                       onChange={handleInputChange}
+                      isReadOnly={isReadOnly}
                       placeholder="Apellidos"
                       variant="flushed"
                     />
                   </InputGroup>
-                  <FormLabel htmlFor="cedula" mt={3}>
-                    Cédula
-                  </FormLabel>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<EditIcon color="gray.300" />}
-                    />
-                    <Input
-                      id="cedula"
-                      name="cedula"
-                      type="text"
-                      value={state.cedula_propietario}
-                      readOnly
-                      placeholder="Cedula"
-                      variant="flushed"
-                    />
-                  </InputGroup>
+                </FormControl>
+                <div className="d-flex">
+                  <FormControl className='me-2'>
+                    <FormLabel htmlFor="cedula" mt={3}>
+                      Cédula
+                    </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<EditIcon color="gray.300" />}
+                      />
+                      <Input
+                        id="cedula"
+                        name="cedula"
+                        type="text"
+                        value={state.cedula_propietario}
+                        readOnly
+                        placeholder="Cedula"
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormControl className='ms-2'>
+                    <FormLabel htmlFor="cedula" mt={3}>
+                      Rol
+                    </FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<EditIcon color="gray.300" />}
+                      />
+                      <Input
+                        id="cedula"
+                        name="cedula"
+                        type="text"
+                        value={state.rol_propietario}
+                        readOnly
+                        placeholder="Cedula"
+                        variant="flushed"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                </div>
+                <FormControl isRequired>
                   <FormLabel htmlFor="correo" mt={3}>
                     Correo
                   </FormLabel>
@@ -236,6 +292,8 @@ export const InformacionPropietario = props => {
                       variant="flushed"
                     />
                   </InputGroup>
+                </FormControl>
+                <FormControl isRequired>
                   <FormLabel htmlFor="celular" mt={3}>
                     Teléfono
                   </FormLabel>
@@ -257,7 +315,7 @@ export const InformacionPropietario = props => {
                 </FormControl>
 
                 <div className="mt-3 w-100 text-center">
-                  <Button onClick={onUpdate} colorScheme="purple">
+                  <Button onClick={onUpdate} colorScheme="telegram">
                     <EditIcon color="gray.300" className="me-1" /> Actualizar
                     Información
                   </Button>
@@ -265,8 +323,8 @@ export const InformacionPropietario = props => {
               </div>
             </div>
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Cerrar</Button>
+          <ModalFooter bgColor={'blackAlpha.50'}>
+            <Button onClick={onClose} colorScheme={'red'}>Cerrar</Button>
           </ModalFooter>
 
           <ModalFileInput

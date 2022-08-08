@@ -35,14 +35,14 @@ import { RegistroMultas } from './RegistroMultas';
 import { RegistroCuotaExt } from './RegistroCuotaExt';
 import {
   editEstadoPagos,
-  editValorPendientePago,
   saveComprobante,
   saveCuotaExtra,
   saveDetalleComprobante,
   saveImagenEvidencia,
   saveMultas,
+  saveValorPendiente,
 } from '../../services/Post';
-import { AiFillDelete } from 'react-icons/ai';
+import { AiFillDelete, AiOutlineDollarCircle } from 'react-icons/ai';
 import { createStandaloneToast } from '@chakra-ui/toast';
 
 export const ValidarPago = props => {
@@ -50,6 +50,7 @@ export const ValidarPago = props => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenConfirmation, setIsOpenConfirmation] = useState(false);
   const [isOpenCuota, setIsOpenCuota] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const [file, setfile] = useState(null);
   const [inputs, setInputs] = useState({
     date: '',
@@ -70,6 +71,10 @@ export const ValidarPago = props => {
   });
   const [multas, setMultas] = useState([]);
   const [cuota, setCuota] = useState([]);
+  const [valorPendiente, setValorPendiente] = useState({
+    total_valor_pendiente: 0,
+    detalle_valor_pendiente: '',
+  });
   const [totales, setTotales] = useState({
     valor_pagado: 0,
     valor_pendiente: 0,
@@ -79,6 +84,7 @@ export const ValidarPago = props => {
     valor_total: 0,
   });
   const { ToastContainer, toast } = createStandaloneToast();
+  const [idComprobante, setIdComprobante] = useState();
 
   useEffect(() => {
     if (data) {
@@ -161,26 +167,32 @@ export const ValidarPago = props => {
     cuotas_array.map(c => {
       temp_valor_cuotas += parseFloat(c.valor_cuota);
     });
-    setTotales({
-      valor_pagado: parseFloat(inputs.valor_pagado),
-      valor_pendiente:
-        parseFloat(temp_valor_multas) +
+    var total_valor_pendiente =
+      parseFloat(temp_valor_multas) +
+        parseFloat(inputs.valor) +
+        parseFloat(temp_valor_cuotas) -
+        parseFloat(inputs.valor_pagado) >
+      0
+        ? parseFloat(temp_valor_multas) +
           parseFloat(inputs.valor) +
           parseFloat(temp_valor_cuotas) -
-          parseFloat(inputs.valor_pagado) >
-        0
-          ? parseFloat(temp_valor_multas) +
-            parseFloat(inputs.valor) +
-            parseFloat(temp_valor_cuotas) -
-            parseFloat(inputs.valor_pagado)
-          : 0,
+          parseFloat(inputs.valor_pagado)
+        : 0;
+    var total_temporal =
+      parseFloat(temp_valor_multas) +
+      parseFloat(inputs.valor) +
+      parseFloat(temp_valor_cuotas);
+    setTotales({
+      valor_pagado: parseFloat(inputs.valor_pagado),
+      valor_pendiente: total_valor_pendiente,
       valor_multas: parseFloat(temp_valor_multas),
       valor_cuotas: parseFloat(temp_valor_cuotas),
       valor_mensual: parseFloat(inputs.valor),
-      valor_total:
-        parseFloat(temp_valor_multas) +
-        parseFloat(inputs.valor) +
-        parseFloat(temp_valor_cuotas),
+      valor_total: total_temporal,
+    });
+    setValorPendiente({
+      ...valorPendiente,
+      total_valor_pendiente: total_valor_pendiente,
     });
     return () => {
       setTotales({});
@@ -198,7 +210,7 @@ export const ValidarPago = props => {
       inputs_to_send.valor_pagado > 0 &&
       inputs_to_send.metodo_pago !== '' &&
       file
-    ) {
+    ) {      
       let comprobante_to_send = {
         codigo_comprobante: inputs_to_send.codigo,
         fecha_comprobante: inputs_to_send.fecha_pago,
@@ -208,6 +220,10 @@ export const ValidarPago = props => {
         let detalle_comprobante_to_send = {
           forma_pago: inputs_to_send.metodo_pago,
           concepto_comprobante: inputs_to_send.concepto,
+          subtotal_comprobante: totales_to_send.valor_mensual,
+          subtotal_multas_comprobante: totales_to_send.valor_multas,
+          subtotal_cuotas_comprobante: totales_to_send.valor_cuotas,
+          total_comprobante: totales_to_send.valor_total,
           id_pago_alicuota: inputs_to_send.id_pago_alicuota,
           id_comprobante: comprobante.id,
         };
@@ -229,7 +245,6 @@ export const ValidarPago = props => {
               fecha_multa: multa.fecha_multa,
               motivo_multa: multa.motivo_multa,
               valor_multa: multa.valor_multa,
-              estado_multa: totales_to_send.valor_pendiente == 0 ? 'PAGADO' : 'PENDIENTE',
               id_detalle_comprobante: detalle_comprobante.id,
             };
             const response = await saveMultas(multa_temp);
@@ -242,7 +257,6 @@ export const ValidarPago = props => {
             let cuota_temp = {
               detalle_cuota: cuota.detalle_cuota,
               valor_cuota: cuota.valor_cuota,
-              estado_cuota: totales_to_send.valor_pendiente == 0 ? 'PAGADO' : 'PENDIENTE',
               id_detalle_comprobante: detalle_comprobante.id,
             };
             const response = await saveCuotaExtra(cuota_temp);
@@ -260,25 +274,25 @@ export const ValidarPago = props => {
               status: 'error',
               duration: 9000,
               isClosable: true,
-              position: "top-right"
+              position: 'top-right',
             });
           } else {
             if (carga_imagen) {
               let data = {
                 estado_alicuota: 'PAGADO',
-                valor_pendiente_alicuota: totales_to_send.valor_pendiente,
               };
               const acutalizar_estado_pago = await editEstadoPagos(
                 data,
                 inputs_to_send.id_pago_alicuota
               );
-              const acutalizar_valor_pago = await editValorPendientePago(
-                data,
-                inputs_to_send.id_pago_alicuota
-              );
-              if (acutalizar_estado_pago && acutalizar_valor_pago) {
-                setIsOpenValidarPago(false);
-                stateChanger(true);
+              if (acutalizar_estado_pago) {
+                if (totales_to_send.valor_pendiente > 0) {
+                  setIsOpenModal(true);
+                  setIdComprobante(detalle_comprobante.id)
+                } else {
+                  setIsOpenValidarPago(false);
+                  stateChanger(true);
+                }                
               }
             } else {
               toast({
@@ -287,7 +301,7 @@ export const ValidarPago = props => {
                 status: 'error',
                 duration: 9000,
                 isClosable: true,
-                position: "top-right"
+                position: 'top-right',
               });
             }
           }
@@ -298,7 +312,7 @@ export const ValidarPago = props => {
             status: 'error',
             duration: 9000,
             isClosable: true,
-            position: "top-right"
+            position: 'top-right',
           });
         }
       } else {
@@ -308,7 +322,7 @@ export const ValidarPago = props => {
           status: 'error',
           duration: 9000,
           isClosable: true,
-          position: "top-right"
+          position: 'top-right',
         });
       }
     } else {
@@ -318,10 +332,47 @@ export const ValidarPago = props => {
         status: 'warning',
         duration: 9000,
         isClosable: true,
-        position: "top-right"
+        position: 'top-right',
       });
     }
   };
+
+  const actionGuardarValor = async () => {
+    const to_Send = {...valorPendiente}
+    const id = idComprobante ? idComprobante : 0;
+    if (to_Send.total_valor_pendiente > 0 && to_Send.detalle_valor_pendiente !== '') {
+      if (id > 0) {
+        let temporal = {
+          detalle_valor: to_Send.detalle_valor_pendiente,
+          total_valor: to_Send.total_valor_pendiente,
+          id_comprobante: id 
+        }
+        const new_response = await saveValorPendiente(temporal);
+        if (new_response) {
+          setIsOpenValidarPago(false);
+          stateChanger(true);
+        } else {
+          toast({
+            title: 'Error',
+            description: 'Se encontró un error al registrar el valor del pago.',
+            status: 'error',
+            duration: 9000,
+            isClosable: true,
+            position: 'top-right',
+          });
+        }
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al obtener el ID del comprobante.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: 'top-right',
+        });
+      }
+    }
+  }
 
   const initialRef = useRef(null);
   const finalRef = useRef(null);
@@ -339,6 +390,10 @@ export const ValidarPago = props => {
     setIsOpenConfirmation(false);
   };
 
+  const onCloseModalValores = () => {
+    setIsOpenModal(false);
+  };
+
   const selectedHandler = e => {
     setfile(e.target.files[0]);
   };
@@ -353,7 +408,7 @@ export const ValidarPago = props => {
     const temp = [...multas];
     temp.splice(index, count);
     setMultas(temp);
-  }; 
+  };
 
   const openRegistroMulta = () => {
     setIsOpen(true);
@@ -509,7 +564,7 @@ export const ValidarPago = props => {
                 <div className="d-flex justify-content-between">
                   <h1 className="fw-bold mt-3 mb-2">Detalle de Multas</h1>
                   <Button
-                    colorScheme="teal"
+                    colorScheme="telegram"
                     className="px-3 mt-2 mb-1"
                     variant="solid"
                     size={'sm'}
@@ -567,7 +622,7 @@ export const ValidarPago = props => {
                 <div className="d-flex justify-content-between">
                   <h1 className="fw-bold mt-3 mb-2">Cuota Extraordinaria</h1>
                   <Button
-                    colorScheme="teal"
+                    colorScheme="telegram"
                     className="px-3 mt-2 mb-1"
                     variant="solid"
                     size={'sm'}
@@ -683,7 +738,7 @@ export const ValidarPago = props => {
                     onChange={e =>
                       setInputs({
                         ...inputs,
-                        valor_pagado: e.target.value ? e.target.value : 0,
+                        valor_pagado: e.target.value > 0 ? e.target.value : "",
                       })
                     }
                     variant="flushed"
@@ -813,7 +868,7 @@ export const ValidarPago = props => {
             </div>
           </ModalBody>
           <ModalFooter mt={3} bgColor={'blackAlpha.50'}>
-            <Button colorScheme="blue" mr={3} onClick={guardarRegistro}>
+            <Button colorScheme="telegram" mr={3} onClick={guardarRegistro}>
               Guardar
             </Button>
             <Button colorScheme="red" onClick={onOpenConfirmation}>
@@ -864,6 +919,80 @@ export const ValidarPago = props => {
           </ModalContent>
         </Modal>
       </Modal>
+
+      <Modal
+        isCentered
+        initialFocusRef={initialRef}
+        finalFocusRef={finalRef}
+        isOpen={isOpenModal}        
+        // onClose={onCloseModalValores}
+        size={'xl'}
+        motionPreset="slideInBottom"
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader bgColor={'blackAlpha.50'}>
+            Registro de un Valor Pendiente
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div className="px-3 my-2">
+              <FormControl isRequired mt={3}>
+                <FormLabel htmlFor="detalle_valor">
+                  Detalle del valor pendiente:{' '}
+                </FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<Icon as={GrCircleInformation} color="gray.50" />}
+                  />
+                  <Input
+                    id="detalle_valor"
+                    name="detalle_valor"
+                    type="text"
+                    value={valorPendiente.detalle_valor_pendiente}
+                    onChange={e =>
+                      setValorPendiente({
+                        ...valorPendiente,
+                        detalle_valor_pendiente: e.target.value,
+                      })
+                    }
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl isRequired mt={3}>
+                <FormLabel htmlFor="valor_valor">Total: </FormLabel>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={
+                      <Icon as={AiOutlineDollarCircle} color="gray.900" />
+                    }
+                  />
+                  <Input
+                    id="valor_valor"
+                    name="valor_valor"
+                    type="number"
+                    value={valorPendiente.total_valor_pendiente}
+                    readOnly
+                    variant="flushed"
+                  />
+                </InputGroup>
+              </FormControl>
+            </div>
+          </ModalBody>
+          <ModalFooter mt={3} bgColor={'blackAlpha.50'}>
+            <Button colorScheme="telegram" mr={3} onClick={actionGuardarValor}>
+              Guardar
+            </Button>
+            {/* <Button colorScheme="red" onClick={onCloseModalValores}>
+              Cancelar
+            </Button> */}
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <ToastContainer />
     </>
   );

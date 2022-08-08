@@ -77,10 +77,9 @@ router.post("/multa/save/", (req, res) => {
       fecha_multa: req.body.fecha_multa,
       motivo_multa: req.body.motivo_multa,
       valor_multa: req.body.valor_multa,
-      estado_multa: req.body.estado_multa,
       id_detalle_comprobante: req.body.detalle_comprobante_id_detalle_comprobante,
     };
-    const query = `INSERT INTO multas (fecha_multa, motivo_multa, valor_multa, estado_multa, detalle_comprobante_id_detalle_comprobante) VALUES ('${data.fecha_multa}', '${data.motivo_multa}', '${data.valor_multa}', '${data.estado_multa}', '${data.id_detalle_comprobante}')`;
+    const query = `INSERT INTO multas (fecha_multa, motivo_multa, valor_multa, detalle_comprobante_id_detalle_comprobante) VALUES ('${data.fecha_multa}', '${data.motivo_multa}', '${data.valor_multa}', '${data.id_detalle_comprobante}')`;
     getConnection(function (err, conn) {
       if (err) {
         return res.status(500).send("¡Algo ha salido mal!");
@@ -132,31 +131,31 @@ router.post("/multa/edit/:id", (req, res) => {
 });
 
 //Editar estado de la multa
-router.post("/multa/edit/estado/:id", (req, res) => {
-  try {
-    const { id } = req.params;
-    const data = {
-      estado_multa: req.body.estado_multa,
-    };
-    const query = `UPDATE multas SET estado_multa= '${data.estado_multa}' WHERE id_multas = ?`;
-    getConnection(function (err, conn) {
-      if (err) {
-        return res.status(500).send("¡Algo ha salido mal!");
-      } else {
-        conn.query(query, [id], function (err, row) {
-          if (err) {
-            console.log(err);
-            return res.status(404).send("No se ha podido realizar su petición");
-          } else {
-            return res.status(200).send("Ok");
-          }
-        });
-      }
-      conn.release();
-    });
-  } catch (error) {
-    res.send("¡Error!. intente más tarde");
-  }
-});
+// router.post("/multa/edit/estado/:id", (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const data = {
+//       estado_multa: req.body.estado_multa,
+//     };
+//     const query = `UPDATE multas SET estado_multa= '${data.estado_multa}' WHERE id_multas = ?`;
+//     getConnection(function (err, conn) {
+//       if (err) {
+//         return res.status(500).send("¡Algo ha salido mal!");
+//       } else {
+//         conn.query(query, [id], function (err, row) {
+//           if (err) {
+//             console.log(err);
+//             return res.status(404).send("No se ha podido realizar su petición");
+//           } else {
+//             return res.status(200).send("Ok");
+//           }
+//         });
+//       }
+//       conn.release();
+//     });
+//   } catch (error) {
+//     res.send("¡Error!. intente más tarde");
+//   }
+// });
 
 module.exports = router;

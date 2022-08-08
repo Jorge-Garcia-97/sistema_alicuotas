@@ -21,6 +21,7 @@ import { ModalFileInput } from './ModalFileInput';
 import { editArea } from '../../services/Post';
 import { EliminarArea } from './EliminarArea';
 import { validarLetras } from '../propietarios/validaciones';
+import { useSelector } from 'react-redux';
 
 export const InformacionArea = props => {
   const { area, showInfo, setShowInfo, stateChanger } = props;
@@ -28,9 +29,19 @@ export const InformacionArea = props => {
   const [showInputFile, setShowInputFile] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { ToastContainer, toast } = createStandaloneToast();
+  const { isAdmin, rol } = useSelector(state => state.auth);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   useEffect(() => {
     setState(area);
+    let bandera = isAdmin
+      ? false
+      : rol == 'Presidente'
+      ? false
+      : rol == 'Vicepresidente'
+      ? false
+      : true;
+    setIsReadOnly(bandera);
     return () => {
       setState([]);
     };
@@ -111,46 +122,53 @@ export const InformacionArea = props => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Información del área comunal</ModalHeader>
+          <ModalHeader bgColor={'blackAlpha.50'}>
+            Información del área comunal
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <div className="row">
-              <div className="col-sm-5 bg-light py-4 rounded">
+            <div className="row px-3">
+              <div className="col-sm-5 bg-light rounded-0 rounded-top px-0">
                 {state.imagen_area ? (
                   <img
                     src={`http://localhost:4000/${state.imagen_area}`}
                     alt={'Imagen referencial'}
-                    style={{ height: '250px', width: '300px' }}
-                    className="d-block mx-auto my-auto"
+                    style={{ height: '250px', width: '100%' }}
+                    className="d-block mx-auto my-auto shadow-sm rounded-0 rounded-top"
                   />
                 ) : (
                   <img
                     src={user}
                     alt={'Imagen referencial'}
                     style={{ height: '300px', width: '300px' }}
-                    className="d-block mx-auto my-auto"
+                    className="d-block mx-auto my-auto shadow-sm rounded-0 rounded-top"
                   />
                 )}
-                <div className="w-100 text-center mt-3 px-4">
-                  <Button
-                    onClick={openModalInputFile}
-                    colorScheme="blue"
-                    className="w-100"
-                  >
-                    <EditIcon color="gray.300" className="me-1" />
-                    Foto
-                  </Button>
-                  <Button
-                    onClick={onDelete}
-                    colorScheme="red"
-                    className="mt-2 w-100"
-                  >
-                    <DeleteIcon color="gray.300" className="me-1" /> Eliminar
-                  </Button>
+                <div className="w-100 text-center">
+                  {!isReadOnly && (
+                    <>
+                      <Button
+                        onClick={openModalInputFile}
+                        colorScheme="telegram"
+                        className="w-100 rounded-0 rounded-bottom"
+                      >
+                        <EditIcon color="gray.300" className="me-1" />
+                        Foto
+                      </Button>
+                      <Button
+                        onClick={onDelete}
+                        colorScheme="red"
+                        className="w-100 mt-4"
+                      >
+                        <DeleteIcon color="gray.300" className="me-1" />{' '}
+                        Eliminar Área
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="col-sm-7 px-5">
-                <FormControl isRequired>
+                <FormControl isRequired={!isReadOnly}>
                   <FormLabel htmlFor="nombre">Nombre</FormLabel>
                   <InputGroup>
                     <InputLeftElement
@@ -162,7 +180,7 @@ export const InformacionArea = props => {
                       name="nombre"
                       type="text"
                       value={state.nombre_area}
-                      readOnly
+                      readOnly={isReadOnly}
                       placeholder="Nombre"
                       variant="flushed"
                     />
@@ -184,20 +202,25 @@ export const InformacionArea = props => {
                       onChange={handleInputChange}
                       placeholder="Descripción"
                       variant="flushed"
+                      readOnly={isReadOnly}
                     />
                   </InputGroup>
                 </FormControl>
                 <div className="mt-3 w-100 text-center">
-                  <Button onClick={onUpdate} colorScheme="purple">
-                    <EditIcon color="gray.300" className="me-1" /> Actualizar
-                    Información
-                  </Button>
+                  {!isReadOnly && (
+                    <Button onClick={onUpdate} colorScheme="telegram">
+                      <EditIcon color="gray.300" className="me-1" /> Actualizar
+                      Información
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Cerrar</Button>
+          <ModalFooter bgColor={'blackAlpha.50'}>
+            <Button onClick={onClose} colorScheme={'red'}>
+              Cerrar
+            </Button>
           </ModalFooter>
 
           <ModalFileInput

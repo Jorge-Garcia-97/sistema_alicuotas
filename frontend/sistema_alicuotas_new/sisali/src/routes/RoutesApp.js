@@ -28,8 +28,8 @@ export const RoutesApp = () => {
                       maxWidth: 'calc(100vw - (50px))',
                     }}
                   >
-                    <div className="p-2 h-100">
-                      <div className="card h-100 overflow-auto p-2 shadow">
+                    <div className="p-4 h-100">
+                      <div className="card h-100 overflow-auto py-2 px-3">
                         <Outlet></Outlet>
                       </div>
                     </div>

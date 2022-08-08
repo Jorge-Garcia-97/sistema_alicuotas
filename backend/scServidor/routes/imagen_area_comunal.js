@@ -63,6 +63,7 @@ router.post("/areacomunal/imagen/save/:id/", fileUpload, (req, res) => {
     const data = fs.readFileSync(
       path.join(__dirname, "../images/" + req.file.filename)
     );
+    console.log(id);
     getConnection(function (err, conn) {
       if (err) {
         console.log(err);

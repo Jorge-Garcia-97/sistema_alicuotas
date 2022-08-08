@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import user from '../../img/usuario.png';
-import { Button } from '@chakra-ui/react';
+import { Button, Icon } from '@chakra-ui/react';
+import { FaEnvelope, FaInfoCircle, FaPhoneAlt, FaUserCircle } from 'react-icons/fa';
 
 export const CardsAdministradores = props => {
   const { administradores, setAdministrador, showInfo, setShowInfo } = props;
@@ -8,10 +9,10 @@ export const CardsAdministradores = props => {
 
   useEffect(() => {
     setState(administradores);
-    console.log(showInfo)
+    console.log(showInfo);
   }, []);
 
-  const handleData = (rowdata) => {
+  const handleData = rowdata => {
     setAdministrador(rowdata);
     setShowInfo(true);
   };
@@ -21,27 +22,34 @@ export const CardsAdministradores = props => {
       {state ? (
         <>
           {state.map((item, i) => (
-            <div className="col-sm-2" key={i}>
-              <div className="card shadow-sm">                
+            <div className="col-sm-3 mb-2" key={i}>
+              <div className="card shadow-sm">
                 <div className="card-body border-top">
-                  <h1 className="card-title fw-bold" style={{fontSize: '25px'}}>
-                    {item.nombre_administrador + ' ' + item.celular_administrador}
+                  <h1
+                    className="card-title fw-bold"
+                    style={{ fontSize: '25px' }}
+                  >
+                    {item.nombre_administrador}
                   </h1>
                   <p className="card-text">
-                    <i className="fa fa-briefcase" style={{width: '30px'}} />
-                    {item.correo_administrador}
-                  </p>
-                  <p className="card-text">
-                    <i className="fa fa-address-card" style={{width: '30px'}} />
+                    <Icon as={FaUserCircle} color="gray.900" className="me-3" />
                     {item.cedula_administrador}
                   </p>
                   <p className="card-text">
-                    <i className="fa fa-envelope" style={{width: '30px'}} />
+                    <Icon as={FaPhoneAlt} color="gray.900" className="me-3" />
+                    {item.celular_administrador}
+                  </p>
+                  <p className="card-text">
+                    <Icon as={FaEnvelope} color="gray.900" className="me-3" />
+                    {item.correo_administrador}
+                  </p>
+                  <p className="card-text">
+                    <Icon as={FaInfoCircle} color="gray.900" className="me-3" />
                     {item.estado_administrador}
                   </p>
                 </div>
                 <Button
-                  colorScheme="blue"
+                  colorScheme="telegram"
                   style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
                   onClick={() => handleData(item)}
                   className="pt-1 pb-2"

@@ -11,7 +11,7 @@ router.get("/propiedades/:estado", (req, res) => {
           return res.status(500).send("¡Algo ha salido mal!");
         } else {
           const query =
-          "SELECT pd.id_propiedad, pd.numero_casa, pd.direccion_propiedad, pr.id_propietario, pr.nombre_propietario, pr.apellido_propietario, pr.celular_propietario FROM propiedad as pd, propietario as pr WHERE pd.propietario_id_propietario = pr.id_propietario AND pd.estado_propiedad = ?";
+          "SELECT pd.id_propiedad, pd.numero_casa, pd.direccion_propiedad, pr.id_propietario, pr.nombre_propietario, pr.apellido_propietario, pr.celular_propietario FROM propiedad as pd, propietario as pr WHERE pd.propietario_id_propietario = pr.id_propietario AND pd.estado_propiedad = ? ORDER BY pd.numero_casa";
           conn.query(query, [estado], function (err, row) {
             
             if (err) {

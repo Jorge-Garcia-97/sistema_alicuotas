@@ -32,9 +32,10 @@ import { CalendarIcon } from '@chakra-ui/icons';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import user from '../../img/usuario.png';
+import logo from '../../img/logo_san_marino.png';
 
 export const InformacionPago = props => {
-  const { isOpen, setIsOpen, data, data_multas, data_cuotas, dataImagen } =
+  const { isOpen, setIsOpen, data, data_multas, data_cuotas, data_valores, dataImagen } =
     props;
   const [state, setState] = useState({
     forma_pago: '',
@@ -50,17 +51,14 @@ export const InformacionPago = props => {
     apellido_propietario: '',
     celular_propietario: '',
     correo_propietario: '',
+    subtotal_comprobante: 0,
+    subtotal_multas_comprobante: 0,
+    subtotal_cuotas_comprobante: 0,
+    total_comprobante: 0,
   });
   const [multas, setMultas] = useState([]);
   const [cuotas, setCuotas] = useState([]);
-  const [totales, setTotales] = useState({
-    valor_pagado: 0,
-    valor_pendiente: 0,
-    valor_multas: 0,
-    valor_cuotas: 0,
-    valor_mensual: 0,
-    valor_total: 0,
-  });
+  const [valoresPendientes, setValoresPendientes] = useState([]);
 
   useEffect(() => {
     console.log(data, dataImagen);
@@ -74,12 +72,16 @@ export const InformacionPago = props => {
         mes_alicuota: data.mes_alicuota,
         fecha_maxima_alicuota: data.fecha_maxima_alicuota,
         valor_alicuota: data.valor_alicuota,
-        valor_pendiente_alicuota: data.valor_pendiente_alicuota,
         numero_casa: data.numero_casa,
         nombre_propietario: data.nombre_propietario,
         apellido_propietario: data.apellido_propietario,
         celular_propietario: data.celular_propietario,
         correo_propietario: data.correo_propietario,
+        subtotal_comprobante: data.subtotal_detalle_comprobante,
+        subtotal_multas_comprobante: data.subtotal_multas_detalle_comprobante,
+        subtotal_cuotas_comprobante: data.subtotal_cuotas_detalle_comprobante,
+        total_comprobante: data.total_detalle_comprobante,
+        total_pagado: data_valores ? data.total_detalle_comprobante - data_valores[0].total_valor_pendiente : 0
       });
     }
     if (data_cuotas) {
@@ -88,44 +90,13 @@ export const InformacionPago = props => {
     if (data_multas) {
       setMultas(data_multas);
     }
+    if (data_valores) {
+      setValoresPendientes(data_valores);
+    }
     return () => {
       setCuotas([]);
       setMultas([]);
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    var temp_valor_multas = 0;
-    var temp_valor_cuotas = 0;
-    if (data_multas) {
-      var multas_array = data_multas;
-      multas_array.map(multa => {
-        temp_valor_multas += parseFloat(multa.valor_multa);
-      });
-    }
-    if (data_cuotas) {
-      var cuotas_array = data_cuotas;
-      cuotas_array.map(c => {
-        temp_valor_cuotas += parseFloat(c.valor_cuota);
-      });
-    }
-    setTotales({
-      valor_pagado:
-        parseFloat(temp_valor_multas) +
-        parseFloat(temp_valor_cuotas) +
-        parseFloat(state.valor_alicuota) -
-        parseFloat(state.valor_pendiente_alicuota),
-      valor_pendiente: parseFloat(state.valor_pendiente_alicuota),
-      valor_multas: parseFloat(temp_valor_multas),
-      valor_cuotas: parseFloat(temp_valor_cuotas),
-      valor_mensual: parseFloat(state.valor_alicuota),
-      valor_total:
-        parseFloat(temp_valor_multas) +
-        parseFloat(temp_valor_cuotas) +
-        parseFloat(state.valor_alicuota),
-    });
-    return () => {
-      setTotales({});
+      setValoresPendientes([]);
     };
   }, [isOpen]);
 
@@ -198,8 +169,6 @@ export const InformacionPago = props => {
       ];
     });
 
-    const valores_finales = { ...totales };
-
     const data5 = [
       [
         state.concepto_comprobante,
@@ -208,10 +177,14 @@ export const InformacionPago = props => {
           style: 'currency',
           currency: 'USD',
           minimumFractionDigits: 2,
-        }).format(valores_finales.valor_pagado),
+        }).format(state.total_comprobante),
       ],
     ];
 
+    var valores_array = 0;
+    if (valoresPendientes.length > 0){
+      valores_array = valoresPendientes[0].total_valor_pendiente;
+    }
     const totales1 = [
       [
         'TOTAL POR MENSUALIDAD:',
@@ -219,7 +192,7 @@ export const InformacionPago = props => {
           style: 'currency',
           currency: 'USD',
           minimumFractionDigits: 2,
-        }).format(valores_finales.valor_mensual),
+        }).format(state.subtotal_comprobante),
       ],
       [
         'TOTAL POR MULTAS:',
@@ -227,7 +200,7 @@ export const InformacionPago = props => {
           style: 'currency',
           currency: 'USD',
           minimumFractionDigits: 2,
-        }).format(valores_finales.valor_multas),
+        }).format(state.subtotal_multas_comprobante),
       ],
       [
         'TOTAL POR CUOTAS:',
@@ -235,7 +208,7 @@ export const InformacionPago = props => {
           style: 'currency',
           currency: 'USD',
           minimumFractionDigits: 2,
-        }).format(valores_finales.valor_cuotas),
+        }).format(state.subtotal_cuotas_comprobante),
       ],
       [
         'TOTAL SALDO PENDIENTE:',
@@ -243,7 +216,7 @@ export const InformacionPago = props => {
           style: 'currency',
           currency: 'USD',
           minimumFractionDigits: 2,
-        }).format(valores_finales.valor_pendiente),
+        }).format(valores_array),
       ],
       [
         'TOTAL PAGADO:',
@@ -251,7 +224,7 @@ export const InformacionPago = props => {
           style: 'currency',
           currency: 'USD',
           minimumFractionDigits: 2,
-        }).format(valores_finales.valor_pagado),
+        }).format(state.total_pagado),
       ],
       [
         'TOTAL A PAGAR:',
@@ -259,13 +232,13 @@ export const InformacionPago = props => {
           style: 'currency',
           currency: 'USD',
           minimumFractionDigits: 2,
-        }).format(valores_finales.valor_total),
+        }).format(state.total_comprobante),
       ],
     ];
 
-    doc.text('REPORTE DE ALICUOTAS', 15, 15);
+    doc.text('REPORTE DE ALICUOTAS', 15, 20);
     doc.autoTable({
-      startY: 20,
+      startY: 30,
       head: header_info,
       body: data1,
     });
@@ -321,6 +294,7 @@ export const InformacionPago = props => {
     doc.text('Firma Responsable', 35, 260);
     doc.text('_______________________', 125, 250);
     doc.text('Firma Propietario', 137, 260);
+    doc.addImage(logo, "PNG", 145, 5, 55, 20);
     doc.save(`sisali-${state.codigo_comprobante}.pdf`);
   };
 
@@ -341,7 +315,7 @@ export const InformacionPago = props => {
           <ModalCloseButton />
           <ModalBody>
             <div className="d-flex">
-              <div className='py-2'>
+              <div className="py-2">
                 {state.data_imagen ? (
                   <img
                     src={`http://localhost:4000/${state.data_imagen}`}
@@ -358,7 +332,7 @@ export const InformacionPago = props => {
                   />
                 )}
               </div>
-              <div className='mx-3 mt-2 mb-1 px-3 py-2 bg-light'>
+              <div className="mx-3 mt-2 mb-1 px-3 py-2 bg-light">
                 <h1 className="fw-bold mb-2">Información General</h1>
                 <Divider />
                 <div className="d-flex px-3">
@@ -510,7 +484,6 @@ export const InformacionPago = props => {
                                   <Th>Fecha</Th>
                                   <Th>Motivo</Th>
                                   <Th isNumeric>Valor</Th>
-                                  <Th>Estado</Th>
                                 </Tr>
                               </Thead>
                               <Tbody>
@@ -523,7 +496,6 @@ export const InformacionPago = props => {
                                     </Td>
                                     <Td>{multa.motivo_multa}</Td>
                                     <Td isNumeric>{multa.valor_multa}</Td>
-                                    <Td>{multa.estado_multa}</Td>
                                   </Tr>
                                 ))}
                               </Tbody>
@@ -553,7 +525,6 @@ export const InformacionPago = props => {
                                 <Tr>
                                   <Th>Detalle</Th>
                                   <Th isNumeric>Valor</Th>
-                                  <Th>Estado</Th>
                                 </Tr>
                               </Thead>
                               <Tbody>
@@ -561,7 +532,6 @@ export const InformacionPago = props => {
                                   <Tr key={i}>
                                     <Td>{c.detalle_cuota}</Td>
                                     <Td isNumeric>{c.valor_cuota}</Td>
-                                    <Td>{c.estado_cuota}</Td>
                                   </Tr>
                                 ))}
                               </Tbody>
@@ -632,7 +602,7 @@ export const InformacionPago = props => {
                         id="valor_pagado"
                         name="valor_pagado"
                         type="number"
-                        value={totales.valor_pagado}
+                        value={state.total_pagado}
                         readOnly
                         variant="flushed"
                       />
@@ -658,7 +628,7 @@ export const InformacionPago = props => {
                             id="valor_mensual"
                             name="valor_mensual"
                             type="number"
-                            value={totales.valor_mensual}
+                            value={state.subtotal_comprobante}
                             readOnly
                             variant="flushed"
                           />
@@ -681,7 +651,7 @@ export const InformacionPago = props => {
                             id="valor_multas"
                             name="valor_multas"
                             type="number"
-                            value={totales.valor_multas}
+                            value={state.subtotal_multas_comprobante}
                             readOnly
                             variant="flushed"
                           />
@@ -704,7 +674,7 @@ export const InformacionPago = props => {
                             id="valor_cuotas"
                             name="valor_cuotas"
                             type="number"
-                            value={totales.valor_cuotas}
+                            value={state.subtotal_cuotas_comprobante}
                             readOnly
                             variant="flushed"
                           />
@@ -727,7 +697,7 @@ export const InformacionPago = props => {
                             id="valor_pendiente"
                             name="valor_pendiente"
                             type="number"
-                            value={totales.valor_pendiente}
+                            value={valoresPendientes.length > 0 ? valoresPendientes[0].total_valor_pendiente : 0}
                             readOnly
                             variant="flushed"
                           />
@@ -750,7 +720,7 @@ export const InformacionPago = props => {
                             id="valor_total"
                             name="valor_total"
                             type="number"
-                            value={totales.valor_total}
+                            value={state.total_comprobante}
                             readOnly
                             variant="flushed"
                           />

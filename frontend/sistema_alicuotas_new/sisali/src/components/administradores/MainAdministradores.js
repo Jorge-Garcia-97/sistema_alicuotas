@@ -3,61 +3,54 @@ import { get } from '../../services/Get';
 import { Spinner } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
 import { RegistroAdministrador } from './RegistroAdministrador';
-import Swal from 'sweetalert2';
+import { createStandaloneToast } from '@chakra-ui/toast';
 import { CardsAdministradores } from './CardsAdministradores';
 import { InformacionAdministrador } from './InformacionAdministrador';
 
 export const MainAdministradores = () => {
   const [administradores, setAdministradores] = useState({
-    propietarios: [],
+    administradores: [],
   });
   const [refresh, setRefresh] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [administrador, setAdministrador] = useState({});
   const [showInfo, setShowInfo] = useState(false);
+  const { ToastContainer, toast } = createStandaloneToast();
 
   useEffect(() => {
     setCargando(true);
     
     async function cargarData() {
       try {
-        const response = ""; //await get(`administradores/ACTIVO`);
+        const response = await get(`administradores/estado/ACTIVO`);
         setAdministradores({
-          administradores: response.data,
+          administradores: response,
         });
         setCargando(false);
         setRefresh(false);
       } catch (error) {
-        Toast.fire({
-          icon: 'error',
-          title: 'Algo ha salido mal',
-        });
+        toast({
+          title: 'Error',
+          description: 'Se encontró un error al cargar la información.',
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: "top-right"
+        })
       }
     }
     
     cargarData();
+    return () => {
+      setAdministradores([]);
+    }
   }, [refresh]); 
 
   const openModal = () => {
     setIsOpen(true);
   };
 
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: true,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: toast => {
-      toast.addEventListener('mouseenter', Swal.stopTimer);
-      toast.addEventListener('mouseleave', Swal.resumeTimer);
-    },
-    customClass: {
-      container: 'container-popup',
-      popup: 'popup',
-    },
-  });
 
   return (
     <>
@@ -78,22 +71,23 @@ export const MainAdministradores = () => {
       ) : (
         <div className="container-fluid p-1">
           <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
-            <h1 className="display-6 fw-bold">
+            <h1 className="fw-bold" style={{fontSize: '25px'}}>
               <i className="fa fa-users me-1" />
               Administradores
             </h1>
             <Button
-              colorScheme="teal"
+              colorScheme="telegram"
               className="px-3"
               variant="solid"
               onClick={openModal}
+              size={'sm'}
             >
               Agregar
               <i className="fa fa-plus-circle ms-1" />
             </Button>
           </div>
           <div className="row">
-            {administradores.administradores ? (
+            {administradores.administradores.length > 0 ? (
               <>
                 <CardsAdministradores
                   {...administradores}
@@ -123,6 +117,7 @@ export const MainAdministradores = () => {
           </div>
         </div>
       )}
+      <ToastContainer />
     </>
   );
 
