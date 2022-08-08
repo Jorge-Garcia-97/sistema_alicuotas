@@ -37,7 +37,7 @@ export const LoginScreen = () => {
               <form method="post" onSubmit={inicioSesion}>
                 <FormControl isRequired>
                   <FormLabel htmlFor="usuario" mt={4}>
-                    Nombre de usuario o correo
+                    Nombre de usuario
                   </FormLabel>
                   <InputGroup>
                     <InputLeftElement
@@ -53,7 +53,7 @@ export const LoginScreen = () => {
                       onChange={e =>
                         setState({ ...state, usuario: e.target.value })
                       }
-                      placeholder="usuarioejemplo@dominio.com"
+                      placeholder=""
                       variant="flushed"
                     />
                   </InputGroup>
