@@ -33,7 +33,7 @@ export const EliminarPropiedad = (props) => {
     <Modal isOpen={showDeleteModal} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Eliminar Propiedad</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <h3>¿Desea eliminar está propiedad?</h3>

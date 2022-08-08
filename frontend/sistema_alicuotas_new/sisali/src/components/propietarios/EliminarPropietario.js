@@ -34,10 +34,10 @@ export const EliminarPropietario = props => {
       <Modal isOpen={showDeleteModal} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Eliminar Propietario</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <h3>¿Desea eliminar el área comunal?</h3>
+            <h3>¿Desea eliminar el propietario?</h3>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="red" mr={3} onClick={onDelete}>

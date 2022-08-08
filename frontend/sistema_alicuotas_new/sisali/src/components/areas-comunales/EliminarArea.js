@@ -39,7 +39,7 @@ export const EliminarArea = (props) => {
       <Modal isOpen={showDeleteModal} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Eliminar Área Comunal</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <h3>¿Desea eliminar el área comunal?</h3>

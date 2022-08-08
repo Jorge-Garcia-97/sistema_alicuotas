@@ -34,7 +34,7 @@ export const EliminarAdministrador = props => {
       <Modal isOpen={showDeleteModal} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Eliminar Administrador</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <h3>¿Desea eliminar el administrador?</h3>
