@@ -32,6 +32,7 @@ import { CalendarIcon } from '@chakra-ui/icons';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import user from '../../img/usuario.png';
+import logo from '../../img/logo_san_marino.png';
 
 export const InformacionPago = props => {
   const { isOpen, setIsOpen, data, data_multas, data_cuotas, data_valores, dataImagen } =
@@ -235,9 +236,9 @@ export const InformacionPago = props => {
       ],
     ];
 
-    doc.text('REPORTE DE ALICUOTAS', 15, 15);
+    doc.text('REPORTE DE ALICUOTAS', 15, 20);
     doc.autoTable({
-      startY: 20,
+      startY: 30,
       head: header_info,
       body: data1,
     });
@@ -293,6 +294,7 @@ export const InformacionPago = props => {
     doc.text('Firma Responsable', 35, 260);
     doc.text('_______________________', 125, 250);
     doc.text('Firma Propietario', 137, 260);
+    doc.addImage(logo, "PNG", 145, 5, 55, 20);
     doc.save(`sisali-${state.codigo_comprobante}.pdf`);
   };
 

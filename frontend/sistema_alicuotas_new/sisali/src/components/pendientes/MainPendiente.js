@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import moment from 'moment';
+import logo from '../../img/logo_san_marino.png';
 
 export const MainPendiente = () => {
   const [state, setState] = useState({
@@ -143,9 +144,9 @@ export const MainPendiente = () => {
         }).format(total_recaudar),
       ],
     ];
-    doc.text(`INFORME DE VALORES PENDIENTES RELACIONADOS AL MES DE ${mes}`, 15, 15);
+    doc.text(`INFORME DE VALORES PENDIENTES RELACIONADOS AL MES DE ${mes}`, 15, 20);
     doc.autoTable({
-      startY: 20,
+      startY: 30,
       head: header_info,
       columnStyles: {
         2: { halign: 'right' },
@@ -161,6 +162,7 @@ export const MainPendiente = () => {
       },
       body: totales1,
     });
+    doc.addImage(logo, "PNG", 145, 5, 55, 20);
     doc.save(`SISALI-INFORME-${mes}.pdf`);
     onCloseReporte();
   };
