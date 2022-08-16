@@ -182,7 +182,7 @@ export const MainAlicuotas = () => {
       },
       body: totales1,
     });
-    doc.addImage(logo, "PNG", 145, 5, 55, 20);
+    doc.addImage(logo, 'PNG', 145, 5, 55, 20);
     doc.save(`SISALI-INFORME-${mes}.pdf`);
     onCloseReporte();
   };
@@ -204,139 +204,141 @@ export const MainAlicuotas = () => {
           </div>
         </div>
       ) : (
-        <div className="container-fluid p-1">
-          <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
-            <h1 className="fw-bold" style={{ fontSize: '25px' }}>
-              <i className="fa fa-credit-card me-1" />
-              Pago de alicuotas
-            </h1>
-            {!isReadOnly && (
-              <div>
-                <Button
-                  colorScheme="telegram"
-                  className="px-3"
-                  variant="solid"
-                  onClick={openModal}
-                  size={'sm'}
-                >
-                  Agregar
-                  <i className="fa fa-plus-circle ms-1" />
-                </Button>
-                <Button
-                  colorScheme="teal"
-                  className="px-3 ms-2"
-                  variant="solid"
-                  onClick={openModalReporte}
-                  size={'sm'}
-                >
-                  Generar Reporte
-                  <i className="fa fa-book ms-1" />
-                </Button>
-              </div>
-            )}
-          </div>
-          <div className="container-fluid border shadow-sm">
-            <InformacionAlicuotas
-              {...state}
-              setData={setData}
-              setDataImagen={setDataImagen}
-              setData_Cuotas={setData_Cuotas}
-              setData_Multas={setData_Multas}
-              setData_Valores={setData_Valores}
-              setIsOpenValidarPago={setIsOpenValidarPago}
-              setIsOpenInformacionPago={setIsOpenInformacionPago}
-              setIsOpenEditarPago={setIsOpenEditarPago}
-            />
-
-            <RegistrarAlicuota
-              {...state}
-              stateChanger={setRefresh}
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-            />
-
-            <ValidarPago
-              data={data}
-              stateChanger={setRefresh}
-              isOpenValidarPago={isOpenValidarPago}
-              setIsOpenValidarPago={setIsOpenValidarPago}
-            />
-
-            <EditarAlicuota
-              data={data}
-              stateChanger={setRefresh}
-              isOpen={isOpenEditarPago}
-              setIsOpen={setIsOpenEditarPago}
-            />
-
-            <InformacionPago
-              data={data}
-              dataImagen={dataImagen}
-              data_cuotas={data_cuotas}
-              data_multas={data_multas}
-              data_valores={data_valores}
-              isOpen={isOpenInformacionPago}
-              setIsOpen={setIsOpenInformacionPago}
-            />
-
-            {/* Aprobar pago */}
-            <Modal
-              blockScrollOnMount={true}
-              isCentered
-              isOpen={isOpenReporte}
-              onClose={onCloseReporte}
-            >
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader bgColor={'blackAlpha.50'}>
-                  Generar Reporte Mensual
-                </ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <Text fontWeight="bold" className="my-1">
-                    Seleccione un mes para generar el Reporte
-                  </Text>
-                  <FormControl isRequired className="me-1 mb-2">
-                    <InputGroup>
-                      <Select
-                        placeholder="Selecciona una opción"
-                        id="mes"
-                        name="mes"
-                        value={mes}
-                        onChange={e => setMes(e.target.value)}
-                        variant="flushed"
-                        className="ps-2"
-                      >
-                        <option value="ENERO">ENERO</option>
-                        <option value="FEBRERO">FEBRERO</option>
-                        <option value="MARZO">MARZO</option>
-                        <option value="ABRIL">ABRIL</option>
-                        <option value="MAYO">MAYO</option>
-                        <option value="JUNIO">JUNIO</option>
-                        <option value="JULIO">JULIO</option>
-                        <option value="AGOSTO">AGOSTO</option>
-                        <option value="SEPTIEMBRE">SEPTIEMBRE</option>
-                        <option value="OCTUBRE">OCTUBRE</option>
-                        <option value="NOVIEMBRE">NOVIEMBRE</option>
-                        <option value="DICIEMBRE">DICIEMBRE</option>
-                      </Select>
-                    </InputGroup>
-                  </FormControl>
-                </ModalBody>
-                <ModalFooter bgColor={'blackAlpha.50'}>
+        <div className="row">
+          <div className="col-auto w-100">
+            <div className="pb-1 ps-1 mb-2 border-bottom d-flex justify-content-between">
+              <h1 className="fw-bold" style={{ fontSize: '25px' }}>
+                <i className="fa fa-credit-card me-1" />
+                Pago de alicuotas
+              </h1>
+              {!isReadOnly && (
+                <div>
                   <Button
                     colorScheme="telegram"
-                    mr={3}
-                    onClick={generarReporte}
+                    className="px-3"
+                    variant="solid"
+                    onClick={openModal}
+                    size={'sm'}
                   >
-                    Generar
+                    Agregar
+                    <i className="fa fa-plus-circle ms-1" />
                   </Button>
-                  <Button colorScheme="red" onClick={onCloseReporte}>
-                    Cancelar
+                  <Button
+                    colorScheme="teal"
+                    className="px-3 ms-2"
+                    variant="solid"
+                    onClick={openModalReporte}
+                    size={'sm'}
+                  >
+                    Generar Reporte
+                    <i className="fa fa-book ms-1" />
                   </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
+                </div>
+              )}
+            </div>
+            <div className="container-fluid border shadow-sm">
+              <InformacionAlicuotas
+                {...state}
+                setData={setData}
+                setDataImagen={setDataImagen}
+                setData_Cuotas={setData_Cuotas}
+                setData_Multas={setData_Multas}
+                setData_Valores={setData_Valores}
+                setIsOpenValidarPago={setIsOpenValidarPago}
+                setIsOpenInformacionPago={setIsOpenInformacionPago}
+                setIsOpenEditarPago={setIsOpenEditarPago}
+              />
+
+              <RegistrarAlicuota
+                {...state}
+                stateChanger={setRefresh}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+              />
+
+              <ValidarPago
+                data={data}
+                stateChanger={setRefresh}
+                isOpenValidarPago={isOpenValidarPago}
+                setIsOpenValidarPago={setIsOpenValidarPago}
+              />
+
+              <EditarAlicuota
+                data={data}
+                stateChanger={setRefresh}
+                isOpen={isOpenEditarPago}
+                setIsOpen={setIsOpenEditarPago}
+              />
+
+              <InformacionPago
+                data={data}
+                dataImagen={dataImagen}
+                data_cuotas={data_cuotas}
+                data_multas={data_multas}
+                data_valores={data_valores}
+                isOpen={isOpenInformacionPago}
+                setIsOpen={setIsOpenInformacionPago}
+              />
+
+              {/* Aprobar pago */}
+              <Modal
+                blockScrollOnMount={true}
+                isCentered
+                isOpen={isOpenReporte}
+                onClose={onCloseReporte}
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader bgColor={'blackAlpha.50'}>
+                    Generar Reporte Mensual
+                  </ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Text fontWeight="bold" className="my-1">
+                      Seleccione un mes para generar el Reporte
+                    </Text>
+                    <FormControl isRequired className="me-1 mb-2">
+                      <InputGroup>
+                        <Select
+                          placeholder="Selecciona una opción"
+                          id="mes"
+                          name="mes"
+                          value={mes}
+                          onChange={e => setMes(e.target.value)}
+                          variant="flushed"
+                          className="ps-2"
+                        >
+                          <option value="ENERO">ENERO</option>
+                          <option value="FEBRERO">FEBRERO</option>
+                          <option value="MARZO">MARZO</option>
+                          <option value="ABRIL">ABRIL</option>
+                          <option value="MAYO">MAYO</option>
+                          <option value="JUNIO">JUNIO</option>
+                          <option value="JULIO">JULIO</option>
+                          <option value="AGOSTO">AGOSTO</option>
+                          <option value="SEPTIEMBRE">SEPTIEMBRE</option>
+                          <option value="OCTUBRE">OCTUBRE</option>
+                          <option value="NOVIEMBRE">NOVIEMBRE</option>
+                          <option value="DICIEMBRE">DICIEMBRE</option>
+                        </Select>
+                      </InputGroup>
+                    </FormControl>
+                  </ModalBody>
+                  <ModalFooter bgColor={'blackAlpha.50'}>
+                    <Button
+                      colorScheme="telegram"
+                      mr={3}
+                      onClick={generarReporte}
+                    >
+                      Generar
+                    </Button>
+                    <Button colorScheme="red" onClick={onCloseReporte}>
+                      Cancelar
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+            </div>
           </div>
         </div>
       )}

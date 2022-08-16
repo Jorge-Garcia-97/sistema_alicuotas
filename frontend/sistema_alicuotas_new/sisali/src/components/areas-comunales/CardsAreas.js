@@ -26,7 +26,7 @@ export const CardsAreas = props => {
                 <>
                   {item.imagen_area ? (
                     <img
-                      src={`http://localhost:4000/${item.imagen_area}`}
+                      src={`http://18.231.89.19:4000/${item.imagen_area}`}
                       alt={'Imagen referencial'}
                       style={{ height: '250px', width: '100%' }}
                       className="d-block mx-auto"

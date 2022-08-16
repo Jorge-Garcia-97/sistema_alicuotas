@@ -131,7 +131,7 @@ export const InformacionArea = props => {
               <div className="col-sm-5 bg-light rounded-0 rounded-top px-0">
                 {state.imagen_area ? (
                   <img
-                    src={`http://localhost:4000/${state.imagen_area}`}
+                    src={`http://18.231.89.19:4000/${state.imagen_area}`}
                     alt={'Imagen referencial'}
                     style={{ height: '250px', width: '100%' }}
                     className="d-block mx-auto my-auto shadow-sm rounded-0 rounded-top"

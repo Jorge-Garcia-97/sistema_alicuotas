@@ -1,6 +1,6 @@
 export const saveUsuario = async data => {
   try {
-    const response = await fetch(`http://localhost:4000/usuario/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/usuario/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -22,7 +22,7 @@ export const saveUsuario = async data => {
 export const saveAdministrador = async (data, usuario_id) => {
   try {
     console.log(data);
-    const response = await fetch(`http://localhost:4000/administrador/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/administrador/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -52,7 +52,7 @@ export const editAdministrador = async (data, id) => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/administrador/edit/${id}`,
+      `http://18.231.89.19:4000/administrador/edit/${id}`,
       {
         method: 'POST',
         headers: {
@@ -80,7 +80,7 @@ export const editAdministrador = async (data, id) => {
 export const deleteAdministrador = async id => {
   try {
     const response = await fetch(
-      `http://localhost:4000/administrador/delete/${id}`,
+      `http://18.231.89.19:4000/administrador/delete/${id}`,
       {
         method: 'POST',
         headers: {
@@ -103,7 +103,7 @@ export const deleteAdministrador = async id => {
 export const savePropietario = async (data, usuario_id) => {
   try {
     console.log(data);
-    const response = await fetch(`http://localhost:4000/propietario/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/propietario/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -132,7 +132,7 @@ export const editPropietario = async (data, id) => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/propietario/edit/${id}`,
+      `http://18.231.89.19:4000/propietario/edit/${id}`,
       {
         method: 'POST',
         headers: {
@@ -162,7 +162,7 @@ export const editPropietario = async (data, id) => {
 export const deletePropietario = async id => {
   try {
     const response = await fetch(
-      `http://localhost:4000/propietario/delete/${id}`,
+      `http://18.231.89.19:4000/propietario/delete/${id}`,
       {
         method: 'POST',
         headers: {
@@ -185,7 +185,7 @@ export const deletePropietario = async id => {
 export const saveImagenPropietario = async (data, id) => {
   try {
     const response = await fetch(
-      `http://localhost:4000/propietario/imagen/save/${id}/`,
+      `http://18.231.89.19:4000/propietario/imagen/save/${id}/`,
       {
         method: 'POST',
         body: data,
@@ -205,7 +205,7 @@ export const saveImagenPropietario = async (data, id) => {
 export const editImagenPropietario = async (data, id) => {
   try {
     const response = await fetch(
-      `http://localhost:4000/propietario/imagen/edit/${id}/`,
+      `http://18.231.89.19:4000/propietario/imagen/edit/${id}/`,
       {
         method: 'POST',
         body: data,
@@ -225,7 +225,7 @@ export const editImagenPropietario = async (data, id) => {
 export const savePropiedad = async data => {
   try {
     console.log(data);
-    const response = await fetch(`http://localhost:4000/propiedades/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/propiedades/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -254,7 +254,7 @@ export const editPropiedad = async (data, id) => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/propiedades/edit/${id}`,
+      `http://18.231.89.19:4000/propiedades/edit/${id}`,
       {
         method: 'POST',
         headers: {
@@ -282,7 +282,7 @@ export const editPropiedad = async (data, id) => {
 export const deletePropiedad = async id => {
   try {
     const response = await fetch(
-      `http://localhost:4000/propiedad/delete/${id}`,
+      `http://18.231.89.19:4000/propiedad/delete/${id}`,
       {
         method: 'POST',
         headers: {
@@ -305,7 +305,7 @@ export const deletePropiedad = async id => {
 export const saveArea = async data => {
   try {
     console.log(data);
-    const response = await fetch(`http://localhost:4000/areacomunal/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/areacomunal/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -329,7 +329,7 @@ export const editArea = async (data, id) => {
   try {
     console.log(data, id);
     const response = await fetch(
-      `http://localhost:4000/areacomunal/edit/${id}`,
+      `http://18.231.89.19:4000/areacomunal/edit/${id}`,
       {
         method: 'POST',
         headers: {
@@ -356,7 +356,7 @@ export const saveImagenArea = async (data, id) => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/areacomunal/imagen/save/${id}/`,
+      `http://18.231.89.19:4000/areacomunal/imagen/save/${id}/`,
       {
         method: 'POST',
         body: data,
@@ -377,7 +377,7 @@ export const editImagenArea = async (data, id) => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/areacomunal/imagen/edit/${id}/`,
+      `http://18.231.89.19:4000/areacomunal/imagen/edit/${id}/`,
       {
         method: 'POST',
         body: data,
@@ -397,7 +397,7 @@ export const editImagenArea = async (data, id) => {
 export const deleteAreaComunal = async id => {
   try {
     const response = await fetch(
-      `http://localhost:4000/areacomunal/delete/${id}`,
+      `http://18.231.89.19:4000/areacomunal/delete/${id}`,
       {
         method: 'POST',
         headers: {
@@ -419,7 +419,7 @@ export const deleteAreaComunal = async id => {
 
 export const savePagos = async data => {
   try {
-    const response = await fetch(`http://localhost:4000/pagoalicuota/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/pagoalicuota/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -447,7 +447,7 @@ export const savePagos = async data => {
 export const editPagos = async (data, id) => {
   try {
     const response = await fetch(
-      `http://localhost:4000/pagoalicuota/edit/${id}`,
+      `http://18.231.89.19:4000/pagoalicuota/edit/${id}`,
       {
         method: 'POST',
         headers: {
@@ -475,7 +475,7 @@ export const editPagos = async (data, id) => {
 export const editEstadoPagos = async (data, id) => {
   try {
     const response = await fetch(
-      `http://localhost:4000/pagoalicuota/edit/estado/${id}`,
+      `http://18.231.89.19:4000/pagoalicuota/edit/estado/${id}`,
       {
         method: 'POST',
         headers: {
@@ -501,7 +501,7 @@ export const editEstadoPagos = async (data, id) => {
 // export const editValorPendientePago = async (data, id) => {
 //   try {
 //     const response = await fetch(
-//       `http://localhost:4000/pagoalicuota/edit/valor_pendiente/${id}`,
+//       `http://18.231.89.19:4000/pagoalicuota/edit/valor_pendiente/${id}`,
 //       {
 //         method: 'POST',
 //         headers: {
@@ -526,7 +526,7 @@ export const editEstadoPagos = async (data, id) => {
 
 export const saveMultas = async data => {
   try {
-    const response = await fetch(`http://localhost:4000/multa/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/multa/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -552,7 +552,7 @@ export const saveMultas = async data => {
 
 export const editMultas = async (id, data) => {
   try {
-    const response = await fetch(`http://localhost:4000/multa/edit/${id}`, {
+    const response = await fetch(`http://18.231.89.19:4000/multa/edit/${id}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -578,7 +578,7 @@ export const editMultas = async (id, data) => {
 // export const editEstadoMultas = async (id, data) => {
 //   try {
 //     const response = await fetch(
-//       `http://localhost:4000/multa/edit/estado/${id}`,
+//       `http://18.231.89.19:4000/multa/edit/estado/${id}`,
 //       {
 //         method: 'POST',
 //         headers: {
@@ -603,7 +603,7 @@ export const editMultas = async (id, data) => {
 
 export const saveCuotaExtra = async data => {
   try {
-    const response = await fetch(`http://localhost:4000/cuota_extra/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/cuota_extra/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -629,7 +629,7 @@ export const saveCuotaExtra = async data => {
 export const editCuotaExtra = async (id, data) => {
   try {
     const response = await fetch(
-      `http://localhost:4000/cuota_extra/edit/${id}`,
+      `http://18.231.89.19:4000/cuota_extra/edit/${id}`,
       {
         method: 'POST',
         headers: {
@@ -656,7 +656,7 @@ export const editCuotaExtra = async (id, data) => {
 // export const editEstadoCuotaExtra = async (id, data) => {
 //   try {
 //     const response = await fetch(
-//       `http://localhost:4000/cuota_extra/edit/estado/${id}`,
+//       `http://18.231.89.19:4000/cuota_extra/edit/estado/${id}`,
 //       {
 //         method: 'POST',
 //         headers: {
@@ -682,7 +682,7 @@ export const editCuotaExtra = async (id, data) => {
 export const saveComprobante = async data => {
   try {
     console.log(data);
-    const response = await fetch(`http://localhost:4000/comprobante/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/comprobante/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -705,7 +705,7 @@ export const editComprobante = async (data, id) => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/comprobante/edit/${id}`,
+      `http://18.231.89.19:4000/comprobante/edit/${id}`,
       {
         method: 'POST',
         headers: {
@@ -732,7 +732,7 @@ export const saveDetalleComprobante = async data => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/detalle_comprobante/save/`,
+      `http://18.231.89.19:4000/detalle_comprobante/save/`,
       {
         method: 'POST',
         headers: {
@@ -763,7 +763,7 @@ export const editDetalleComprobante = async (data, id) => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/detalle_comprobante/edit/${id}`,
+      `http://18.231.89.19:4000/detalle_comprobante/edit/${id}`,
       {
         method: 'POST',
         headers: {
@@ -795,7 +795,7 @@ export const saveImagenEvidencia = async (data, id) => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/imagen_evidencia/imagen/save/${id}/`,
+      `http://18.231.89.19:4000/imagen_evidencia/imagen/save/${id}/`,
       {
         method: 'POST',
         body: data,
@@ -816,7 +816,7 @@ export const editImagenEvidencia = async (data, id) => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/imagen_evidencia/imagen/edit/${id}/`,
+      `http://18.231.89.19:4000/imagen_evidencia/imagen/edit/${id}/`,
       {
         method: 'POST',
         body: data,
@@ -835,7 +835,7 @@ export const editImagenEvidencia = async (data, id) => {
 
 export const saveReserva = async data => {
   try {
-    const response = await fetch(`http://localhost:4000/reservacion/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/reservacion/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -866,7 +866,7 @@ export const saveReserva = async data => {
 export const editEstadoReserva = async id => {
   try {
     const response = await fetch(
-      `http://localhost:4000/reservacion/edit/estado/${id}`,
+      `http://18.231.89.19:4000/reservacion/edit/estado/${id}`,
       {
         method: 'POST',
         headers: {
@@ -892,7 +892,7 @@ export const editEstadoReserva = async id => {
 export const saveSolicitud = async data => {
   try {
     console.log(data);
-    const response = await fetch(`http://localhost:4000/solicitud/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/solicitud/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -921,7 +921,7 @@ export const editEstadoSolicitud = async (data, id) => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/solicitud/edit/estado/${id}`,
+      `http://18.231.89.19:4000/solicitud/edit/estado/${id}`,
       {
         method: 'POST',
         headers: {
@@ -947,7 +947,7 @@ export const editEstadoSolicitud = async (data, id) => {
 export const saveValorPendiente = async data => {
   try {
     console.log(data);
-    const response = await fetch(`http://localhost:4000/valor_pendiente/save/`, {
+    const response = await fetch(`http://18.231.89.19:4000/valor_pendiente/save/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -975,7 +975,7 @@ export const editEstadoValorPendiente = async (data, id) => {
   try {
     console.log(data);
     const response = await fetch(
-      `http://localhost:4000/valor_pendiente/edit/estado/${id}`,
+      `http://18.231.89.19:4000/valor_pendiente/edit/estado/${id}`,
       {
         method: 'POST',
         headers: {
