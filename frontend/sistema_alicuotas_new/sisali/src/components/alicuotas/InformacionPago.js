@@ -236,7 +236,7 @@ export const InformacionPago = props => {
       ],
     ];
 
-    doc.text('REPORTE DE ALICUOTAS', 15, 20);
+    doc.text('COMPROBANTE DE PAGO', 15, 20);
     doc.autoTable({
       startY: 30,
       head: header_info,

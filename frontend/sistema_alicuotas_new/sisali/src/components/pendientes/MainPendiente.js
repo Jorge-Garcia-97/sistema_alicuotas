@@ -31,9 +31,7 @@ export const MainPendiente = () => {
   const [cargando, setCargando] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const { ToastContainer, toast } = createStandaloneToast();
-  const openModalRegsitro = () => {
-    setIsOpenModal(true);
-  };
+  
   const [isOpenReporte, setIsOpenReporte] = useState(false);
   const { isAdmin, id, rol } = useSelector(state => state.auth);
   const [isReadOnly, setIsReadOnly] = useState(false);
@@ -200,16 +198,7 @@ export const MainPendiente = () => {
             </h1>
             {!isReadOnly && (
               <div>
-                <Button
-                  colorScheme="telegram"
-                  className="px-3"
-                  variant="solid"
-                  onClick={openModalRegsitro}
-                  size={'sm'}
-                >
-                  Agregar
-                  <i className="fa fa-plus-circle ms-1" />
-                </Button>
+                
                 <Button
                   colorScheme="teal"
                   className="px-3 ms-2"
