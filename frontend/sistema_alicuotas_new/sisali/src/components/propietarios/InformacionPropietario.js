@@ -125,7 +125,7 @@ export const InformacionPropietario = props => {
               <div className="col-sm-4 bg-light rounded py-2">
                 {state.imagen_propietario ? (
                   <img
-                    src={`http://localhost:4000/${state.imagen_propietario}`}
+                    src={`http://18.231.89.19:4000/${state.imagen_propietario}`}
                     alt={'Imagen referencial'}
                     style={{ height: '300px', width: '300px' }}
                     className="d-block mx-auto my-auto"

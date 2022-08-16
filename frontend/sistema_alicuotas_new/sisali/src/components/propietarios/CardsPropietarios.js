@@ -31,7 +31,7 @@ export const CardsPropietarios = props => {
                 <>
                   {item.imagen_propietario ? (
                     <img
-                      src={`http://localhost:4000/${item.imagen_propietario}`}
+                      src={`http://18.231.89.19:4000/${item.imagen_propietario}`}
                       alt={'Imagen referencial'}
                       style={{ height: '150px', width: '150px' }}
                       className="d-block mx-auto"
